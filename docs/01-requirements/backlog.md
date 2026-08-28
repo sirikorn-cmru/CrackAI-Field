@@ -2,7 +2,7 @@
 
 Backlog นี้รวบรวมความต้องการเชิงฟังก์ชัน (FR-xx) และไม่ใช่เชิงฟังก์ชัน (NFR-xx) จากเอกสารทั้งหมดใน `docs/01-requirements/01-spec/` จัดกลุ่มตามระดับความสำคัญ (สูง/กลาง/ต่ำ — "สูง" คือสิ่งที่ต้องมีใน MVP) สถานะเริ่มต้นของรายการใหม่คือ `Backlog`
 
-อัปเดตล่าสุด: 2026-08-28 (นำเข้าจาก [[20260828-01-flood-damage-survey]] ซึ่งเป็นเอกสาร spec ฉบับแรกของโปรเจกต์)
+อัปเดตล่าสุด: 2026-08-28 (นำเข้าจาก [[20260828-01-flood-damage-survey]] ซึ่งเป็นเอกสาร spec ฉบับแรกของโปรเจกต์ — เพิ่ม FR-25–FR-27 และ NFR-09 ภายหลัง เนื่องจากพบระหว่างจัดทำ user-journey ว่าขาด FR ครอบคลุมการยืนยันตัวตน/เข้าสู่ระบบ)
 
 ## ระดับความสำคัญ สูง (MVP)
 
@@ -27,6 +27,9 @@ Backlog นี้รวบรวมความต้องการเชิง
 | FR-19 | หัวหน้าผู้สำรวจตรวจทานผลการสำรวจของทีมก่อนรับรอง | [[20260828-01-flood-damage-survey#4.4 ผู้สำรวจ การรับรองผล และการมอบหมายงาน\|FR-19]] | Backlog |
 | FR-21 | จัดการผู้ใช้และสิทธิ์การเข้าถึงตามบทบาท | [[20260828-01-flood-damage-survey#4.5 การจัดการผู้ใช้ สิทธิ์ และภาพรวมผลสำรวจ\|FR-21]] | Backlog |
 | FR-22 | แสดง dashboard ภาพรวมผลสำรวจ | [[20260828-01-flood-damage-survey#4.5 การจัดการผู้ใช้ สิทธิ์ และภาพรวมผลสำรวจ\|FR-22]] | Backlog |
+| FR-25 | ยืนยันตัวตนผู้ใช้ (เข้าสู่ระบบ/ออกจากระบบ) | [[20260828-01-flood-damage-survey#4.6 การยืนยันตัวตนและการเข้าสู่ระบบ\|FR-25]] | Backlog |
+| FR-26 | บังคับสิทธิ์การเข้าถึงฟังก์ชัน/หน้าจอตามบทบาทหลังเข้าสู่ระบบ | [[20260828-01-flood-damage-survey#4.6 การยืนยันตัวตนและการเข้าสู่ระบบ\|FR-26]] | Backlog |
+| FR-27 | เข้าสู่ระบบและใช้งานแอปขณะไม่มีการเชื่อมต่ออินเทอร์เน็ต | [[20260828-01-flood-damage-survey#4.6 การยืนยันตัวตนและการเข้าสู่ระบบ\|FR-27]] | Backlog |
 
 ### Non-Functional Requirements
 
@@ -38,6 +41,7 @@ Backlog นี้รวบรวมความต้องการเชิง
 | NFR-04 | Usability / Compatibility | [[20260828-01-flood-damage-survey#5. Non-Functional Requirements\|NFR-04]] | Backlog |
 | NFR-05 | Auditability / Accountability | [[20260828-01-flood-damage-survey#5. Non-Functional Requirements\|NFR-05]] | Backlog |
 | NFR-08 | Security | [[20260828-01-flood-damage-survey#5. Non-Functional Requirements\|NFR-08]] | Backlog |
+| NFR-09 | Security (Offline Session Expiry) | [[20260828-01-flood-damage-survey#5. Non-Functional Requirements\|NFR-09]] | Backlog |
 
 ## ระดับความสำคัญ กลาง
 
