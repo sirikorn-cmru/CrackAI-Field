@@ -1,0 +1,12 @@
+# Obsidian — เก็บ config ของ vault ไว้ แต่ไม่เก็บ state เฉพาะเครื่อง
+docs/.obsidian/workspace.json
+docs/.obsidian/workspace-mobile.json
+docs/.obsidian/cache
+
+# Claude Code — settings เฉพาะเครื่อง
+.claude/settings.local.json
+
+# OS
+Thumbs.db
+desktop.ini
+.DS_Store
