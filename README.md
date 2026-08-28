@@ -33,6 +33,7 @@ flowchart TD
 docs/
   00-archived/                  เอกสารที่เลิกใช้/ถูกแทนที่แล้ว
   01-requirements/
+    00-source/                  เอกสารอ้างอิงต้นทาง (PDF/ไฟล์แนบจากผู้ใช้) ที่ยังไม่ถูกแปลงเป็น spec
     01-spec/                    เอกสารความต้องการ (1 ไฟล์ต่อ 1 หัวข้อ — YYYYMMDD-NN-<slug>.md)
     02-plan/release-plan.md     แผนแบ่ง phase/release ก่อนเริ่ม dev
     03-task/{phase}-tasks.md    การแตกงานย่อยระดับ implementation ต่อ phase
