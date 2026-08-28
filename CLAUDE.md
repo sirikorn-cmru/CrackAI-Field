@@ -63,7 +63,8 @@ docs/
 
 จุดเริ่มต้นที่ใช้บ่อย:
 - `/capture-requirement` — แปลง requirement ดิบจากผู้ใช้เป็นเอกสาร spec ใหม่/แก้ไขของเดิม พร้อมอัปเดต backlog
-- `/audit-backlog`, `/sync-feature-journey`, `/sync-technical-spec` (รวม architecture → api-spec/db-spec → detailed-design → nfr-review), `/sync-test-plan`, `/sync-phase-plan`, `/build-prototype` — ตรวจสอบและ sync เอกสารแต่ละชั้นให้ตรงกับชั้นก่อนหน้า
+- `/audit-backlog` — ตรวจความสอดคล้องของเอกสารช่วงต้นสายงานทั้ง 4 ชั้น (spec → backlog → feature-list → user-journey) แก้ backlog ให้ตรงกับ spec แล้ว auto-chain ต่อไป `sync-feature-journey`/`requirement-writer` จนทุกชั้นกลับมาตรงกันในคำสั่งเดียว
+- `/sync-feature-journey`, `/sync-technical-spec` (รวม architecture → api-spec/db-spec → detailed-design → nfr-review), `/sync-test-plan`, `/sync-phase-plan`, `/build-prototype` — ตรวจสอบและ sync เอกสารแต่ละชั้นให้ตรงกับชั้นก่อนหน้า
 - `/run-requirements-phase`, `/run-technical-phase`, `/run-prototype-phase` — รวมหลายขั้นตอนที่เกี่ยวข้องกันไว้ในคำสั่งเดียว
 - `/audit-pipeline` — ตรวจสอบความสอดคล้องทั้งสายงานตั้งแต่ spec ถึงปลายทางในคำสั่งเดียว
 
