@@ -2,7 +2,7 @@
 
 Backlog นี้รวบรวมความต้องการเชิงฟังก์ชัน (FR-xx) และไม่ใช่เชิงฟังก์ชัน (NFR-xx) จากเอกสารทั้งหมดใน `docs/01-requirements/01-spec/` จัดกลุ่มตามระดับความสำคัญ (สูง/กลาง/ต่ำ — "สูง" คือสิ่งที่ต้องมีใน MVP) สถานะเริ่มต้นของรายการใหม่คือ `Backlog`
 
-อัปเดตล่าสุด: 2026-08-28 (นำเข้าจาก [[20260828-01-flood-damage-survey]] ซึ่งเป็นเอกสาร spec ฉบับแรกของโปรเจกต์ — เพิ่ม FR-25–FR-27 และ NFR-09 ภายหลัง เนื่องจากพบระหว่างจัดทำ user-journey ว่าขาด FR ครอบคลุมการยืนยันตัวตน/เข้าสู่ระบบ, ต่อมาเพิ่ม FR-28–FR-29 เนื่องจากพบระหว่างเขียน acceptance criteria ว่าขาด FR ครอบคลุมกรณี AI วิเคราะห์รอยร้าวไม่สำเร็จ)
+อัปเดตล่าสุด: 2026-08-28 (นำเข้าจาก [[20260828-01-flood-damage-survey]] ซึ่งเป็นเอกสาร spec ฉบับแรกของโปรเจกต์ — เพิ่ม FR-25–FR-27 และ NFR-09 ภายหลัง เนื่องจากพบระหว่างจัดทำ user-journey ว่าขาด FR ครอบคลุมการยืนยันตัวตน/เข้าสู่ระบบ, ต่อมาเพิ่ม FR-28–FR-29 เนื่องจากพบระหว่างเขียน acceptance criteria ว่าขาด FR ครอบคลุมกรณี AI วิเคราะห์รอยร้าวไม่สำเร็จ, ล่าสุดเพิ่ม FR-30–FR-31 และ NFR-10 เนื่องจากพบระหว่างออกแบบ db-spec/api-spec ว่าขาด FR ครอบคลุมการแก้ไขความขัดแย้งของข้อมูล sync ด้วยมือ)
 
 ## ระดับความสำคัญ สูง (MVP)
 
@@ -32,6 +32,8 @@ Backlog นี้รวบรวมความต้องการเชิง
 | FR-27 | เข้าสู่ระบบและใช้งานแอปขณะไม่มีการเชื่อมต่ออินเทอร์เน็ต | [[20260828-01-flood-damage-survey#4.6 การยืนยันตัวตนและการเข้าสู่ระบบ\|FR-27]] | Backlog |
 | FR-28 | ตรวจจับและแจ้งกรณี AI วิเคราะห์ภาพรอยร้าวไม่สำเร็จ พร้อมทางเลือกถ่ายภาพใหม่ | [[20260828-01-flood-damage-survey#4.3 ภาพถ่ายและ AI วิเคราะห์รอยร้าว\|FR-28]] | Backlog |
 | FR-29 | กรอกระดับความเสียหายของรอยร้าวด้วยตนเองโดยไม่ต้องพึ่ง AI | [[20260828-01-flood-damage-survey#4.3 ภาพถ่ายและ AI วิเคราะห์รอยร้าว\|FR-29]] | Backlog |
+| FR-30 | แสดงรายการระเบียนที่มีความขัดแย้งของข้อมูลรอการแก้ไขด้วยมือ | [[20260828-01-flood-damage-survey#4.7 การแก้ไขความขัดแย้งของข้อมูลจากการซิงค์ (Manual Conflict Resolution)\|FR-30]] | Backlog |
+| FR-31 | เปรียบเทียบเวอร์ชันข้อมูลที่ขัดแย้งกันและเลือก/รวมค่าด้วยมือ | [[20260828-01-flood-damage-survey#4.7 การแก้ไขความขัดแย้งของข้อมูลจากการซิงค์ (Manual Conflict Resolution)\|FR-31]] | Backlog |
 
 ### Non-Functional Requirements
 
@@ -44,6 +46,7 @@ Backlog นี้รวบรวมความต้องการเชิง
 | NFR-05 | Auditability / Accountability | [[20260828-01-flood-damage-survey#5. Non-Functional Requirements\|NFR-05]] | Backlog |
 | NFR-08 | Security | [[20260828-01-flood-damage-survey#5. Non-Functional Requirements\|NFR-08]] | Backlog |
 | NFR-09 | Security (Offline Session Expiry) | [[20260828-01-flood-damage-survey#5. Non-Functional Requirements\|NFR-09]] | Backlog |
+| NFR-10 | Data Integrity (Reporting Consistency) | [[20260828-01-flood-damage-survey#5. Non-Functional Requirements\|NFR-10]] | Backlog |
 
 ## ระดับความสำคัญ กลาง
 
