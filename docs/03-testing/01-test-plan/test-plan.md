@@ -4,14 +4,14 @@
 
 ## 1. Scope (ขอบเขตการทดสอบ)
 
-ทดสอบครบทั้ง 14 ฟีเจอร์ตาม [[feature-list]] (36 รหัส FR-01–FR-27, NFR-01–NFR-09) ครอบคลุม 4 บทบาทผู้ใช้ตาม [[user-journey]]: ผู้สำรวจภาคสนาม, หัวหน้าผู้สำรวจ, ผู้ดูแลระบบ, หน่วยงานส่วนกลาง/ผู้บริหาร
+ทดสอบครบทั้ง 14 ฟีเจอร์ตาม [[feature-list]] (38 รหัส FR-01–FR-29, NFR-01–NFR-09) ครอบคลุม 4 บทบาทผู้ใช้ตาม [[user-journey]]: ผู้สำรวจภาคสนาม, หัวหน้าผู้สำรวจ, ผู้ดูแลระบบ, หน่วยงานส่วนกลาง/ผู้บริหาร
 
 | # | ฟีเจอร์ | MoSCoW | ไฟล์ test case |
 |---|---|---|---|
 | 1 | บันทึกข้อมูลอาคารและสภาพแวดล้อม | Must have | `test-cases/building-environment-info.md` |
 | 2 | ประเมินความเสียหายโครงสร้างและส่วนประกอบอาคารแยกตามหมวด | Must have | `test-cases/structural-damage-assessment.md` |
 | 3 | สรุปผลประเมินเป็น 3 ระดับสีพร้อมเกณฑ์อ้างอิงคู่มือ | Must have | `test-cases/damage-color-summary.md` |
-| 4 | ถ่ายภาพและวิเคราะห์รอยร้าวด้วย AI (Human-in-the-loop) | Must have | `test-cases/ai-crack-photo-analysis.md` |
+| 4 | ถ่ายภาพและประเมินรอยร้าวด้วย AI พร้อมทางเลือกกรอกเอง (Human-in-the-loop) | Must have | `test-cases/ai-crack-photo-analysis.md` |
 | 5 | วาดภาพประกอบเพิ่มเติม | Should have | `test-cases/additional-sketch.md` |
 | 6 | บันทึกข้อมูลผู้สำรวจและระยะเวลาการสำรวจ | Must have | `test-cases/surveyor-info-duration.md` |
 | 7 | ตรวจทานและรับรองผลสำรวจด้วยลายเซ็นดิจิทัล | Must have | `test-cases/survey-review-signature.md` |
@@ -33,7 +33,7 @@
 - ข้อมูลอาคารและสภาพแวดล้อม (FR-01–FR-04)
 - การประเมินความเสียหาย (FR-05–FR-09)
 - การสรุปผลเป็นระดับสีและเกณฑ์อ้างอิง (FR-10, FR-11)
-- ภาพถ่ายและ AI วิเคราะห์รอยร้าว รวม human-in-the-loop confirmation (FR-12–FR-14)
+- ภาพถ่ายและ AI ประเมินรอยร้าว รวม human-in-the-loop confirmation และเส้นทางกรอกเอง (FR-12–FR-14, FR-28, FR-29)
 - ภาพวาดประกอบ (FR-15)
 - ข้อมูลผู้สำรวจและระยะเวลา (FR-16, FR-17)
 - การตรวจทาน/รับรองผลด้วยลายเซ็นดิจิทัล (FR-18, FR-19)
@@ -90,7 +90,7 @@
 | 1 | บันทึกข้อมูลอาคารและสภาพแวดล้อม | `test-cases/building-environment-info.md` | FR-01, FR-02, FR-03, FR-04, NFR-06 | 9 |
 | 2 | ประเมินความเสียหายโครงสร้างและส่วนประกอบอาคารแยกตามหมวด | `test-cases/structural-damage-assessment.md` | FR-05, FR-06, FR-07, FR-08, FR-09 | 8 |
 | 3 | สรุปผลประเมินเป็น 3 ระดับสีพร้อมเกณฑ์อ้างอิงคู่มือ | `test-cases/damage-color-summary.md` | FR-10, FR-11 | 4 |
-| 4 | ถ่ายภาพและวิเคราะห์รอยร้าวด้วย AI (Human-in-the-loop) | `test-cases/ai-crack-photo-analysis.md` | FR-12, FR-13, FR-14, NFR-05 | 7 |
+| 4 | ถ่ายภาพและประเมินรอยร้าวด้วย AI พร้อมทางเลือกกรอกเอง (Human-in-the-loop) | `test-cases/ai-crack-photo-analysis.md` | FR-12, FR-13, FR-14, FR-28, FR-29, NFR-05 | 13 |
 | 5 | วาดภาพประกอบเพิ่มเติม | `test-cases/additional-sketch.md` | FR-15 | 2 |
 | 6 | บันทึกข้อมูลผู้สำรวจและระยะเวลาการสำรวจ | `test-cases/surveyor-info-duration.md` | FR-16, FR-17 | 3 |
 | 7 | ตรวจทานและรับรองผลสำรวจด้วยลายเซ็นดิจิทัล | `test-cases/survey-review-signature.md` | FR-18, FR-19 | 4 |
@@ -102,4 +102,4 @@
 | 13 | การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม | `test-cases/offline-sync.md` | NFR-01, NFR-02, NFR-03, NFR-04, NFR-07 | 6 |
 | 14 | ยืนยันตัวตนและเข้าสู่ระบบ | `test-cases/authentication-login.md` | FR-25, FR-26, FR-27, NFR-09 | 8 |
 
-รวม 63 AC ครอบคลุมครบ 36 รหัส FR/NFR ทั้งหมดตาม [[backlog]]
+รวม 69 AC ครอบคลุมครบ 38 รหัส FR/NFR ทั้งหมดตาม [[backlog]] (อัปเดตให้ครอบคลุม FR-28, FR-29 ที่เพิ่มเข้ามาภายหลัง)
