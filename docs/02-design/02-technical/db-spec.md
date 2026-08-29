@@ -1,8 +1,8 @@
 # โมเดลข้อมูล (Data Specification)
 
-เอกสารนี้อธิบายโมเดลข้อมูลระดับ **logical/conceptual** (entity, attribute, ความสัมพันธ์) ของระบบสำรวจความเสียหายขั้นต้นของโครงสร้างอาคารหลังอุทกภัย โดยอิงจาก [[architecture]] (7 logical component), [[feature-list]] (14 ฟีเจอร์ / 38 รหัส FR-NFR) และ [[backlog]]
+เอกสารนี้อธิบายโมเดลข้อมูลระดับ **logical/conceptual** (entity, attribute, ความสัมพันธ์) ของระบบสำรวจความเสียหายขั้นต้นของโครงสร้างอาคารหลังอุทกภัย โดยอิงจาก [[architecture]] (7 logical component), [[feature-list]] (15 ฟีเจอร์ / 41 รหัส FR-NFR) และ [[backlog]]
 
-> **หมายเหตุสำคัญ**: [[technology-stack.md|technology-stack]] ยังไม่มีเนื้อหา เอกสารนี้จึงจงใจไม่ระบุชนิดข้อมูลแบบ SQL (เช่น `VARCHAR`, `INT`, `TIMESTAMP`) และไม่ระบุว่าเป็น SQL/NoSQL/ชื่อ database engine ใดๆ ทั้งสิ้น ใช้เฉพาะ **ชนิดข้อมูลเชิงตรรกะ** ตามที่นิยามในหัวข้อ 0 เท่านั้น ประเด็นเชิงเทคนิคที่ยังไม่ตัดสินใจถูกรวบรวมไว้ในหัวข้อ 8
+> **หมายเหตุสำคัญ**: [[technology-stack.md|technology-stack]] ยังไม่มีเนื้อหา เอกสารนี้จึงจงใจไม่ระบุชนิดข้อมูลแบบ SQL (เช่น `VARCHAR`, `INT`, `TIMESTAMP`) และไม่ระบุว่าเป็น SQL/NoSQL/ชื่อ database engine ใดๆ ทั้งสิ้น ใช้เฉพาะ **ชนิดข้อมูลเชิงตรรกะ** ตามที่นิยามในหัวข้อ 0 เท่านั้น ประเด็นเชิงเทคนิคที่ยังไม่ตัดสินใจถูกรวบรวมไว้ในหัวข้อ 11
 
 คู่กับเอกสารนี้เสมอ: [[api-spec]] — operation ทุกตัวที่รับ/คืนค่าของ entity ใดในเอกสารนี้ ต้องใช้ชื่อ attribute (canonical name) ตรงกันทุกประการ
 
@@ -29,8 +29,9 @@
 | ความเสียหายแยกหมวด | [[#5.1 SurroundingHazard\|SurroundingHazard]], [[#5.2 ExternalDamage\|ExternalDamage]], [[#5.3 StructuralDamage\|StructuralDamage]], [[#5.4 ComponentDamage\|ComponentDamage]], [[#5.5 ElectricalSystemDamage\|ElectricalSystemDamage]] | [[feature-list#2. ประเมินความเสียหายโครงสร้างและส่วนประกอบอาคารแยกตามหมวด\|ฟีเจอร์ 2]], [[feature-list#3. สรุปผลประเมินเป็น 3 ระดับสีพร้อมเกณฑ์อ้างอิงคู่มือ\|ฟีเจอร์ 3]] |
 | ภาพประกอบและ AI | [[#6.1 DamagePhoto\|DamagePhoto]], [[#6.2 AIAnalysisResult\|AIAnalysisResult]], [[#6.3 Sketch\|Sketch]] | [[feature-list#4. ถ่ายภาพและประเมินรอยร้าวด้วย AI พร้อมทางเลือกกรอกเอง (Human-in-the-loop)\|ฟีเจอร์ 4]], [[feature-list#5. วาดภาพประกอบเพิ่มเติม\|ฟีเจอร์ 5]] |
 | การรับรองผลและ audit | [[#7.1 CertificationRecord\|CertificationRecord]], [[#7.2 AuditTrailEntry\|AuditTrailEntry]] | [[feature-list#7. ตรวจทานและรับรองผลสำรวจด้วยลายเซ็นดิจิทัล\|ฟีเจอร์ 7]] |
+| การแก้ไขความขัดแย้งของข้อมูลจากการซิงค์ | [[#8.1 SyncConflict\|SyncConflict]], [[#8.2 SyncConflictVersion\|SyncConflictVersion]] | [[feature-list#15. แก้ไขความขัดแย้งของข้อมูลจากการซิงค์ด้วยมือ (Manual Conflict Resolution)\|ฟีเจอร์ 15]] |
 
-รวม **16 entity** ครอบคลุมทั้ง 14 ฟีเจอร์ (ฟีเจอร์ 10 "Dashboard", 11 "ส่งออกรายงาน", 12 "ค้นหา/กรอง", 13 "ออฟไลน์และซิงค์" เป็นการ**อ่าน/ประมวลผลข้อมูลของ entity ที่มีอยู่แล้ว** ไม่ต้องมี entity เฉพาะเพิ่ม ยกเว้น attribute ด้าน sync/conflict ที่ฝังอยู่ใน `SurveyedBuilding`/`DamagePhoto`/`Sketch` ตามหัวข้อ 9)
+รวม **18 entity** ครอบคลุมทั้ง 15 ฟีเจอร์ (ฟีเจอร์ 10 "Dashboard", 11 "ส่งออกรายงาน", 12 "ค้นหา/กรอง", 13 "ออฟไลน์และซิงค์" เป็นการ**อ่าน/ประมวลผลข้อมูลของ entity ที่มีอยู่แล้ว** ไม่ต้องมี entity เฉพาะเพิ่ม ยกเว้น attribute ด้าน sync/conflict ที่ฝังอยู่ใน `SurveyedBuilding`/`DamagePhoto`/`Sketch` ตามหัวข้อ 10 — ฟีเจอร์ 15 (ใหม่) ใช้ entity เฉพาะเพิ่ม 2 ตัวตามหัวข้อ 8)
 
 ## 2. ผู้ใช้และการเข้าสู่ระบบ
 
@@ -43,7 +44,7 @@
 | id | ตัวระบุเฉพาะ | ใช่ | รหัสผู้ใช้ |
 | username | ข้อความ | ใช่ | ชื่อบัญชีที่ใช้เข้าสู่ระบบ ไม่ซ้ำกัน |
 | full_name | ข้อความ | ใช่ | ชื่อ-นามสกุล |
-| credential_secret | ข้อความ | ใช่ | ข้อมูลยืนยันตัวตน (เก็บในรูปแบบเข้ารหัส — วิธีเข้ารหัสเป็นประเด็นรอตัดสินใจ ดูหัวข้อ 8) |
+| credential_secret | ข้อความ | ใช่ | ข้อมูลยืนยันตัวตน (เก็บในรูปแบบเข้ารหัส — วิธีเข้ารหัสเป็นประเด็นรอตัดสินใจ ดูหัวข้อ 11) |
 | phone_number | ข้อความ | ไม่ | เบอร์โทรศัพท์ |
 | agency_name | ข้อความ | ไม่ | หน่วยงาน/สังกัด |
 | position | ข้อความ | ไม่ | ตำแหน่ง |
@@ -99,7 +100,7 @@ Junction entity ระหว่าง Assignment และ User (N:M) — รอ
 
 Aggregate root ของแบบสำรวจ 1 ฉบับ (1 อาคาร) รวมข้อมูลทั่วไป+กายภาพ (ฟีเจอร์ 1) และผลสรุป (ฟีเจอร์ 3) รองรับ [[feature-list#1. บันทึกข้อมูลอาคารและสภาพแวดล้อม|FR-01–FR-04]], [[feature-list#3. สรุปผลประเมินเป็น 3 ระดับสีพร้อมเกณฑ์อ้างอิงคู่มือ|FR-10]], [[architecture#5. Mapping NFR ไปยัง Component|NFR-01, NFR-02, NFR-03, NFR-06]]
 
-**เป็น entity ที่ต้องรองรับ offline-first/sync/conflict ตามข้อจำกัดสถาปัตยกรรมข้อ 1-2 ใน [[architecture]] โดยตรง** ดูหลักการเต็มที่หัวข้อ 9
+**เป็น entity ที่ต้องรองรับ offline-first/sync/conflict ตามข้อจำกัดสถาปัตยกรรมข้อ 1-2 ใน [[architecture]] โดยตรง** ดูหลักการเต็มที่หัวข้อ 10
 
 | Attribute | ชนิด | จำเป็น | คำอธิบาย |
 |---|---|---|---|
@@ -138,7 +139,8 @@ Junction entity ระหว่าง SurveyedBuilding และ User แทน�
 
 | Attribute | ชนิด | จำเป็น | คำอธิบาย |
 |---|---|---|---|
-| id | ตัวระบุเฉพาะ | ใช่ | รหัสระเบียน |
+| id | ตัวระบุเฉพาะ | ไม่ (จำเป็นหลังซิงค์) | รหัสระเบียนฝั่งเซิร์ฟเวอร์ |
+| client_generated_id | ตัวระบุเฉพาะ | ใช่ | รหัสที่สร้างบนอุปกรณ์ขณะออฟไลน์ — ใช้เพื่อ idempotent upsert และเป็นจุดอ้างอิงที่เสถียรเมื่อระเบียนอื่นอ้างถึง (ดูหัวข้อ 10 ข้อ 2 เรื่องขอบเขตการตรวจจับความขัดแย้ง) |
 | surveyedbuilding_id | อ้างอิงถึง Entity อื่น (SurveyedBuilding) | ใช่ | แบบสำรวจที่เกี่ยวข้อง |
 | user_id | อ้างอิงถึง Entity อื่น (User) | ใช่ | ผู้สำรวจ |
 | role_in_team | ค่าเลือกจากรายการ (หัวหน้าผู้สำรวจ / ผู้สำรวจร่วม) | ใช่ | บทบาทในทีมสำรวจครั้งนี้ |
@@ -154,7 +156,8 @@ Junction entity ระหว่าง SurveyedBuilding และ User แทน�
 
 | Attribute | ชนิด | จำเป็น | คำอธิบาย |
 |---|---|---|---|
-| id | ตัวระบุเฉพาะ | ใช่ | รหัสระเบียน |
+| id | ตัวระบุเฉพาะ | ไม่ (จำเป็นหลังซิงค์) | รหัสระเบียนฝั่งเซิร์ฟเวอร์ |
+| client_generated_id | ตัวระบุเฉพาะ | ใช่ | รหัสที่สร้างบนอุปกรณ์ขณะออฟไลน์ (idempotent upsert — ดูหัวข้อ 10 ข้อ 2) |
 | surveyedbuilding_id | อ้างอิงถึง Entity อื่น (SurveyedBuilding) | ใช่ | อาคารที่เกี่ยวข้อง |
 | hazard_type | ค่าเลือกจากรายการ (อาคารข้างเคียงเสี่ยง / ลาดเชิงเขา / ดินทรุดตัว / อื่นๆ) | ใช่ | ประเภทอันตรายโดยรอบ |
 | description | ข้อความ | ไม่ | รายละเอียดเพิ่มเติม |
@@ -165,7 +168,8 @@ Junction entity ระหว่าง SurveyedBuilding และ User แทน�
 
 | Attribute | ชนิด | จำเป็น | คำอธิบาย |
 |---|---|---|---|
-| id | ตัวระบุเฉพาะ | ใช่ | รหัสระเบียน |
+| id | ตัวระบุเฉพาะ | ไม่ (จำเป็นหลังซิงค์) | รหัสระเบียนฝั่งเซิร์ฟเวอร์ |
+| client_generated_id | ตัวระบุเฉพาะ | ใช่ | รหัสที่สร้างบนอุปกรณ์ขณะออฟไลน์ (idempotent upsert — ดูหัวข้อ 10 ข้อ 2) |
 | surveyedbuilding_id | อ้างอิงถึง Entity อื่น (SurveyedBuilding) | ใช่ | อาคารที่เกี่ยวข้อง |
 | location_area_text | ข้อความ | ใช่ | "บริเวณ" ตำแหน่งความเสียหายภายนอกที่พบ |
 | damage_description | ข้อความ | ไม่ | รายละเอียดความเสียหาย |
@@ -173,11 +177,12 @@ Junction entity ระหว่าง SurveyedBuilding และ User แทน�
 
 ### 5.3 StructuralDamage
 
-รองรับ [[feature-list#2. ประเมินความเสียหายโครงสร้างและส่วนประกอบอาคารแยกตามหมวด|FR-05–FR-09]] — เป็น entity ที่ต้องแยก **"ผลที่ AI เสนอ" ออกจาก "ผลที่ผู้สำรวจยืนยัน"** ตามหลัก human-in-the-loop (ดูหัวข้อ 9)
+รองรับ [[feature-list#2. ประเมินความเสียหายโครงสร้างและส่วนประกอบอาคารแยกตามหมวด|FR-05–FR-09]] — เป็น entity ที่ต้องแยก **"ผลที่ AI เสนอ" ออกจาก "ผลที่ผู้สำรวจยืนยัน"** ตามหลัก human-in-the-loop (ดูหัวข้อ 10)
 
 | Attribute | ชนิด | จำเป็น | คำอธิบาย |
 |---|---|---|---|
-| id | ตัวระบุเฉพาะ | ใช่ | รหัสระเบียน |
+| id | ตัวระบุเฉพาะ | ไม่ (จำเป็นหลังซิงค์) | รหัสระเบียนฝั่งเซิร์ฟเวอร์ |
+| client_generated_id | ตัวระบุเฉพาะ | ใช่ | รหัสที่สร้างบนอุปกรณ์ขณะออฟไลน์ — ใช้เพื่อ idempotent upsert และเป็นจุดอ้างอิงที่เสถียรให้ `DamagePhoto.linked_area_id` ชี้มา (ดูหัวข้อ 10 ข้อ 2) |
 | surveyedbuilding_id | อ้างอิงถึง Entity อื่น (SurveyedBuilding) | ใช่ | อาคารที่เกี่ยวข้อง |
 | material_type | ค่าเลือกจากรายการ (ไม้ / คอนกรีตเสริมเหล็ก / เหล็กรูปพรรณ) | ใช่ | ชนิดวัสดุโครงสร้าง |
 | structural_part | ค่าเลือกจากรายการ (พื้น / คาน / เสา / กำแพง / โครงหลังคา) | ใช่ | ส่วนของโครงสร้างที่ประเมิน |
@@ -192,7 +197,8 @@ Junction entity ระหว่าง SurveyedBuilding และ User แทน�
 
 | Attribute | ชนิด | จำเป็น | คำอธิบาย |
 |---|---|---|---|
-| id | ตัวระบุเฉพาะ | ใช่ | รหัสระเบียน |
+| id | ตัวระบุเฉพาะ | ไม่ (จำเป็นหลังซิงค์) | รหัสระเบียนฝั่งเซิร์ฟเวอร์ |
+| client_generated_id | ตัวระบุเฉพาะ | ใช่ | รหัสที่สร้างบนอุปกรณ์ขณะออฟไลน์ — ใช้เพื่อ idempotent upsert และเป็นจุดอ้างอิงที่เสถียรให้ `DamagePhoto.linked_area_id` ชี้มา (ดูหัวข้อ 10 ข้อ 2) |
 | surveyedbuilding_id | อ้างอิงถึง Entity อื่น (SurveyedBuilding) | ใช่ | อาคารที่เกี่ยวข้อง |
 | component_type | ค่าเลือกจากรายการ (ผนัง / ฝ้าเพดาน / วัสดุมุงหลังคา) | ใช่ | ชนิดส่วนประกอบ |
 | location_area_text | ข้อความ | ใช่ | "บริเวณ" ตำแหน่งเฉพาะ |
@@ -206,7 +212,8 @@ Junction entity ระหว่าง SurveyedBuilding และ User แทน�
 
 | Attribute | ชนิด | จำเป็น | คำอธิบาย |
 |---|---|---|---|
-| id | ตัวระบุเฉพาะ | ใช่ | รหัสระเบียน |
+| id | ตัวระบุเฉพาะ | ไม่ (จำเป็นหลังซิงค์) | รหัสระเบียนฝั่งเซิร์ฟเวอร์ |
+| client_generated_id | ตัวระบุเฉพาะ | ใช่ | รหัสที่สร้างบนอุปกรณ์ขณะออฟไลน์ (idempotent upsert — ดูหัวข้อ 10 ข้อ 2) |
 | surveyedbuilding_id | อ้างอิงถึง Entity อื่น (SurveyedBuilding) | ใช่ | อาคารที่เกี่ยวข้อง |
 | issue_location_text | ข้อความ | ไม่ | จุด/ตำแหน่งที่พบปัญหา |
 | issue_description | ข้อความ | ไม่ | ลักษณะความเสียหาย |
@@ -238,7 +245,8 @@ Junction entity ระหว่าง SurveyedBuilding และ User แทน�
 
 | Attribute | ชนิด | จำเป็น | คำอธิบาย |
 |---|---|---|---|
-| id | ตัวระบุเฉพาะ | ใช่ | รหัสระเบียน |
+| id | ตัวระบุเฉพาะ | ไม่ (จำเป็นหลังซิงค์) | รหัสระเบียนฝั่งเซิร์ฟเวอร์ |
+| client_generated_id | ตัวระบุเฉพาะ | ใช่ | รหัสที่สร้างบนอุปกรณ์ขณะวิเคราะห์แบบออฟไลน์ (idempotent upsert เช่นเดียวกับ `DamagePhoto`/`Sketch` — เป็น leaf record ที่สร้างแบบ append-only ไม่ใช่ detail-row ของ `SurveyedBuilding`) |
 | damagephoto_id | อ้างอิงถึง Entity อื่น (DamagePhoto) | ใช่ | ภาพที่ถูกวิเคราะห์ |
 | analysis_source | ค่าเลือกจากรายการ (on-device / server-side) | ใช่ | แหล่งที่ทำการวิเคราะห์ (อ้างอิง [[architecture#2. Logical Component\|โมดูลวิเคราะห์รอยร้าวบนอุปกรณ์ / Server-side AI Analysis]]) |
 | analysis_status | ค่าเลือกจากรายการ (สำเร็จ / ไม่สำเร็จ) | ใช่ | ผลการวิเคราะห์ (FR-13) |
@@ -284,16 +292,52 @@ Junction entity ระหว่าง SurveyedBuilding และ User แทน�
 | Attribute | ชนิด | จำเป็น | คำอธิบาย |
 |---|---|---|---|
 | id | ตัวระบุเฉพาะ | ใช่ | รหัสระเบียน |
-| related_entity_name | ค่าเลือกจากรายการ (ชื่อ entity ที่เกี่ยวข้อง เช่น StructuralDamage, ComponentDamage, SurveyedBuilding, User) | ใช่ | entity ที่ถูกกระทำ |
+| related_entity_name | ค่าเลือกจากรายการ (ชื่อ entity ที่เกี่ยวข้อง เช่น StructuralDamage, ComponentDamage, SurveyedBuilding, User, SyncConflict) | ใช่ | entity ที่ถูกกระทำ |
 | related_entity_id | อ้างอิงถึง Entity อื่น (ขึ้นกับ `related_entity_name` — polymorphic) | ใช่ | ระเบียนที่ถูกกระทำ |
-| action_type | ค่าเลือกจากรายการ (แก้ไขผลประเมินความเสียหาย / รับรองผล / ส่งกลับแก้ไข / สร้างบัญชีผู้ใช้ / แก้ไขบัญชีผู้ใช้ / ปิดการใช้งานบัญชีผู้ใช้ / อื่นๆ) | ใช่ | ประเภทการกระทำ |
+| action_type | ค่าเลือกจากรายการ (แก้ไขผลประเมินความเสียหาย / รับรองผล / ส่งกลับแก้ไข / สร้างบัญชีผู้ใช้ / แก้ไขบัญชีผู้ใช้ / ปิดการใช้งานบัญชีผู้ใช้ / เปิดใช้งานบัญชีผู้ใช้คืน / แก้ไขความขัดแย้งของข้อมูล / อื่นๆ) | ใช่ | ประเภทการกระทำ (ค่า `แก้ไขความขัดแย้งของข้อมูล` รองรับฟีเจอร์ 15 — ดูหัวข้อ 8) |
 | performed_by_user_id | อ้างอิงถึง Entity อื่น (User) | ใช่ | ผู้กระทำ |
 | value_before | ข้อความ | ไม่ | ค่าก่อนแก้ไข |
 | value_after | ข้อความ | ไม่ | ค่าหลังแก้ไข |
 | performed_at | วันที่-เวลา | ใช่ | เวลาที่กระทำ |
 | note | ข้อความ | ไม่ | หมายเหตุเพิ่มเติม |
 
-## 8. ER Diagram
+## 8. การแก้ไขความขัดแย้งของข้อมูลจากการซิงค์ (Manual Conflict Resolution)
+
+รองรับฟีเจอร์ใหม่ [[feature-list#15. แก้ไขความขัดแย้งของข้อมูลจากการซิงค์ด้วยมือ (Manual Conflict Resolution)|ฟีเจอร์ 15]] ([[20260828-01-flood-damage-survey#4.7 การแก้ไขความขัดแย้งของข้อมูลจากการซิงค์ (Manual Conflict Resolution)|FR-30, FR-31]], [[architecture#5. Mapping NFR ไปยัง Component|NFR-10]]) — ทำงานร่วมกับ [[architecture#2. Logical Component|Sync & Conflict Resolution Service]] เมื่อไม่สามารถ merge อัตโนมัติได้ ต้องเก็บ**ทุกเวอร์ชันที่ขัดแย้งกัน**ไว้เปรียบเทียบก่อนให้มนุษย์ตัดสินใจ
+
+### 8.1 SyncConflict
+
+ระเบียนความขัดแย้ง 1 รายการต่อ `SurveyedBuilding` 1 อาคารที่ merge อัตโนมัติไม่ได้
+
+| Attribute | ชนิด | จำเป็น | คำอธิบาย |
+|---|---|---|---|
+| id | ตัวระบุเฉพาะ | ใช่ | รหัสระเบียนความขัดแย้ง |
+| surveyedbuilding_id | อ้างอิงถึง Entity อื่น (SurveyedBuilding) | ใช่ | อาคารที่ข้อมูลขัดแย้งกัน |
+| status | ค่าเลือกจากรายการ (รอแก้ไขด้วยมือ / แก้ไขแล้ว) | ใช่ | สถานะของความขัดแย้งนี้ — ใช้ค่าเดียวกับที่ [[architecture#3. Component Diagram\|architecture]] อ้างถึง |
+| detected_at | วันที่-เวลา | ใช่ | เวลาที่ Sync Service ตรวจพบว่า merge อัตโนมัติไม่ได้ |
+| resolution_type | ค่าเลือกจากรายการ (เลือกทั้งเวอร์ชันใดเวอร์ชันหนึ่ง / รวมค่าเป็นรายฟิลด์ด้วยมือ) | ไม่ (จำเป็นเมื่อ `status = แก้ไขแล้ว`) | วิธีที่ผู้แก้ไขเลือกใช้ |
+| resolution_note | ข้อความ | ไม่ | หมายเหตุประกอบการตัดสินใจ |
+| resolved_by_user_id | อ้างอิงถึง Entity อื่น (User) | ไม่ (จำเป็นเมื่อ `status = แก้ไขแล้ว`) | หัวหน้าผู้สำรวจ/ผู้ดูแลระบบที่แก้ไข (FR-31) |
+| resolved_at | วันที่-เวลา | ไม่ (จำเป็นเมื่อ `status = แก้ไขแล้ว`) | เวลาที่แก้ไขเสร็จ |
+
+### 8.2 SyncConflictVersion
+
+เก็บ**ทุกเวอร์ชัน**ของข้อมูลที่ส่งเข้ามาจนเกิดความขัดแย้ง (โดยทั่วไป 2 เวอร์ชันขึ้นไป — 1 เวอร์ชันต่อ 1 อุปกรณ์ที่ส่งค่าต่างกันเข้ามา) เพื่อให้เปรียบเทียบแบบเคียงข้างกันได้ตาม FR-31
+
+| Attribute | ชนิด | จำเป็น | คำอธิบาย |
+|---|---|---|---|
+| id | ตัวระบุเฉพาะ | ใช่ | รหัสระเบียน |
+| syncconflict_id | อ้างอิงถึง Entity อื่น (SyncConflict) | ใช่ | ความขัดแย้งที่เวอร์ชันนี้เป็นส่วนหนึ่ง |
+| submitted_by_device_id | ข้อความ | ใช่ | อุปกรณ์ที่ส่งเวอร์ชันนี้เข้ามา |
+| submitted_by_user_id | อ้างอิงถึง Entity อื่น (User) | ไม่ | ผู้สำรวจที่บันทึกค่านี้บนอุปกรณ์ |
+| submitted_at | วันที่-เวลา | ใช่ | เวลาที่บันทึกค่านี้บนอุปกรณ์ต้นทาง |
+| data_version | ตัวเลข | ใช่ | ค่า `SurveyedBuilding.data_version` ที่อุปกรณ์นี้อ้างอิงตอนส่งเข้ามา |
+| snapshot_content | ข้อความ | ใช่ | ค่าที่บันทึกของอาคารและระเบียนย่อยที่เกี่ยวข้อง ณ เวลานั้น ในรูปแบบข้อความเชิงโครงสร้าง (รูปแบบ/format จริงเป็นประเด็นรอตัดสินใจ ดูหัวข้อ 11) |
+| is_selected_as_final | จริง/เท็จ | ใช่ | เวอร์ชันนี้ถูกเลือกเป็นค่าสุดท้ายหลังแก้ไขความขัดแย้งหรือไม่ |
+
+**กฎทางธุรกิจ**: เมื่อ `SyncConflict.status` เปลี่ยนเป็น "แก้ไขแล้ว" ต้องมี `AuditTrailEntry` ใหม่เสมอ (`related_entity_name = SyncConflict`, `action_type = แก้ไขความขัดแย้งของข้อมูล`) และ `SurveyedBuilding.sync_status` ต้องเปลี่ยนจาก "มีความขัดแย้งรอแก้ไข" เป็น "ซิงค์สำเร็จ" ในธุรกรรมเดียวกัน — ก่อนหน้านั้น (`status = รอแก้ไขด้วยมือ`) ห้ามอาคารนี้ไหลเข้า dashboard/รายงาน/ค้นหา (NFR-10)
+
+## 9. ER Diagram
 
 ```mermaid
 erDiagram
@@ -319,6 +363,10 @@ erDiagram
     SurveyedBuilding ||--o{ CertificationRecord : "ถูกตรวจทาน"
     User ||--o{ CertificationRecord : "ตรวจทานโดย"
     User ||--o{ AuditTrailEntry : "กระทำโดย"
+    SurveyedBuilding ||--o{ SyncConflict : "เกิดความขัดแย้ง"
+    SyncConflict ||--o{ SyncConflictVersion : "มีเวอร์ชันที่ขัดแย้งกัน"
+    User |o--o{ SyncConflict : "แก้ไขโดย (ไม่บังคับ)"
+    User |o--o{ SyncConflictVersion : "ส่งเวอร์ชันโดย (ไม่บังคับ)"
 
     User {
         string id
@@ -360,25 +408,40 @@ erDiagram
         number estimated_crack_width_mm
         string suggested_severity_level
     }
+    SyncConflict {
+        string id
+        string status
+        string resolution_type
+        string resolved_by_user_id
+    }
+    SyncConflictVersion {
+        string id
+        string submitted_by_device_id
+        number data_version
+        string snapshot_content
+        boolean is_selected_as_final
+    }
 ```
 
 หมายเหตุ: ความสัมพันธ์แบบ `polymorphic` (เส้นประระหว่าง `DamagePhoto` กับ `StructuralDamage`/`ComponentDamage`/`ExternalDamage`) เป็นข้อจำกัดที่ตั้งใจของโมเดลเชิง logical — attribute `linked_area_type` เป็นตัวกำหนดว่า `linked_area_id` อ้างอิงไปยัง entity ใดจริง ไม่ใช่ foreign key คงที่เพียง entity เดียว
 
-## 9. กฎทางธุรกิจที่กระทบโครงสร้างข้อมูล
+## 10. กฎทางธุรกิจที่กระทบโครงสร้างข้อมูล
 
 1. **แยก "ผลที่ AI เสนอ" ออกจาก "ผลที่ผู้สำรวจยืนยัน" เสมอ (human-in-the-loop, FR-13/14/28/29)**: `AIAnalysisResult.suggested_severity_level` เป็น snapshot ที่เขียนครั้งเดียว (append-only) ไม่ถูกแก้ไขย้อนหลัง ส่วนค่าที่ใช้บันทึกผลจริงคือ `StructuralDamage.damage_severity_level` / `ComponentDamage.damage_severity_level` เท่านั้น พร้อม attribute `source_of_value` ระบุที่มา (กรอกเอง/ยืนยันตรงตาม AI/แก้ไขจาก AI) — ทุกครั้งที่ `source_of_value = แก้ไขจากผลที่ AI เสนอ` ต้องมี `AuditTrailEntry` คู่กันเสมอ (NFR-05) เทียบเคียงกับหลัก "Price Snapshot" ในระบบทั่วไป คือค่าที่ผูกกับผลลัพธ์จริงต้องไม่ใช่ reference ไปยังค่าที่เปลี่ยนแปลงได้ของ AI
-2. **Offline-first + การกันข้อมูลซ้ำเมื่อซิงค์ (NFR-01, NFR-02)**: ทุก entity ที่ถูกสร้างบนอุปกรณ์ (`SurveyedBuilding`, `DamagePhoto`, `Sketch`) มี `client_generated_id` เป็น natural key ที่สร้างขึ้นตอนออฟไลน์ แยกจาก `id` ที่ฝั่งเซิร์ฟเวอร์ยืนยันให้หลังซิงค์สำเร็จ — Sync & Conflict Resolution Service ใช้ `client_generated_id` ในการตรวจว่าระเบียนนี้เคยถูกส่งมาแล้วหรือไม่ (idempotency)
-3. **การตรวจจับ/แก้ไขความขัดแย้ง (NFR-03, NFR-07)**: `SurveyedBuilding` มี `data_version`, `last_modified_at`, `last_modified_by_device_id` ให้ Sync Service เทียบเวอร์ชันจากหลายอุปกรณ์ก่อนตัดสินใจ merge/แจ้งเตือน และมี `sync_status = มีความขัดแย้งรอแก้ไข` เป็นสถานะกลางที่ยังไม่ถือเป็นข้อมูลจริงจนกว่าจะแก้ไข
-4. **ความสมบูรณ์ก่อนรับรองผล (FR-18/19)**: `CertificationRecord.review_result = รับรอง` ต้องมี `digital_signature_file` เสมอ และ `SurveyedBuilding.review_status` ต้องเป็น "รับรองแล้ว" ก็ต่อเมื่อมี `CertificationRecord` ที่ผลเป็น "รับรอง" อย่างน้อย 1 รายการ
-5. **ทีมสำรวจ 1-3 คน + หัวหน้า (FR-16)**: บังคับที่ระดับ operation ใน [[api-spec]] ว่า `SurveyParticipant` ต่อ `SurveyedBuilding` หนึ่งชุดต้องมีอย่างน้อย 1 รายการที่ `role_in_team = หัวหน้าผู้สำรวจ` และรวมไม่เกิน 3 รายการ
-6. **ภาพถ่ายผูกกับบริเวณที่ตรวจสอบ (FR-12)**: `DamagePhoto.linked_area_type` + `linked_area_id` ต้องสอดคล้องกัน (เช่นถ้า `linked_area_type = ความเสียหายโครงสร้าง` ต้องอ้างอิงระเบียนใน `StructuralDamage` เท่านั้น) — ถ้าไม่ผูกกับบริเวณใดโดยตรง ให้ใช้ `linked_area_type = ทั่วไป` และ `area_description_text` แทน
+2. **Offline-first + การกันข้อมูลซ้ำเมื่อซิงค์ (NFR-01, NFR-02)**: ทุก entity ที่ถูกสร้างบนอุปกรณ์มี `client_generated_id` เป็น natural key ที่สร้างขึ้นตอนออฟไลน์ แยกจาก `id` ที่ฝั่งเซิร์ฟเวอร์ยืนยันให้หลังซิงค์สำเร็จ — Sync & Conflict Resolution Service ใช้ `client_generated_id` ในการตรวจว่าระเบียนนี้เคยถูกส่งมาแล้วหรือไม่ (idempotency) — **ระเบียนที่มี `client_generated_id` แบ่งเป็น 2 กลุ่มโดยตั้งใจ** (ตัดสินใจรอบนี้เพื่อปิดช่องว่างที่ `nfr-review` รายงาน): (ก) **aggregate root + detail-row ของแบบสำรวจ** — `SurveyedBuilding` (root) และ `SurveyParticipant`, `SurroundingHazard`, `ExternalDamage`, `StructuralDamage`, `ComponentDamage`, `ElectricalSystemDamage` (ลูก) ถูกกรอกโดยทีมเดียวบนอุปกรณ์เดียวในช่วงเวลาเดียวกันเป็นแบบฟอร์มเดียว จึงมี `client_generated_id` ของตัวเองเพื่อ **idempotent upsert และเป็นจุดอ้างอิงที่เสถียรให้ `DamagePhoto.linked_area_id` ชี้มาได้ตั้งแต่ตอนออฟไลน์** เท่านั้น ไม่ได้มีไว้เพื่อตรวจจับความขัดแย้งเป็นรายแถว (ข) **leaf record แบบ append-only** — `DamagePhoto`, `AIAnalysisResult`, `Sketch` มี `client_generated_id` เพื่อกันไฟล์/ผลวิเคราะห์ซ้ำเมื่อซิงค์ซ้ำเช่นกัน แต่ไม่มีแนวคิดเรื่อง "เวอร์ชันขัดแย้งกัน" เพราะเป็นการเพิ่มระเบียนใหม่ ไม่ใช่แก้ไขค่าเดิม
+3. **ขอบเขตการตรวจจับ/แก้ไขความขัดแย้งอยู่ที่ระดับ `SurveyedBuilding` (aggregate) เท่านั้น ไม่ใช่รายแถวของ entity ย่อย (NFR-03, NFR-07)**: `SurveyedBuilding` มี `data_version`, `last_modified_at`, `last_modified_by_device_id` ให้ Sync Service เทียบเวอร์ชันจากหลายอุปกรณ์ก่อนตัดสินใจ merge/แจ้งเตือน — การแก้ไข entity ย่อยใดๆ ก็ตามจะทำให้ `data_version` ของ `SurveyedBuilding` แม่เพิ่มขึ้นเสมอ เมื่อ merge อัตโนมัติไม่ได้ ระบบตั้ง `sync_status = มีความขัดแย้งรอแก้ไข` และสร้าง `SyncConflict` + `SyncConflictVersion` (ดูหัวข้อ 8) เก็บทุกเวอร์ชันที่ส่งเข้ามาไว้เปรียบเทียบ จนกว่าหัวหน้าผู้สำรวจ/ผู้ดูแลระบบจะแก้ไขด้วยมือผ่าน FR-30/FR-31
+4. **ห้ามระเบียนที่ยังขัดแย้งค้างอยู่ไหลเข้า dashboard/รายงาน/ค้นหา (NFR-10)**: operation ทุกตัวที่อ่านข้อมูลเพื่อสรุปผล/ส่งออก/ค้นหา (ดู [[api-spec#11. Dashboard ภาพรวมผลสำรวจ|api-spec หัวข้อ 11]], [[api-spec#12. ส่งออกรายงานผลการสำรวจ|12]], [[api-spec#13. ค้นหา/กรองรายการอาคารที่สำรวจแล้ว|13]]) ต้องกรอง `SurveyedBuilding.sync_status ≠ มีความขัดแย้งรอแก้ไข` เสมอ จนกว่า `SyncConflict.status` ที่เกี่ยวข้องจะเป็น "แก้ไขแล้ว"
+5. **ความสมบูรณ์ก่อนรับรองผล (FR-18/19)**: `CertificationRecord.review_result = รับรอง` ต้องมี `digital_signature_file` เสมอ และ `SurveyedBuilding.review_status` ต้องเป็น "รับรองแล้ว" ก็ต่อเมื่อมี `CertificationRecord` ที่ผลเป็น "รับรอง" อย่างน้อย 1 รายการ
+6. **ทีมสำรวจ 1-3 คน + หัวหน้า (FR-16)**: บังคับที่ระดับ operation ใน [[api-spec]] ว่า `SurveyParticipant` ต่อ `SurveyedBuilding` หนึ่งชุดต้องมีอย่างน้อย 1 รายการที่ `role_in_team = หัวหน้าผู้สำรวจ` และรวมไม่เกิน 3 รายการ
+7. **ภาพถ่ายผูกกับบริเวณที่ตรวจสอบ (FR-12)**: `DamagePhoto.linked_area_type` + `linked_area_id` ต้องสอดคล้องกัน (เช่นถ้า `linked_area_type = ความเสียหายโครงสร้าง` ต้องอ้างอิงระเบียนใน `StructuralDamage` เท่านั้น) — ถ้าไม่ผูกกับบริเวณใดโดยตรง ให้ใช้ `linked_area_type = ทั่วไป` และ `area_description_text` แทน
 
-## 10. ประเด็นรอตัดสินใจ
+## 11. ประเด็นรอตัดสินใจ
 
 รอ [[technology-stack.md|technology-stack]] ก่อนตัดสินใจในรายการต่อไปนี้:
 
 - อัลกอริทึม/รูปแบบการสร้าง `client_generated_id` (เช่น UUID v4 หรือรูปแบบอื่น) และวิธีเข้ารหัส `credential_secret`
-- กลไก merge จริงเมื่อพบ `sync_status = มีความขัดแย้งรอแก้ไข` (last-write-wins / field-level merge / ให้มนุษย์ตัดสินใจ) — ปัจจุบันโมเดลข้อมูลเตรียม attribute ไว้รองรับได้ทุกแนวทาง แต่ยังไม่เลือกกลยุทธ์
+- กลไก **merge อัตโนมัติ** ก่อนจะถือว่า "merge ไม่ได้" และส่งต่อให้มนุษย์แก้ไขผ่าน FR-30/FR-31 (เช่น last-write-wins สำหรับบาง field ที่ไม่ขัดแย้งจริง ก่อนเหลือเฉพาะ field ที่ขัดแย้งจริงให้มนุษย์ตัดสินใจ) — ปัจจุบันโมเดลข้อมูลออกแบบเส้นทาง manual resolution ไว้ครบแล้ว (หัวข้อ 8) แต่ยังไม่ตัดสินใจว่าจะมี auto-merge บางส่วนก่อนหรือส่งให้มนุษย์ตัดสินใจทั้งหมดทุกครั้งที่ตรวจพบความขัดแย้ง
+- รูปแบบ/format จริงของ `SyncConflictVersion.snapshot_content` (เช่น โครงสร้างคล้าย JSON หรือรูปแบบอื่น) — เป็นการตัดสินใจเชิงเทคนิคที่ต้องรอ `technology-stack.md`
 - ขนาด/ความละเอียดของชนิด "ตัวเลข" และ "ข้อความ" แต่ละ attribute (เช่น ทศนิยมกี่ตำแหน่งของ GPS)
 - รูปแบบการจัดเก็บ `credential_secret` และ mechanism ของ RBAC จริง (ตาราง permission แยกหรือฝังในตัว `role`)
 
