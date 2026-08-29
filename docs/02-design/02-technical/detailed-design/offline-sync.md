@@ -20,17 +20,18 @@ sequenceDiagram
     Queue->>Sync: 14.1 ซิงค์ข้อมูลแบบสำรวจที่ค้างจากอุปกรณ์ (ระบุด้วย client_generated_id + device_id)
     Sync->>Sync: ตรวจสอบ client_generated_id เป็น idempotency key กันบันทึกซ้ำ
     alt ไม่พบความขัดแย้ง
-        Sync->>DB: บันทึกข้อมูลเชิงโครงสร้าง + กำหนด id ฝั่งเซิร์ฟเวอร์
+        Sync->>DB: บันทึกข้อมูลเชิงโครงสร้าง + กำหนด id ฝั่งเซิร์ฟเวอร์ (client_generated_id ของทุก entity ที่ระบุใช้เป็น idempotency key)
         Sync->>Media: บันทึกไฟล์ภาพ/ภาพวาด (รองรับทำต่อได้เมื่อสัญญาณขาดหาย)
         Sync-->>Queue: sync_status=ซิงค์สำเร็จ
-    else พบข้อมูลชุดเดียวกันถูกแก้ไขจากหลายอุปกรณ์
-        Sync->>Sync: 14.2 ตรวจสอบ/แก้ไขความขัดแย้งของข้อมูลที่ซิงค์ (เทียบ data_version/last_modified_at)
+    else พบ SurveyedBuilding ชุดเดียวกันถูกแก้ไขจากหลายอุปกรณ์ (เทียบ data_version/last_modified_at ระดับอาคารแม่เท่านั้น)
+        Sync->>Sync: 14.2 ตรวจสอบ/แก้ไขความขัดแย้งของข้อมูลที่ซิงค์
         alt merge อัตโนมัติสำเร็จ
             Sync->>DB: บันทึกผล merge
             Sync-->>Queue: sync_status=ซิงค์สำเร็จ
         else merge อัตโนมัติไม่ได้
-            Sync->>DB: สร้าง AuditTrailEntry (action_type=อื่นๆ, บันทึกรายละเอียดความขัดแย้ง)
-            Sync-->>Queue: sync_status=มีความขัดแย้งรอแก้ไข (ค้างสถานะนี้ไว้)
+            Sync->>DB: สร้าง SyncConflict (status=รอแก้ไขด้วยมือ) + SyncConflictVersion เก็บทุกเวอร์ชันที่ส่งเข้ามา
+            Sync-->>Queue: sync_status=มีความขัดแย้งรอแก้ไข
+            Note over Sync,DB: ส่งต่อให้หัวหน้าผู้สำรวจ/ผู้ดูแลระบบแก้ไขด้วยมือ — ดู [[manual-conflict-resolution]]
         end
     end
     Sync->>BE: แจ้งผลการซิงค์ + audit trail (NFR-05)
@@ -40,8 +41,8 @@ sequenceDiagram
 
 | Operation ([[api-spec#14. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม\|api-spec 14.x]]) | Entity ที่กระทบ | การกระทำ | ลำดับ/เงื่อนไข |
 |---|---|---|---|
-| 14.1 ซิงค์ข้อมูลแบบสำรวจที่ค้างจากอุปกรณ์ | [[db-spec#4.1 SurveyedBuilding\|SurveyedBuilding]], [[db-spec#6.1 DamagePhoto\|DamagePhoto]], [[db-spec#6.3 Sketch\|Sketch]] (มี `client_generated_id`/`sync_status` ชัดเจน) + [[db-spec#5.1 SurroundingHazard\|SurroundingHazard]], [[db-spec#5.2 ExternalDamage\|ExternalDamage]], [[db-spec#5.3 StructuralDamage\|StructuralDamage]], [[db-spec#5.4 ComponentDamage\|ComponentDamage]], [[db-spec#5.5 ElectricalSystemDamage\|ElectricalSystemDamage]], [[db-spec#6.2 AIAnalysisResult\|AIAnalysisResult]], [[db-spec#4.2 SurveyParticipant\|SurveyParticipant]] (ดูช่องว่างหัวข้อ 4) | สร้าง/กำหนด id ฝั่งเซิร์ฟเวอร์ | ใช้ `client_generated_id` เป็น idempotency key กันบันทึกซ้ำ; ต้องทำหลังระเบียนต้นทางถูกสร้างในฟีเจอร์ 1/2/4/5/6 แล้ว |
-| 14.2 ตรวจสอบ/แก้ไขความขัดแย้งของข้อมูลที่ซิงค์ | [[db-spec#4.1 SurveyedBuilding\|SurveyedBuilding]] (เทียบ `data_version`/`last_modified_at`) + [[db-spec#7.2 AuditTrailEntry\|AuditTrailEntry]] (สร้าง) | เปรียบเทียบ + สร้าง | ทำงานเป็นส่วนหนึ่งของ 14.1 เมื่อพบความขัดแย้งเท่านั้น ไม่มีผู้ใช้เรียกตรง |
+| 14.1 ซิงค์ข้อมูลแบบสำรวจที่ค้างจากอุปกรณ์ | [[db-spec#4.1 SurveyedBuilding\|SurveyedBuilding]], [[db-spec#6.1 DamagePhoto\|DamagePhoto]], [[db-spec#6.3 Sketch\|Sketch]] (มี `client_generated_id`/`sync_status` ของตัวเอง) + [[db-spec#4.2 SurveyParticipant\|SurveyParticipant]], [[db-spec#5.1 SurroundingHazard\|SurroundingHazard]], [[db-spec#5.2 ExternalDamage\|ExternalDamage]], [[db-spec#5.3 StructuralDamage\|StructuralDamage]], [[db-spec#5.4 ComponentDamage\|ComponentDamage]], [[db-spec#5.5 ElectricalSystemDamage\|ElectricalSystemDamage]] (มี `client_generated_id` เพื่อ idempotent upsert เท่านั้น — ไม่มี `sync_status` ของตัวเอง ดูหัวข้อ 5) | สร้าง/กำหนด id ฝั่งเซิร์ฟเวอร์ | ใช้ `client_generated_id` เป็น idempotency key กันบันทึกซ้ำสำหรับทุก entity ที่ระบุ; ต้องทำหลังระเบียนต้นทางถูกสร้างในฟีเจอร์ 1/2/4/5/6 แล้ว |
+| 14.2 ตรวจสอบ/แก้ไขความขัดแย้งของข้อมูลที่ซิงค์ | [[db-spec#4.1 SurveyedBuilding\|SurveyedBuilding]] (เทียบ `data_version`/`last_modified_at` — **ระดับ aggregate เท่านั้น**), [[db-spec#8.1 SyncConflict\|SyncConflict]] (สร้างเมื่อ merge อัตโนมัติไม่ได้), [[db-spec#8.2 SyncConflictVersion\|SyncConflictVersion]] (สร้างต่อเวอร์ชันที่ขัดแย้ง) | เปรียบเทียบ + สร้าง | ทำงานเป็นส่วนหนึ่งของ 14.1 เมื่อพบความขัดแย้งเท่านั้น ไม่มีผู้ใช้เรียกตรง; เมื่อ merge ไม่ได้ ส่งต่อให้มนุษย์ตัดสินใจผ่าน [[manual-conflict-resolution]] เสมอ |
 
 ## 3. State Diagram: sync_status
 
@@ -50,32 +51,34 @@ stateDiagram-v2
     [*] --> ยังไม่ซิงค์ : สร้าง/แก้ไขระเบียนบนอุปกรณ์ขณะออฟไลน์
     ยังไม่ซิงค์ --> กำลังซิงค์ : 14.1 เริ่มส่งข้อมูล/ไฟล์เมื่อกลับมามีสัญญาณ
     กำลังซิงค์ --> ซิงค์สำเร็จ : 14.1 บันทึกสำเร็จ (ไม่พบความขัดแย้ง หรือ merge อัตโนมัติสำเร็จ)
-    กำลังซิงค์ --> มีความขัดแย้งรอแก้ไข : 14.2 ตรวจพบข้อมูลชุดเดียวกันถูกแก้ไขจากหลายอุปกรณ์ และ merge อัตโนมัติไม่ได้
+    กำลังซิงค์ --> มีความขัดแย้งรอแก้ไข : 14.2 ตรวจพบ SurveyedBuilding ชุดเดียวกันถูกแก้ไขจากหลายอุปกรณ์ และ merge อัตโนมัติไม่ได้
     กำลังซิงค์ --> ยังไม่ซิงค์ : ไฟล์ภาพส่งไม่สำเร็จบางส่วน/สัญญาณขาดหาย (ทำต่อได้ภายหลัง ไม่ต้องเริ่มใหม่ทั้งหมด)
-    มีความขัดแย้งรอแก้ไข --> มีความขัดแย้งรอแก้ไข : ยังไม่มีกลไกแก้ไขด้วยมือ (ดูหัวข้อ 4)
+    มีความขัดแย้งรอแก้ไข --> ซิงค์สำเร็จ : 15.2 แก้ไขความขัดแย้งด้วยมือสำเร็จ (ดู [[manual-conflict-resolution]])
     ซิงค์สำเร็จ --> [*]
 ```
 
-## 4. ข้อจำกัดที่ทราบอยู่แล้ว (ตามที่ตกลงไว้ล่วงหน้า — ไม่ต้องแก้ในรอบนี้)
+## 4. ขอบเขตของ conflict detection (ปิดช่องว่างเดิมแล้ว)
 
-- **กลไกแก้ไขความขัดแย้งด้วยมือเมื่อ `sync_status = มีความขัดแย้งรอแก้ไข`** ยังไม่มี FR รองรับ (ผู้ใช้ตัดสินใจเลื่อนไปรอบถัดไป) — สถานะนี้จึงเป็นสถานะค้าง (terminal-like) จนกว่าจะมีการเพิ่ม FR/operation ใหม่ ออกแบบเท่าที่ NFR-03 และ operation 14.2 ที่มีอยู่รองรับได้เท่านั้น
-- **กลยุทธ์ merge ที่เป็นรูปธรรม** (last-write-wins / field-level merge) ยังไม่ตัดสินใจ รอ `technology-stack.md` ตาม [[api-spec#15. ประเด็นรอตัดสินใจ|api-spec หัวข้อ 15]] และ [[db-spec#10. ประเด็นรอตัดสินใจ|db-spec หัวข้อ 10]]
+ช่องว่างที่เคยรายงานไว้ 2 จุด **ถูกปิดแล้วโดย `api-db-writer`**:
 
-## 5. ช่องว่างที่พบเพิ่มเติม (รายงานเพื่อรัน `sync-api-db`)
+1. **กลไกแก้ไขความขัดแย้งด้วยมือ** — เพิ่ม FR-30/FR-31 และ operation 15.1/15.2 ครบแล้ว ดูรายละเอียดเต็มที่ [[manual-conflict-resolution]] (แทนที่จะเป็นสถานะค้างถาวรตามที่เคยระบุไว้)
+2. **`client_generated_id` ของ entity ย่อย** — เพิ่มให้ `SurveyParticipant`/`SurroundingHazard`/`ExternalDamage`/`StructuralDamage`/`ComponentDamage`/`ElectricalSystemDamage` แล้ว **แต่ขอบเขตถูกจำกัดชัดเจน**: ใช้เพื่อ idempotent upsert (กันบันทึกซ้ำเมื่อซิงค์) และเป็นจุดอ้างอิงที่เสถียรให้ `DamagePhoto.linked_area_id` ชี้มาเท่านั้น **entity ย่อยเหล่านี้ไม่มี `sync_status` ของตัวเองและไม่ถูกตรวจจับความขัดแย้งเป็นรายระเบียน** — conflict detection (การเทียบ `data_version`/`last_modified_at`) ยังอยู่ที่ระดับ `SurveyedBuilding` (aggregate) เพียงจุดเดียวเท่านั้นตามที่ [[db-spec#9. กฎทางธุรกิจที่กระทบโครงสร้างข้อมูล|db-spec หัวข้อ 9]] ระบุไว้เดิม ไม่ได้ขยายเป็นการตรวจ conflict รายระเบียนย่อยแต่อย่างใด
 
-[[api-spec#14. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม|api-spec 14.1]] ระบุ input ว่าต้องระบุ `SurroundingHazard`, `ExternalDamage`, `StructuralDamage`, `ComponentDamage`, `ElectricalSystemDamage`, `AIAnalysisResult`, `SurveyParticipant` "ด้วย `client_generated_id` ของแต่ละระเบียน" แต่เมื่อตรวจ [[db-spec]] พบว่า**เฉพาะ `SurveyedBuilding`, `DamagePhoto`, `Sketch` เท่านั้นที่มี attribute `client_generated_id`/`sync_status` จริง** (ตาม [[db-spec#1. ภาพรวมกลุ่ม Entity|db-spec หัวข้อ 1]] ที่ระบุชัดว่า attribute ด้าน sync ฝังอยู่ใน 3 entity นี้เท่านั้น) — entity ย่อยอื่นๆ (`SurroundingHazard` ฯลฯ) ไม่มี field ให้ระบุ natural key ของตัวเองเวลาซิงค์ ปัจจุบันออกแบบโดยสมมติว่า**ระเบียนย่อยเหล่านี้ถูกซิงค์รวมไปกับ `SurveyedBuilding` แม่ในคราวเดียว** (ไม่มี `client_generated_id`/`sync_status` แยกของตัวเอง) แต่นี่เป็นสมมติฐานที่ยังไม่ยืนยันจาก [[api-spec]]/[[db-spec]] — ควรรัน `sync-api-db` เพื่อเพิ่ม attribute หรือชี้แจงกลไก idempotency ของ entity ย่อยเหล่านี้ให้ชัดเจน
+กลยุทธ์ **auto-merge** ที่เป็นรูปธรรม (ก่อนตัดสินว่า "merge ไม่ได้" ต้องส่งต่อ 15) ยังไม่ตัดสินใจ รอ `technology-stack.md` ตาม [[api-spec#16. ประเด็นรอตัดสินใจ|api-spec หัวข้อ 16]]
 
-## 6. Edge Case และวิธีจัดการ
+## 5. Edge Case และวิธีจัดการ
 
 | Edge Case | วิธีจัดการ | อ้างอิง |
 |---|---|---|
 | ไฟล์ภาพส่งไม่สำเร็จบางส่วน (สัญญาณขาดหาย) | ต้องส่งต่อได้โดยไม่ต้องเริ่มใหม่ทั้งหมด (NFR-02) | [[api-spec#14. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม\|api-spec 14.1]] |
 | พบข้อมูลชุดเดียวกันถูกแก้ไขจากหลายอุปกรณ์ | ส่งต่อไปยัง 14.2 เพื่อตรวจจับ/แก้ไขความขัดแย้ง | [[api-spec#14. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม\|api-spec 14.1, 14.2]] |
-| ไม่สามารถ merge อัตโนมัติได้ | คงสถานะ `มีความขัดแย้งรอแก้ไข` ไว้จนกว่าจะมีการแก้ไข (กลไกแก้ไขด้วยมือยังไม่ถูกออกแบบ — ดูหัวข้อ 4) | [[api-spec#14. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม\|api-spec 14.2]] |
-| หลายทีมซิงค์พร้อมกันจำนวนมากหลังเกิดเหตุ | ต้องไม่บล็อกการทำงานอื่นของ Field Client (NFR-07) | [[api-spec#14. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม\|api-spec 14.1]] |
+| ไม่สามารถ merge อัตโนมัติได้ | สร้าง `SyncConflict`+`SyncConflictVersion` แล้วส่งต่อให้หัวหน้าผู้สำรวจ/ผู้ดูแลระบบแก้ไขด้วยมือผ่าน [[manual-conflict-resolution]] | [[api-spec#14. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม\|api-spec 14.2]] |
+| หลายทีมซิงค์พร้อมกันจำนวนมากหลังเกิดเหตุ | ต้องไม่บล็อกการทำงานอื่นของ Field Client (NFR-07) เข้าคิวผ่าน Server-side Sync Intake Queue ก่อนประมวลผล | [[api-spec#14. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม\|api-spec 14.1]] |
+| แอปถูกปิด/เครื่องดับกลางคันระหว่างที่มีระเบียนค้างในคิวรอซิงค์ (สภาพแวดล้อมกลางแจ้งพื้นที่ภัยพิบัติ, NFR-04) | ระเบียนที่บันทึกแล้วในที่เก็บข้อมูล/ไฟล์ในเครื่องต้องคงอยู่ครบถ้วนหลังเปิดแอปใหม่ (ไม่สูญหาย) และคิวรอซิงค์ต้องกลับมาทำงานต่อจากจุดเดิมได้เองโดยผู้สำรวจไม่ต้องกรอกซ้ำ | NFR-04, NFR-01 |
 
 ## เอกสารที่เกี่ยวข้อง
 
 - [[api-spec]], [[db-spec]], [[feature-list]], [[user-journey]], [[architecture]]
 - [[building-environment-info]], [[structural-damage-assessment]], [[ai-crack-photo-analysis]], [[additional-sketch]], [[surveyor-info-duration]] — ฟีเจอร์ต้นทางของข้อมูลที่ต้องซิงค์
 - [[survey-review-signature]], [[dashboard-overview]], [[search-filter-buildings]] — ใช้เงื่อนไข `sync_status = ซิงค์สำเร็จ` ก่อนดำเนินการ
+- [[manual-conflict-resolution]] — ขั้นตอนต่อเนื่องเมื่อ merge อัตโนมัติไม่ได้

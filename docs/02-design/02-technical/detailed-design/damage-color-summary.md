@@ -32,9 +32,9 @@ sequenceDiagram
 | 6.1 บันทึกผลสรุประดับสี | [[db-spec#4.1 SurveyedBuilding\|SurveyedBuilding]] | แก้ไข | ต้องมีความเสียหายอย่างน้อย 1 หมวดจาก [[structural-damage-assessment]] มาก่อน |
 | 6.2 ดึงเกณฑ์อ้างอิงคู่มือ | ไม่มี (เนื้อหาอ้างอิงสถิต ไม่ใช่ entity ใน [[db-spec]]) | อ่าน | ใช้ได้ทุกจุดระหว่างกรอกหมวดต่างๆ |
 
-## 3. ความเชื่อมโยงกับ review_status (พบช่องว่างใน api-spec)
+## 3. ความเชื่อมโยงกับ review_status
 
-[[api-spec#6. สรุปผลประเมินเป็น 3 ระดับสีพร้อมเกณฑ์อ้างอิงคู่มือ|api-spec 6.1]] ระบุว่า "ต้องมีค่านี้ก่อนเปลี่ยน `review_status` เป็น 'รอตรวจทาน' (7.1)" แต่เมื่อตรวจสอบ operation จริงใน [[api-spec]] พบว่า**ไม่มี operation ใดที่ทำหน้าที่เปลี่ยน `SurveyedBuilding.review_status` จาก `ฉบับร่าง` ไปเป็น `รอตรวจทาน` โดยตรง** (operation 10.1/10.2 เปลี่ยนจาก `รอตรวจทาน` ไปเป็น `ส่งกลับแก้ไข`/`รับรองแล้ว` เท่านั้น) — นี่คือช่องว่างของ [[api-spec]] ที่ต้องรัน `sync-api-db` เพื่อเพิ่ม operation "ส่งงานเข้าตรวจทาน" (ดูรายละเอียดเต็มที่ [[survey-review-signature#3. State Diagram review_status|survey-review-signature หัวข้อ 3]])
+[[api-spec#6. สรุปผลประเมินเป็น 3 ระดับสีพร้อมเกณฑ์อ้างอิงคู่มือ|api-spec 6.1]] ระบุว่าต้องมีค่า `overall_severity_level` ก่อนเปลี่ยน `review_status` เป็น "รอตรวจทาน" — transition นี้ทำผ่าน operation [[api-spec#10. ตรวจทานและรับรองผลสำรวจด้วยลายเซ็นดิจิทัล|10.1 ส่งแบบสำรวจเข้าสู่คิวตรวจทาน]] (เพิ่มโดย `api-db-writer` ปิดช่องว่างที่เคยรายงานไว้แล้ว) — ดู state diagram เต็มที่ [[survey-review-signature#3. State Diagram review_status|survey-review-signature หัวข้อ 3]]
 
 ## 4. Edge Case และวิธีจัดการ
 

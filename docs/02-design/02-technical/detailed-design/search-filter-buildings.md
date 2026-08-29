@@ -25,7 +25,7 @@ sequenceDiagram
 
 | Operation ([[api-spec#13. ค้นหา/กรองรายการอาคารที่สำรวจแล้ว\|api-spec 13.x]]) | Entity ที่กระทบ | การกระทำ | ลำดับ/เงื่อนไข |
 |---|---|---|---|
-| 13.1 ค้นหา/กรองรายการอาคารที่สำรวจแล้ว | [[db-spec#4.1 SurveyedBuilding\|SurveyedBuilding]] (อ่าน), [[db-spec#4.2 SurveyParticipant\|SurveyParticipant]] (อ่านเมื่อกรองด้วย `user_id`) | อ่าน | หัวหน้าผู้สำรวจเห็นเฉพาะอาคารของทีมตน; หน่วยงานส่วนกลางเห็นเฉพาะที่ `sync_status = ซิงค์สำเร็จ` — ดู [[offline-sync]] |
+| 13.1 ค้นหา/กรองรายการอาคารที่สำรวจแล้ว | [[db-spec#4.1 SurveyedBuilding\|SurveyedBuilding]] (อ่าน), [[db-spec#4.2 SurveyParticipant\|SurveyParticipant]] (อ่านเมื่อกรองด้วย `user_id`) | อ่าน | หัวหน้าผู้สำรวจเห็นเฉพาะอาคารของทีมตน; หน่วยงานส่วนกลางเห็นเฉพาะที่ `sync_status = ซิงค์สำเร็จ` — ดู [[offline-sync]] · **ทุกบทบาทต้องไม่เห็นระเบียนที่ `sync_status = มีความขัดแย้งรอแก้ไข` (NFR-10)** ระเบียนเหล่านั้นแสดงได้เฉพาะผ่าน [[manual-conflict-resolution]] เท่านั้น |
 
 ## 3. State Transition
 
@@ -36,9 +36,10 @@ sequenceDiagram
 | Edge Case | วิธีจัดการ | อ้างอิง |
 |---|---|---|
 | ไม่พบอาคารตรงเงื่อนไข | คืนรายการว่าง ไม่ถือเป็น error | [[api-spec#13. ค้นหา/กรองรายการอาคารที่สำรวจแล้ว\|api-spec 13.1]] |
+| ระเบียนอยู่ในสถานะ `sync_status = มีความขัดแย้งรอแก้ไข` | ไม่แสดงในผลค้นหา/กรอง จนกว่าจะแก้ไขความขัดแย้งเสร็จผ่าน [[manual-conflict-resolution]] (NFR-10) | [[api-spec#13. ค้นหา/กรองรายการอาคารที่สำรวจแล้ว\|api-spec 13.1]] |
 
 ## เอกสารที่เกี่ยวข้อง
 
 - [[api-spec]], [[db-spec]], [[feature-list]], [[user-journey]]
 - [[dashboard-overview]], [[export-report]] — ใช้ตัวกรองลักษณะเดียวกัน
-- [[offline-sync]] — เงื่อนไข `sync_status = ซิงค์สำเร็จ` ที่กรองผลลัพธ์สำหรับหน่วยงานส่วนกลาง
+- [[offline-sync]], [[manual-conflict-resolution]] — เงื่อนไข `sync_status = ซิงค์สำเร็จ` ที่กรองผลลัพธ์สำหรับหน่วยงานส่วนกลาง
