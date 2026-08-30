@@ -45,8 +45,8 @@ docs/
   03-testing/
     01-test-plan/
       acceptance-criteria.md      เกณฑ์ยอมรับ (Given-When-Then) ต่อ FR/NFR จัดกลุ่มตาม feature-list
-      test-plan.md                 ภาพรวมกลยุทธ์ทดสอบ 1 ไฟล์ต่อโปรเจกต์ (scope, ประเภทการทดสอบ, environment, entry/exit criteria)
-      test-cases/{feature-slug}.md Test case แบบ step-by-step ต่อฟีเจอร์ อ้างอิง acceptance-criteria.md
+      test-plan.md                 ภาพรวมกลยุทธ์ทดสอบ 1 ไฟล์ต่อโปรเจกต์ (scope, ประเภทการทดสอบ, environment, risk management, entry/exit criteria, บทบาทผู้ทดสอบ)
+      test-cases/{feature-slug}.md Test case แบบ step-by-step ต่อฟีเจอร์ ต้องมีอย่างน้อย test id / ชื่อ / pre-condition / test step / expected result / test data พร้อม reference กลับไป acceptance-criteria.md และรหัส FR/NFR
     02-test-result/                ผลการรันทดสอบจริง — ยังไม่มีเอกสาร/agent ดูแล เพราะโปรเจกต์ยังไม่มีซอร์สโค้ดให้ทดสอบจริง
   04-retrospectives/
   05-log/
