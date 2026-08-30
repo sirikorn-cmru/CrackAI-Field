@@ -101,6 +101,20 @@ Skill นี้เป็น workflow มาตรฐานสำหรับต�
    ใดๆ ในโฟลเดอร์ `01-prototypes/` ให้ถือว่าผิดกฎ หยุดและแจ้งผู้ใช้ทันที (agent นี้ต้อง report-only
    เท่านั้น)
 
+   **การจัดการสัญญาณจาก `prototype-auditor`**: agent ตัวนี้ตรวจ prototype เทียบเอกสารทุกชั้น
+   **ทั้งสองทิศทาง** (ดู `audit-prototype`) จึงอาจส่งสัญญาณกลับมาได้ 5 ชนิด **อย่าเพิกเฉย**:
+   - `## NEEDS_PROTOTYPE_REBUILD` — **รายงานอย่างเดียว ห้าม auto-chain** ให้รวมไว้ในข้อ 14
+     ซึ่งจะถามผู้ใช้ว่าจะรัน `build-prototype` ต่อหรือไม่
+   - `## NEEDS_NEW_REQUIREMENT` — prototype มีพฤติกรรมที่ไม่มีรหัสรองรับ (ทิศทางย้อนขึ้น)
+     **ต้องจัดการก่อนปิด pipeline** ให้เรียก `requirement-writer` พร้อมเนื้อหาแบบ verbatim
+     แล้ว**ต้องรันชั้นที่ 2 และสาขา (ก) ซ้ำ** เพราะรหัสใหม่กระทบทั้งสองชั้น
+     นับรวมอยู่ใน loop guard เดียวกับข้อ 12 — ทำได้ไม่เกิน 1 รอบ
+   - `## NEEDS_FEATURE_JOURNEY_SYNC` / `## NEEDS_TEST_PLAN_SYNC` — ถ้า pipeline ยังไม่ได้รัน
+     ชั้น/สาขานั้นในรอบนี้ ให้รันเพิ่ม ถ้ารันไปแล้วให้รันซ้ำเฉพาะเมื่อมี `NEEDS_NEW_REQUIREMENT`
+     เกิดขึ้นด้วย มิฉะนั้นให้รวมไว้รายงานในข้อ 13
+   - `## NEEDS_DESIGN_SYSTEM` — **รายงานอย่างเดียว ห้าม auto-chain** เพราะ `sync-design-system`
+     ต้องสัมภาษณ์ผู้ใช้เรื่องการตัดสินใจเชิงดีไซน์ซึ่งอยู่นอกขอบเขตของ pipeline นี้
+
 10. **สาขา (ค) — feature-list/user-journey ↔ เอกสารเชิงเทคนิค (auto-fix ยกเว้น NFR review)**:
     เรียกผ่าน **Skill tool** ด้วย `skill: sync-technical-spec` (ไม่ใช่เรียก subagent แต่ละตัว
     ในสายเทคนิคตรงๆ เพราะ skill นี้จัดลำดับชั้นย่อย 4 ชั้นและมี auto-chain logic ของตัวเองอยู่แล้ว)
