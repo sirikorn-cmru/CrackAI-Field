@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard ภาพรวมผลสำรวจ — CrackAI-Field Prototype</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="proto-bar">
+  <a class="proto-link" href="index.html">⌂ Prototype</a>
+  <strong>ส่วนกลาง 9) Dashboard ภาพรวมผลสำรวจ</strong>
+  <span class="proto-fr">FR-22</span>
+  <select onchange="if(this.value) location.href=this.value">
+    <option value="">ไปหน้าอื่น…</option>
+    <option value="lead-review-list.html">หัวหน้า 6) รายการรอตรวจทาน</option>
+    <option value="conflict-list.html">10) รายการข้อมูลขัดแย้ง</option>
+    <option value="login.html">เข้าสู่ระบบ</option>
+  </select>
+  <span class="proto-scope">หน่วยงานส่วนกลาง/ผู้บริหาร</span>
+</div>
+
+<div class="layout-office">
+  <h1>ภาพรวมผลสำรวจ</h1>
+  <p class="text-sm">จำนวนอาคารที่สำรวจแล้วและสัดส่วนตามระดับสี แยกตามพื้นที่/จังหวัด (FR-22)</p>
+
+  <div class="stat-row">
+    <div class="stat-tile">
+      <div class="stat-value">1,248</div>
+      <div class="stat-label">อาคารที่สำรวจแล้วทั้งหมด</div>
+    </div>
+    <div class="stat-tile safe">
+      <div class="stat-value">742</div>
+      <div class="stat-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg> เข้าใช้งานได้</div>
+    </div>
+    <div class="stat-tile caution">
+      <div class="stat-value">356</div>
+      <div class="stat-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3L21 20H3L12 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg> ใช้ได้แต่ต้องระวัง</div>
+    </div>
+    <div class="stat-tile danger">
+      <div class="stat-value">150</div>
+      <div class="stat-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 3h8l5 5v8l-5 5H8l-5-5V8l5-5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg> ห้ามเข้า</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">สัดส่วนตามระดับสี แยกตามจังหวัด</h2>
+    <div class="chart-legend" role="list" aria-label="คำอธิบายสี">
+      <span class="legend-item" role="listitem"><span class="legend-swatch safe"></span>เข้าใช้งานได้</span>
+      <span class="legend-item" role="listitem"><span class="legend-swatch caution"></span>ใช้ได้แต่ต้องระวัง</span>
+      <span class="legend-item" role="listitem"><span class="legend-swatch danger"></span>ห้ามเข้า</span>
+    </div>
+
+    <div class="province-bar-row">
+      <span class="province-name">นครศรีธรรมราช</span>
+      <div class="stacked-bar" role="img" aria-label="นครศรีธรรมราช: เข้าใช้งานได้ 320, ใช้ได้แต่ต้องระวัง 140, ห้ามเข้า 60">
+        <span class="seg safe" style="width:60%">320</span>
+        <span class="seg caution" style="width:27%">140</span>
+        <span class="seg danger" style="width:13%">60</span>
+      </div>
+      <span class="province-total">520</span>
+    </div>
+    <div class="province-bar-row">
+      <span class="province-name">สุราษฎร์ธานี</span>
+      <div class="stacked-bar" role="img" aria-label="สุราษฎร์ธานี: เข้าใช้งานได้ 210, ใช้ได้แต่ต้องระวัง 110, ห้ามเข้า 55">
+        <span class="seg safe" style="width:56%">210</span>
+        <span class="seg caution" style="width:29%">110</span>
+        <span class="seg danger" style="width:15%">55</span>
+      </div>
+      <span class="province-total">375</span>
+    </div>
+    <div class="province-bar-row">
+      <span class="province-name">ชุมพร</span>
+      <div class="stacked-bar" role="img" aria-label="ชุมพร: เข้าใช้งานได้ 212, ใช้ได้แต่ต้องระวัง 106, ห้ามเข้า 35">
+        <span class="seg safe" style="width:60%">212</span>
+        <span class="seg caution" style="width:30%">106</span>
+        <span class="seg danger" style="width:10%">35</span>
+      </div>
+      <span class="province-total">353</span>
+    </div>
+
+    <p class="field-hint" style="margin-top:16px;">ระเบียนที่ยังมีสถานะ "รอแก้ไขความขัดแย้ง" (ฟีเจอร์ 15) จะไม่ถูกนับรวมในตัวเลขข้างต้นจนกว่าจะแก้ไขเสร็จ</p>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">มุมมองตาราง (สำหรับตรวจสอบตัวเลขและการเข้าถึงด้วยโปรแกรมอ่านหน้าจอ)</h2>
+    <table class="data-table">
+      <thead>
+        <tr><th>จังหวัด</th><th class="num">เข้าใช้งานได้</th><th class="num">ใช้ได้แต่ต้องระวัง</th><th class="num">ห้ามเข้า</th><th class="num">รวม</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>นครศรีธรรมราช</td><td class="num">320</td><td class="num">140</td><td class="num">60</td><td class="num">520</td></tr>
+        <tr><td>สุราษฎร์ธานี</td><td class="num">210</td><td class="num">110</td><td class="num">55</td><td class="num">375</td></tr>
+        <tr><td>ชุมพร</td><td class="num">212</td><td class="num">106</td><td class="num">35</td><td class="num">353</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="field-hint">ต้นแบบรุ่นนี้ยังไม่มีระบบค้นหา/กรอง (ฟีเจอร์ 12) หรือส่งออกรายงาน (ฟีเจอร์ 11) — ทั้งสองเป็น Should have อยู่นอกขอบเขตรอบนี้</p>
+</div>
+</body>
+</html>

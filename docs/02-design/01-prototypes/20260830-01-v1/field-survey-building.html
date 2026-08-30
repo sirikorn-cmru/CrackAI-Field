@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ข้อมูลอาคารและสภาพแวดล้อม — CrackAI-Field Prototype</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="proto-bar">
+  <a class="proto-link" href="index.html">⌂ Prototype</a>
+  <strong>สำรวจ 1) ข้อมูลอาคาร+สภาพแวดล้อม</strong>
+  <span class="proto-fr">FR-01 · FR-02 · FR-03 · FR-04 · NFR-06</span>
+  <select onchange="if(this.value) location.href=this.value">
+    <option value="">ไปหน้าอื่น…</option>
+    <option value="login.html">เข้าสู่ระบบ</option>
+    <option value="field-survey-damage.html">ภาคสนาม 2) ประเมินความเสียหาย</option>
+    <option value="field-survey-photo-ai.html">ภาคสนาม 3) ภาพถ่าย+AI</option>
+    <option value="field-survey-summary.html">ภาคสนาม 4) สรุปผล+ผู้สำรวจ</option>
+    <option value="field-sync-status.html">ภาคสนาม 5) สถานะซิงค์</option>
+    <option value="lead-review-list.html">หัวหน้า 6) รายการรอตรวจทาน</option>
+    <option value="admin-users.html">ผู้ดูแล 8) จัดการผู้ใช้</option>
+    <option value="dashboard.html">ส่วนกลาง 9) Dashboard</option>
+  </select>
+  <span class="proto-scope">ผู้สำรวจภาคสนาม</span>
+</div>
+
+<div class="sync-bar-wrap">
+  <div class="sync-indicator offline" role="status">
+    <span aria-hidden="true">&#9679;</span> ออฟไลน์ — ข้อมูลบันทึกในเครื่อง จะซิงค์อัตโนมัติเมื่อมีสัญญาณ
+  </div>
+</div>
+
+<div class="layout-field">
+  <div class="wizard-steps">
+    <span class="wizard-step current">1. ข้อมูลอาคาร</span>
+    <span class="wizard-step">2. ความเสียหาย</span>
+    <span class="wizard-step">3. ภาพถ่าย+AI</span>
+    <span class="wizard-step">4. สรุปผล</span>
+  </div>
+
+  <h1>ข้อมูลอาคารและสภาพแวดล้อม</h1>
+  <p class="text-sm">บันทึกข้อมูลทั่วไป พิกัด ลักษณะทางกายภาพ และอันตรายโดยรอบก่อนเริ่มประเมินความเสียหาย</p>
+
+  <div class="card">
+    <h2 class="section-title">ข้อมูลทั่วไปของอาคาร</h2>
+    <p class="section-desc">FR-01</p>
+    <div class="field-group">
+      <label class="field-label" for="b-name">ชื่ออาคาร/สถานที่ <span class="required">จำเป็น</span></label>
+      <input class="input" id="b-name" type="text">
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="b-owner">ชื่อเจ้าของอาคาร <span class="required">จำเป็น</span></label>
+      <input class="input" id="b-owner" type="text">
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="b-address">ที่ตั้ง (บ้านเลขที่ / ถนน / ตำบล / อำเภอ / จังหวัด) <span class="required">จำเป็น</span></label>
+      <textarea class="textarea" id="b-address"></textarea>
+    </div>
+    <div class="field-group">
+      <label class="field-label">การใช้สอยอาคาร <span class="required">จำเป็น</span></label>
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text">บ้านพักอาศัย</span></div>
+      <div class="option-row selected"><span class="option-box radio"></span><span class="option-text">อาคารพาณิชย์</span></div>
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text">โรงเรียน/สถานศึกษา</span></div>
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text">สถานพยาบาล</span></div>
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text">อาคารราชการ</span></div>
+      <div class="field-hint">แบบฟอร์มต้นฉบับมีตัวเลือกทั้งหมด 13 ประเภท (แสดงตัวอย่าง 5 รายการในต้นแบบนี้)</div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">กรรมสิทธิ์ <span class="required">จำเป็น</span></label>
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text">เจ้าของครอบครอง</span></div>
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text">เช่า</span></div>
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text">ราชการ/สาธารณะ</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">พิกัด GPS</h2>
+    <p class="section-desc">FR-02 · NFR-06 — ความแม่นยำของพิกัดต้องเพียงพอต่อการระบุตำแหน่งอาคารซ้ำได้</p>
+    <div class="field-group">
+      <label class="field-label" for="b-lat">ละติจูด / ลองจิจูด</label>
+      <input class="input text-mono" id="b-lat" type="text" value="13.736717, 100.523186" readonly>
+      <div class="field-hint">ความแม่นยำปัจจุบัน: ±4 เมตร (ผ่านเกณฑ์ NFR-06)</div>
+    </div>
+    <button type="button" class="btn btn-secondary btn-field">📍 จับพิกัดปัจจุบันอีกครั้ง</button>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">ลักษณะทางกายภาพของอาคาร</h2>
+    <p class="section-desc">FR-03</p>
+    <div class="field-group">
+      <label class="field-label" for="b-floors">จำนวนชั้น <span class="required">จำเป็น</span></label>
+      <input class="input" id="b-floors" type="number" inputmode="numeric">
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="b-area">พื้นที่ใช้สอยโดยประมาณ (ตร.ม.)</label>
+      <input class="input" id="b-area" type="number" inputmode="numeric">
+    </div>
+    <div class="field-group">
+      <label class="field-label">ชนิดโครงสร้างหลัก <span class="required">จำเป็น</span></label>
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text">คอนกรีตเสริมเหล็ก (คสล.)</span></div>
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text">โครงเหล็ก</span></div>
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text">โครงไม้</span></div>
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text">ก่ออิฐรับน้ำหนัก</span></div>
+      <div class="field-hint">แบบฟอร์มต้นฉบับมี 6 ชนิด (แสดงตัวอย่าง 4 รายการในต้นแบบนี้)</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">อันตรายจากสภาพแวดล้อมโดยรอบ</h2>
+    <p class="section-desc">FR-04</p>
+    <div class="field-group">
+      <div class="option-row"><span class="option-box checkbox"></span><span class="option-text">อาคารข้างเคียงเอียง/ทรุด</span></div>
+      <div class="option-row"><span class="option-box checkbox"></span><span class="option-text">อยู่บนหรือใกล้ลาดเชิงเขา</span></div>
+      <div class="option-row"><span class="option-box checkbox"></span><span class="option-text">ดินทรุดตัว/รอยแยกของดิน</span></div>
+      <div class="option-row"><span class="option-box checkbox"></span><span class="option-text">น้ำท่วมขังบริเวณโดยรอบ</span></div>
+      <div class="option-row selected"><span class="option-box checkbox"></span><span class="option-text">ไม่พบอันตรายเพิ่มเติม</span></div>
+    </div>
+  </div>
+
+  <div class="field-hint" style="margin-bottom:24px;">ระบบบันทึกร่างอัตโนมัติทุกครั้งที่ค่าเปลี่ยน — ปิดแอปกลางคันแล้วกลับมาเปิดใหม่ ข้อมูลจะไม่หาย (UX-05)</div>
+
+  <div class="btn-row">
+    <a class="btn btn-secondary btn-field" href="login.html" style="text-decoration:none;">ย้อนกลับ</a>
+    <a class="btn btn-primary btn-field" href="field-survey-damage.html" style="text-decoration:none;">ถัดไป: ประเมินความเสียหาย</a>
+  </div>
+</div>
+</body>
+</html>

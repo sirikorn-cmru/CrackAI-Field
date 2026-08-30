@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ภาพถ่ายและ AI วิเคราะห์รอยร้าว — CrackAI-Field Prototype</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .path-panel { display: none; }
+  .path-panel.active { display: block; }
+</style>
+</head>
+<body>
+<div class="proto-bar">
+  <a class="proto-link" href="index.html">⌂ Prototype</a>
+  <strong>สำรวจ 3) ภาพถ่ายและ AI วิเคราะห์รอยร้าว</strong>
+  <span class="proto-fr">FR-12 · FR-13 · FR-14 · FR-28 · FR-29 · NFR-05</span>
+  <select onchange="if(this.value) location.href=this.value">
+    <option value="">ไปหน้าอื่น…</option>
+    <option value="field-survey-damage.html">ภาคสนาม 2) ประเมินความเสียหาย</option>
+    <option value="field-survey-summary.html">ภาคสนาม 4) สรุปผล+ผู้สำรวจ</option>
+  </select>
+  <span class="proto-scope">ผู้สำรวจภาคสนาม</span>
+</div>
+
+<div class="sync-bar-wrap">
+  <div class="sync-indicator offline" role="status">
+    <span aria-hidden="true">&#9679;</span> ออฟไลน์ — ภาพถ่ายบันทึกในเครื่อง จะซิงค์อัตโนมัติเมื่อมีสัญญาณ
+  </div>
+</div>
+
+<div class="layout-field">
+  <div class="wizard-steps">
+    <span class="wizard-step done">1. ข้อมูลอาคาร</span>
+    <span class="wizard-step done">2. ความเสียหาย</span>
+    <span class="wizard-step current">3. ภาพถ่าย+AI</span>
+    <span class="wizard-step">4. สรุปผล</span>
+  </div>
+
+  <h1>ถ่ายภาพและประเมินรอยร้าว</h1>
+  <p class="text-sm">ถ่ายภาพผูกกับตำแหน่งที่ระบุไว้ จากนั้นเลือกให้ AI ช่วยวิเคราะห์ หรือกรอกระดับความเสียหายด้วยตนเองได้เสมอ (FR-12)</p>
+
+  <div class="card">
+    <div class="field-group">
+      <label class="field-label" for="pos">ตำแหน่ง/บริเวณที่ถ่าย <span class="required">จำเป็น</span></label>
+      <select class="select" id="pos">
+        <option>เสา ชั้น 1 ด้านหน้า</option>
+        <option>คาน ชั้น 1</option>
+        <option>ผนังภายนอก ด้านทิศเหนือ</option>
+      </select>
+    </div>
+    <div class="photo-placeholder">
+      <span style="font-size:32px;" aria-hidden="true">📷</span>
+      <span>ภาพรอยร้าวที่ถ่ายไว้ (ตัวอย่าง placeholder)</span>
+    </div>
+    <button type="button" class="btn btn-secondary btn-field" style="margin-top:12px;">📷 ถ่ายภาพ</button>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">เลือกวิธีประเมินระดับความเสียหายของรอยร้าวนี้</h2>
+    <p class="section-desc">ทั้งสองเส้นทางเป็นเส้นทางใช้งานปกติ น้ำหนักเท่ากัน (FR-29 / UX-08) — ลองกดเพื่อดูแต่ละสถานการณ์</p>
+    <div class="btn-row">
+      <button type="button" class="btn btn-secondary btn-field" onclick="showPath('ai-pending')">ให้ AI ช่วยวิเคราะห์ก่อน</button>
+      <button type="button" class="btn btn-secondary btn-field" onclick="showPath('manual')">กรอกระดับความเสียหายด้วยตนเอง</button>
+    </div>
+  </div>
+
+  <!-- เส้นทาง: กรอกเองโดยตรง (FR-29) -->
+  <div class="path-panel" id="panel-manual">
+    <div class="card">
+      <h2 class="section-title">กรอกระดับความเสียหายของรอยร้าวด้วยตนเอง</h2>
+      <p class="section-desc">FR-29 — เส้นทางปกติ ไม่ต้องพึ่ง AI</p>
+      <div class="field-group">
+        <label class="field-label" for="m-width">ความกว้างรอยร้าว โดยประมาณ (มม.)</label>
+        <input class="input" id="m-width" type="number" inputmode="decimal">
+      </div>
+      <div class="field-group">
+        <label class="field-label">ระดับความเสียหายของรอยร้าวนี้</label>
+        <div class="option-row"><span class="option-box radio"></span><span class="option-text">เล็กน้อย (&lt; 1 มม.)</span></div>
+        <div class="option-row selected"><span class="option-box radio"></span><span class="option-text">ปานกลาง (1–5 มม.)</span></div>
+        <div class="option-row"><span class="option-box radio"></span><span class="option-text">รุนแรง (&gt; 5 มม. หรือเห็นเหล็กเสริม)</span></div>
+      </div>
+      <button type="button" class="btn btn-primary btn-field">บันทึกค่าที่กรอกเอง</button>
+    </div>
+  </div>
+
+  <!-- เส้นทาง: AI กำลังวิเคราะห์ -> เลือกผลสำเร็จ/ไม่สำเร็จ -->
+  <div class="path-panel" id="panel-ai-pending">
+    <div class="card">
+      <p class="section-desc">จำลองผลจาก AI (สาธิต Prototype เท่านั้น) — เลือกเพื่อดูแต่ละกรณี</p>
+      <div class="btn-row">
+        <button type="button" class="btn btn-secondary btn-field" onclick="showPath('ai-success')">จำลอง: วิเคราะห์สำเร็จ</button>
+        <button type="button" class="btn btn-secondary btn-field" onclick="showPath('ai-fail')">จำลอง: วิเคราะห์ไม่สำเร็จ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- เส้นทาง: AI วิเคราะห์สำเร็จ (FR-13, FR-14) -->
+  <div class="path-panel" id="panel-ai-success">
+    <div class="ai-card">
+      <span class="ai-badge">🤖 AI เสนอ — รอการยืนยัน</span>
+      <div class="ai-card-value">ความกว้างประมาณ 2.4 มม. → ระดับปานกลาง</div>
+      <div class="ai-card-source">วิเคราะห์จากภาพที่ถ่ายไว้ด้านบน (FR-13)</div>
+      <div class="ai-card-actions">
+        <button type="button" class="btn btn-primary btn-field" onclick="showPath('ai-confirmed')">ยืนยันตามที่เสนอ</button>
+        <button type="button" class="btn btn-secondary btn-field" onclick="showPath('manual')">แก้ไขค่า</button>
+        <button type="button" class="btn btn-secondary btn-field" onclick="showPath('manual')">กรอกเอง</button>
+      </div>
+    </div>
+    <p class="field-hint">ทั้งสามปุ่มมีน้ำหนักทางสายตาเท่ากันตามข้อกำหนด — ห้ามให้ "กรอกเอง" ดูเป็นทางเลือกสำรอง (UX-08)</p>
+  </div>
+
+  <!-- เส้นทาง: ยืนยันค่า AI แล้ว (FR-14, NFR-05) -->
+  <div class="path-panel" id="panel-ai-confirmed">
+    <div class="ai-card confirmed">
+      <span class="ai-badge">✓ ยืนยันแล้ว</span>
+      <div class="ai-card-value">ความกว้าง 2.4 มม. → ระดับปานกลาง</div>
+      <div class="ai-card-source">ที่มา: ยืนยันตาม AI (source_of_value = ai_confirmed)</div>
+    </div>
+    <div class="card">
+      <h3>ประวัติการแก้ไขผล (NFR-05)</h3>
+      <div class="text-sm" style="margin-bottom:8px;">10:42 — AI เสนอค่าเริ่มต้น: 2.4 มม. / ปานกลาง</div>
+      <div class="text-sm">10:43 — ผู้สำรวจ (สมชาย ใจดี) ยืนยันตามที่ AI เสนอ</div>
+    </div>
+  </div>
+
+  <!-- เส้นทาง: AI วิเคราะห์ไม่สำเร็จ (FR-28) -->
+  <div class="path-panel" id="panel-ai-fail">
+    <div class="banner info">
+      <span aria-hidden="true">ⓘ</span>
+      <div>
+        <strong>AI วิเคราะห์ภาพนี้ไม่สำเร็จ</strong>
+        <div class="text-sm">สาเหตุ: แสงในภาพไม่เพียงพอ ทำให้มองเห็นขอบรอยร้าวไม่ชัดเจน — ท่านสามารถถ่ายภาพใหม่ในที่แสงสว่างขึ้น หรือกรอกระดับความเสียหายด้วยตนเองแทนได้ทันที (FR-28, UX-10)</div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button type="button" class="btn btn-secondary btn-field">📷 ถ่ายภาพใหม่</button>
+      <button type="button" class="btn btn-secondary btn-field" onclick="showPath('manual')">กรอกเอง</button>
+    </div>
+    <p class="field-hint">สองปุ่มนี้มีน้ำหนักทางสายตาเท่ากันตามข้อกำหนด (FR-28)</p>
+  </div>
+
+  <hr class="divider">
+  <div class="btn-row">
+    <a class="btn btn-secondary btn-field" href="field-survey-damage.html" style="text-decoration:none;">ย้อนกลับ</a>
+    <a class="btn btn-primary btn-field" href="field-survey-summary.html" style="text-decoration:none;">ถัดไป: สรุปผล</a>
+  </div>
+</div>
+
+<script>
+function showPath(id) {
+  document.querySelectorAll('.path-panel').forEach(function (el) {
+    el.classList.remove('active');
+  });
+  var target = document.getElementById('panel-' + id);
+  if (target) { target.classList.add('active'); target.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สรุปผลและข้อมูลผู้สำรวจ — CrackAI-Field Prototype</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="proto-bar">
+  <a class="proto-link" href="index.html">⌂ Prototype</a>
+  <strong>สำรวจ 4) สรุปผล 3 ระดับสี + ผู้สำรวจ</strong>
+  <span class="proto-fr">FR-10 · FR-16 · FR-17</span>
+  <select onchange="if(this.value) location.href=this.value">
+    <option value="">ไปหน้าอื่น…</option>
+    <option value="field-survey-photo-ai.html">ภาคสนาม 3) ภาพถ่าย+AI</option>
+    <option value="field-sync-status.html">ภาคสนาม 5) สถานะซิงค์</option>
+    <option value="lead-review-list.html">หัวหน้า 6) รายการรอตรวจทาน</option>
+  </select>
+  <span class="proto-scope">ผู้สำรวจภาคสนาม</span>
+</div>
+
+<div class="sync-bar-wrap">
+  <div class="sync-indicator offline" role="status">
+    <span aria-hidden="true">&#9679;</span> ออฟไลน์ — ข้อมูลบันทึกในเครื่อง จะซิงค์อัตโนมัติเมื่อมีสัญญาณ
+  </div>
+</div>
+
+<div class="layout-field">
+  <div class="wizard-steps">
+    <span class="wizard-step done">1. ข้อมูลอาคาร</span>
+    <span class="wizard-step done">2. ความเสียหาย</span>
+    <span class="wizard-step done">3. ภาพถ่าย+AI</span>
+    <span class="wizard-step current">4. สรุปผล</span>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">สรุปผลการประเมินความเสียหาย</h2>
+    <p class="section-desc">FR-10 — เลือกระดับด้วยตนเองเสมอ ระบบไม่เลือกค่าเริ่มต้นให้อัตโนมัติ</p>
+    <div class="severity-selector" role="radiogroup" aria-label="ระดับความเสียหายโดยรวม">
+      <div class="severity-option safe" role="radio" aria-checked="false" tabindex="0">
+        <svg class="sev-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>
+        <div class="sev-text"><strong>เข้าใช้งานได้</strong><span>เสียหายเล็กน้อยหรือไม่เสียหาย ใช้งานได้ปกติ</span></div>
+      </div>
+      <div class="severity-option caution" role="radio" aria-checked="false" tabindex="0">
+        <svg class="sev-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3L21 20H3L12 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <div class="sev-text"><strong>ใช้ได้แต่ต้องระวัง</strong><span>เสียหายปานกลาง ควรจำกัดการใช้งานบางส่วน</span></div>
+      </div>
+      <div class="severity-option danger" role="radio" aria-checked="false" tabindex="0">
+        <svg class="sev-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 3h8l5 5v8l-5 5H8l-5-5V8l5-5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <div class="sev-text"><strong>ห้ามเข้า</strong><span>เสียหายหนัก มีความเสี่ยงพังถล่ม</span></div>
+      </div>
+    </div>
+    <div class="field-group" style="margin-top:24px;">
+      <label class="field-label" for="note">ข้อแนะนำเพิ่มเติม</label>
+      <textarea class="textarea" id="note" placeholder=""></textarea>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">ข้อมูลผู้สำรวจ</h2>
+    <p class="section-desc">FR-16 — สูงสุด 3 คน</p>
+    <div class="field-group">
+      <label class="field-label" for="s1">ผู้สำรวจคนที่ 1 <span class="required">จำเป็น</span></label>
+      <input class="input" id="s1" type="text" value="สมชาย ใจดี">
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="s2">ผู้สำรวจคนที่ 2</label>
+      <input class="input" id="s2" type="text">
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="lead">หัวหน้าผู้สำรวจ <span class="required">จำเป็น</span></label>
+      <input class="input" id="lead" type="text">
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="org">หน่วยงาน / โทรศัพท์ / ตำแหน่ง</label>
+      <input class="input" id="org" type="text">
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">ระยะเวลาการสำรวจ</h2>
+    <p class="section-desc">FR-17</p>
+    <div class="field-group">
+      <label class="field-label" for="t-start">เวลาเริ่มสำรวจ</label>
+      <input class="input text-mono" id="t-start" type="text" value="30/08/2569 09:15">
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="t-end">เวลาแล้วเสร็จ</label>
+      <input class="input text-mono" id="t-end" type="text" value="30/08/2569 09:52">
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <a class="btn btn-secondary btn-field" href="field-survey-photo-ai.html" style="text-decoration:none;">ย้อนกลับ</a>
+    <button type="button" class="btn btn-primary btn-field" onclick="document.getElementById('confirm-dialog').style.display='flex'">บันทึกและส่งเข้าคิวตรวจทาน</button>
+  </div>
+
+  <p class="field-hint" style="margin-top:16px;">การส่งเข้าคิวตรวจทานเป็นการกระทำที่ย้อนกลับได้ยาก จึงมีขั้นตอนยืนยันสรุปผลก่อนเสมอ (UX-09)</p>
+</div>
+
+<div id="confirm-dialog" class="dialog-backdrop" style="display:none;">
+  <div class="dialog">
+    <h2>ยืนยันการส่งผลสำรวจ</h2>
+    <p class="text-sm">
+      อาคาร: (ตามข้อมูลที่กรอก) · ผลสรุป: <strong>ยังไม่ได้เลือกระดับความเสียหาย</strong> · ผู้สำรวจ: สมชาย ใจดี ·
+      เวลาสำรวจ: 09:15–09:52 น. ระบบจะส่งข้อมูลนี้เข้าคิวให้หัวหน้าผู้สำรวจตรวจทานทันทีที่มีสัญญาณ
+    </p>
+    <div class="btn-row">
+      <button type="button" class="btn btn-secondary btn-office" onclick="document.getElementById('confirm-dialog').style.display='none'">ยกเลิก</button>
+      <button type="button" class="btn btn-primary btn-office" onclick="document.getElementById('confirm-dialog').style.display='none'; alert('บันทึกแล้ว (สาธิต) — รอซิงค์เมื่อมีสัญญาณ')">ยืนยันส่งผล</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

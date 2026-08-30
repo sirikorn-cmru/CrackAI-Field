@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>จัดการผู้ใช้และสิทธิ์ — CrackAI-Field Prototype</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="proto-bar">
+  <a class="proto-link" href="index.html">⌂ Prototype</a>
+  <strong>ผู้ดูแล 8) จัดการผู้ใช้และสิทธิ์การเข้าถึง</strong>
+  <span class="proto-fr">FR-21 · NFR-08</span>
+  <select onchange="if(this.value) location.href=this.value">
+    <option value="">ไปหน้าอื่น…</option>
+    <option value="conflict-list.html">10) รายการข้อมูลขัดแย้ง</option>
+    <option value="login.html">เข้าสู่ระบบ</option>
+  </select>
+  <span class="proto-scope">ผู้ดูแลระบบ</span>
+</div>
+
+<div class="layout-office">
+  <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+    <div>
+      <h1>จัดการผู้ใช้และสิทธิ์การเข้าถึง</h1>
+      <p class="text-sm">สร้าง/แก้ไข/ปิดการใช้งานบัญชี และกำหนดบทบาทที่ตรงกับสิทธิ์การเข้าถึงข้อมูล (FR-21)</p>
+    </div>
+    <button type="button" class="btn btn-primary btn-office" onclick="document.getElementById('add-dialog').style.display='flex'">+ เพิ่มผู้ใช้ใหม่</button>
+  </div>
+
+  <div class="banner info">
+    <span aria-hidden="true">ⓘ</span>
+    <div>
+      <strong>บทบาทที่กำหนดในหน้านี้ผูกกับการควบคุมสิทธิ์เข้าถึงข้อมูลทั้งระบบ (NFR-08)</strong>
+      <div class="text-sm">ผู้ใช้แต่ละบทบาทจะเห็นเฉพาะหน้าจอ/ข้อมูลที่ได้รับอนุญาตเท่านั้นหลังเข้าสู่ระบบ (ดู [[feature-list|ฟีเจอร์ 14]])</div>
+    </div>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>ชื่อ</th><th>อีเมล/ชื่อผู้ใช้</th><th>บทบาท</th><th>สถานะ</th><th></th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>สมชาย ใจดี</td>
+        <td>somchai@dpt.go.th</td>
+        <td><span class="badge role">ผู้สำรวจภาคสนาม</span></td>
+        <td><span class="badge synced">ใช้งานอยู่</span></td>
+        <td><a class="btn btn-ghost" href="#">แก้ไข</a> <button type="button" class="btn btn-destructive" style="height:32px; padding:0 12px;" onclick="document.getElementById('disable-dialog').style.display='flex'">ปิดการใช้งาน</button></td>
+      </tr>
+      <tr>
+        <td>วิภา สายชล</td>
+        <td>wipa@dpt.go.th</td>
+        <td><span class="badge role">หัวหน้าผู้สำรวจ</span></td>
+        <td><span class="badge synced">ใช้งานอยู่</span></td>
+        <td><a class="btn btn-ghost" href="#">แก้ไข</a> <button type="button" class="btn btn-destructive" style="height:32px; padding:0 12px;">ปิดการใช้งาน</button></td>
+      </tr>
+      <tr>
+        <td>ประดิษฐ์ คงยั่งยืน</td>
+        <td>pradit@dpt.go.th</td>
+        <td><span class="badge role">ผู้ดูแลระบบ</span></td>
+        <td><span class="badge synced">ใช้งานอยู่</span></td>
+        <td><a class="btn btn-ghost" href="#">แก้ไข</a> <button type="button" class="btn btn-destructive" style="height:32px; padding:0 12px;">ปิดการใช้งาน</button></td>
+      </tr>
+      <tr>
+        <td>อรทัย ยุติธรรม</td>
+        <td>orathai@dpt.go.th</td>
+        <td><span class="badge role">หน่วยงานส่วนกลาง/ผู้บริหาร</span></td>
+        <td><span class="badge offline">ปิดใช้งานแล้ว</span></td>
+        <td><a class="btn btn-ghost" href="#">แก้ไข</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div id="add-dialog" class="dialog-backdrop" style="display:none;">
+  <div class="dialog">
+    <h2>เพิ่มผู้ใช้ใหม่</h2>
+    <div class="field-group">
+      <label class="field-label" for="nu-name">ชื่อ-นามสกุล</label>
+      <input class="input" id="nu-name" type="text">
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="nu-email">อีเมล/ชื่อผู้ใช้</label>
+      <input class="input" id="nu-email" type="text">
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="nu-role">บทบาท</label>
+      <select class="select" id="nu-role">
+        <option>ผู้สำรวจภาคสนาม</option>
+        <option>หัวหน้าผู้สำรวจ</option>
+        <option>ผู้ดูแลระบบ</option>
+        <option>หน่วยงานส่วนกลาง/ผู้บริหาร</option>
+      </select>
+    </div>
+    <div class="btn-row">
+      <button type="button" class="btn btn-secondary btn-office" onclick="document.getElementById('add-dialog').style.display='none'">ยกเลิก</button>
+      <button type="button" class="btn btn-primary btn-office" onclick="document.getElementById('add-dialog').style.display='none'">สร้างบัญชี</button>
+    </div>
+  </div>
+</div>
+
+<div id="disable-dialog" class="dialog-backdrop" style="display:none;">
+  <div class="dialog">
+    <h2>ยืนยันการปิดการใช้งานบัญชี</h2>
+    <p class="text-sm">บัญชี "สมชาย ใจดี" (ผู้สำรวจภาคสนาม) จะไม่สามารถเข้าสู่ระบบได้อีก รวมถึง session ที่แคชไว้บนอุปกรณ์ภาคสนามของบัญชีนี้ (การกระทำนี้ย้อนกลับได้โดยเปิดใช้งานใหม่ในภายหลัง)</p>
+    <div class="btn-row">
+      <button type="button" class="btn btn-secondary btn-office" onclick="document.getElementById('disable-dialog').style.display='none'">ยกเลิก</button>
+      <button type="button" class="btn btn-destructive btn-office" onclick="document.getElementById('disable-dialog').style.display='none'">ยืนยันปิดการใช้งาน</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

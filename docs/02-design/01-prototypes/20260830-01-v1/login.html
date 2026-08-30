@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>เข้าสู่ระบบ — CrackAI-Field Prototype</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="proto-bar">
+  <a class="proto-link" href="index.html">⌂ Prototype</a>
+  <strong>เข้าสู่ระบบ</strong>
+  <span class="proto-fr">FR-25 · FR-26 · FR-27 · NFR-09</span>
+  <select onchange="if(this.value) location.href=this.value">
+    <option value="">ไปหน้าอื่น…</option>
+    <option value="field-survey-building.html">ภาคสนาม 1) ข้อมูลอาคาร</option>
+    <option value="field-survey-damage.html">ภาคสนาม 2) ประเมินความเสียหาย</option>
+    <option value="field-survey-photo-ai.html">ภาคสนาม 3) ภาพถ่าย+AI</option>
+    <option value="field-survey-summary.html">ภาคสนาม 4) สรุปผล+ผู้สำรวจ</option>
+    <option value="field-sync-status.html">ภาคสนาม 5) สถานะซิงค์</option>
+    <option value="lead-review-list.html">หัวหน้า 6) รายการรอตรวจทาน</option>
+    <option value="lead-review-detail.html">หัวหน้า 7) ตรวจทาน+ลงนาม</option>
+    <option value="admin-users.html">ผู้ดูแล 8) จัดการผู้ใช้</option>
+    <option value="dashboard.html">ส่วนกลาง 9) Dashboard</option>
+    <option value="conflict-list.html">10) รายการข้อมูลขัดแย้ง</option>
+    <option value="conflict-detail.html">11) แก้ไขข้อมูลขัดแย้ง</option>
+  </select>
+  <span class="proto-scope">Must have only · v1</span>
+</div>
+
+<div class="layout-field" style="max-width:400px; padding-top:64px;">
+  <div style="text-align:center; margin-bottom:32px;">
+    <h1 style="margin-bottom:4px;">CrackAI-Field</h1>
+    <p class="text-sm">เครื่องมือสำรวจความเสียหายอาคารหลังอุทกภัย</p>
+  </div>
+
+  <div class="banner offline" role="status">
+    <span aria-hidden="true">&#9679;</span>
+    <div>
+      <strong>โหมดออฟไลน์พร้อมใช้งาน</strong>
+      <div class="text-sm">ผู้สำรวจภาคสนามเข้าสู่ระบบได้แม้ไม่มีสัญญาณ โดยใช้บัญชีที่เคยเชื่อมต่อสำเร็จครั้งล่าสุด (FR-27)</div>
+    </div>
+  </div>
+
+  <form>
+    <div class="field-group">
+      <label class="field-label" for="username">ชื่อผู้ใช้</label>
+      <input class="input" id="username" type="text" placeholder="" autocomplete="username">
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="password">รหัสผ่าน</label>
+      <input class="input" id="password" type="password" autocomplete="current-password">
+      <div class="field-hint">ระบบยืนยันตัวตนกับเซิร์ฟเวอร์เมื่อมีสัญญาณ หรือใช้ session ที่แคชไว้เมื่อออฟไลน์ (NFR-09) — session ที่แคชไว้มีอายุจำกัดและต้องยืนยันใหม่เมื่อครบกำหนด</div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="demo-role">บทบาทตัวอย่าง (สำหรับสาธิต Prototype เท่านั้น — ระบบจริงกำหนดจากบัญชีผู้ใช้)</label>
+      <select class="select" id="demo-role" onchange="document.getElementById('go-btn').dataset.target = this.value">
+        <option value="field-survey-building.html">ผู้สำรวจภาคสนาม</option>
+        <option value="lead-review-list.html">หัวหน้าผู้สำรวจ</option>
+        <option value="admin-users.html">ผู้ดูแลระบบ</option>
+        <option value="dashboard.html">หน่วยงานส่วนกลาง/ผู้บริหาร</option>
+      </select>
+    </div>
+
+    <button type="button" id="go-btn" class="btn btn-primary btn-field" data-target="field-survey-building.html"
+      onclick="location.href=this.dataset.target">เข้าสู่ระบบ</button>
+  </form>
+
+  <p class="text-xs" style="text-align:center; margin-top:24px;">
+    หลังเข้าสู่ระบบสำเร็จ ระบบแสดงเฉพาะฟังก์ชัน/หน้าจอที่ตรงกับบทบาทของบัญชีนี้เท่านั้น (FR-21, NFR-08 — ดู [[feature-list|ฟีเจอร์ 9]])
+  </p>
+</div>
+</body>
+</html>

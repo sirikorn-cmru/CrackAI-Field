@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สถานะการทำงานออฟไลน์และซิงค์ — CrackAI-Field Prototype</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="proto-bar">
+  <a class="proto-link" href="index.html">⌂ Prototype</a>
+  <strong>สำรวจ 5) สถานะออฟไลน์และซิงค์</strong>
+  <span class="proto-fr">NFR-01 · NFR-02 · NFR-03 · NFR-04 · NFR-07</span>
+  <select onchange="if(this.value) location.href=this.value">
+    <option value="">ไปหน้าอื่น…</option>
+    <option value="field-survey-building.html">ภาคสนาม 1) ข้อมูลอาคาร</option>
+    <option value="field-survey-summary.html">ภาคสนาม 4) สรุปผล+ผู้สำรวจ</option>
+  </select>
+  <span class="proto-scope">ผู้สำรวจภาคสนาม</span>
+</div>
+
+<div class="layout-field">
+  <h1>สถานะการทำงานออฟไลน์และการซิงค์</h1>
+  <p class="text-sm">รองรับการกรอกแบบสำรวจแบบออฟไลน์เต็มรูปแบบที่หน้างาน แล้วซิงค์อัตโนมัติเมื่อมีสัญญาณ (NFR-01, NFR-04)</p>
+
+  <div class="banner offline">
+    <span aria-hidden="true">&#9679;</span>
+    <div>
+      <strong>กำลังทำงานแบบออฟไลน์</strong>
+      <div class="text-sm">นี่คือสภาวะปกติของงานภาคสนาม ไม่ใช่ข้อผิดพลาด (UX-07) — ทุกฟังก์ชันกรอกข้อมูลใช้งานได้ตามปกติ</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">รายการรอซิงค์บนอุปกรณ์นี้</h2>
+    <div class="sync-indicator pending" style="margin-bottom:16px;">
+      <span aria-hidden="true">&#9679;</span> รอซิงค์ 3 รายการ — จะส่งอัตโนมัติทันทีที่มีสัญญาณ (NFR-02)
+    </div>
+
+    <div class="option-row" style="cursor:default;">
+      <span class="badge pending">รอซิงค์</span>
+      <span class="option-text">บ้านเลขที่ 45/2 ต.ท่าศาลา — บันทึกเมื่อ 09:52</span>
+    </div>
+    <div class="option-row" style="cursor:default;">
+      <span class="badge pending">รอซิงค์</span>
+      <span class="option-text">ร้านค้าริมทาง เลขที่ 12 — บันทึกเมื่อ 08:30</span>
+    </div>
+    <div class="option-row" style="cursor:default;">
+      <span class="badge synced">ซิงค์แล้ว</span>
+      <span class="option-text">โรงเรียนบ้านท่าศาลา — ซิงค์เมื่อ 07:15</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">การจัดการความขัดแย้งของข้อมูล</h2>
+    <p class="section-desc">NFR-03 — เฉพาะกลไกตรวจจับ/รวมข้อมูลอัตโนมัติ</p>
+    <p class="text-sm">เมื่อหลายอุปกรณ์แก้ไขข้อมูลอาคารเดียวกัน ระบบพยายามรวม (merge) ค่าที่ไม่ขัดแย้งกันโดยอัตโนมัติก่อนเสมอ กรณีที่ระบบรวมเองไม่ได้ หัวหน้าผู้สำรวจหรือผู้ดูแลระบบจะเป็นผู้ตัดสินใจแก้ไขด้วยมือในภายหลัง (ดู [[feature-list|ฟีเจอร์ 15]]) — ผู้สำรวจภาคสนามไม่มีสิทธิ์เข้าถึงหน้าจอแก้ไขความขัดแย้ง</p>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">รองรับหลายทีมซิงค์พร้อมกัน</h2>
+    <p class="section-desc">NFR-07</p>
+    <p class="text-sm">ระบบออกแบบให้รองรับหลายทีมสำรวจซิงค์ข้อมูลและไฟล์ภาพถ่ายขนาดใหญ่พร้อมกันจำนวนมากหลังเกิดเหตุ โดยไม่บล็อกการทำงานของอุปกรณ์อื่น</p>
+  </div>
+
+  <a class="btn btn-secondary btn-field" href="field-survey-building.html" style="text-decoration:none; display:flex;">กลับไปกรอกแบบสำรวจ</a>
+</div>
+</body>
+</html>

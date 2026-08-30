@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ประเมินความเสียหาย — CrackAI-Field Prototype</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="proto-bar">
+  <a class="proto-link" href="index.html">⌂ Prototype</a>
+  <strong>สำรวจ 2) ประเมินความเสียหาย</strong>
+  <span class="proto-fr">FR-05 · FR-06 · FR-07 · FR-08 · FR-09 · FR-11</span>
+  <select onchange="if(this.value) location.href=this.value">
+    <option value="">ไปหน้าอื่น…</option>
+    <option value="field-survey-building.html">ภาคสนาม 1) ข้อมูลอาคาร</option>
+    <option value="field-survey-photo-ai.html">ภาคสนาม 3) ภาพถ่าย+AI</option>
+    <option value="field-survey-summary.html">ภาคสนาม 4) สรุปผล+ผู้สำรวจ</option>
+  </select>
+  <span class="proto-scope">ผู้สำรวจภาคสนาม</span>
+</div>
+
+<div class="sync-bar-wrap">
+  <div class="sync-indicator offline" role="status">
+    <span aria-hidden="true">&#9679;</span> ออฟไลน์ — ข้อมูลบันทึกในเครื่อง จะซิงค์อัตโนมัติเมื่อมีสัญญาณ
+  </div>
+</div>
+
+<div class="layout-field">
+  <div class="wizard-steps">
+    <span class="wizard-step done">1. ข้อมูลอาคาร</span>
+    <span class="wizard-step current">2. ความเสียหาย</span>
+    <span class="wizard-step">3. ภาพถ่าย+AI</span>
+    <span class="wizard-step">4. สรุปผล</span>
+  </div>
+
+  <h1>ประเมินความเสียหายโครงสร้างและส่วนประกอบอาคาร</h1>
+  <p class="text-sm">บันทึกความเสียหายที่สังเกตเห็นแยกตามหมวด ระดับความเสียหายของแต่ละหมวดยังไม่ใช่ผลสรุปสี — ผลสรุป 3 ระดับสีอยู่ในขั้นตอนถัดไป</p>
+
+  <div class="card">
+    <h2 class="section-title">1) ความเสียหายที่สังเกตจากภายนอกอาคาร</h2>
+    <p class="section-desc">FR-05</p>
+    <div class="option-row"><span class="option-box checkbox"></span><span class="option-text">อาคารเอียงจากแนวดิ่งที่สังเกตได้</span></div>
+    <div class="option-row selected"><span class="option-box checkbox"></span><span class="option-text">คราบน้ำ/ระดับน้ำท่วมที่ผนังภายนอก</span></div>
+    <div class="option-row"><span class="option-box checkbox"></span><span class="option-text">ฐานรากทรุดตัวที่สังเกตเห็น</span></div>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">2) ความเสียหายของโครงสร้าง แยกตามชนิดวัสดุ</h2>
+    <p class="section-desc">FR-06</p>
+
+    <h3>โครงสร้างไม้</h3>
+    <div class="field-group">
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text">ไม่เสียหาย</span></div>
+      <div class="option-row selected"><span class="option-box radio"></span><span class="option-text">เสียหายเล็กน้อย (แตกร้าวผิวไม้)</span></div>
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text">เสียหายปานกลาง (โครงไม้บิดงอ)</span></div>
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text">เสียหายรุนแรง (โครงไม้หัก/ผุ)</span></div>
+    </div>
+
+    <h3>คอนกรีตเสริมเหล็ก (คสล.)</h3>
+    <div class="field-group">
+      <div class="option-row selected"><span class="option-box radio"></span><span class="option-text">ไม่เสียหาย</span></div>
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text">เสียหายเล็กน้อย (รอยร้าวผิวปูน)</span></div>
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text">เสียหายปานกลาง (เหล็กเสริมโผล่)</span></div>
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text">เสียหายรุนแรง (เสา/คานแตกหัก)</span></div>
+    </div>
+
+    <h3>โครงเหล็กรูปพรรณ</h3>
+    <div class="field-group">
+      <div class="option-row selected"><span class="option-box radio"></span><span class="option-text">ไม่เสียหาย</span></div>
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text">เสียหายเล็กน้อย (สนิมผิว)</span></div>
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text">เสียหายปานกลาง (บิดงอ)</span></div>
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text">เสียหายรุนแรง (โครงเหล็กล้ม/หัก)</span></div>
+    </div>
+
+    <details>
+      <summary class="btn btn-ghost" style="display:inline-flex; cursor:pointer;">📖 ดูเกณฑ์อ้างอิงคู่มือประกอบการประเมิน (FR-11)</summary>
+      <div class="banner info" style="margin-top:12px;">
+        <span aria-hidden="true">ⓘ</span>
+        <div>
+          <strong>เกณฑ์อ้างอิงคู่มือ DPT — หมวดโครงสร้าง</strong>
+          <div class="text-sm">deep link ไปยังเลขหน้าที่แบบฟอร์มต้นฉบับอ้างอิง เปิดดูได้ในแอปโดยตรงโดยไม่ต้องออกจากหน้าประเมิน (เนื้อหาอ้างอิงคู่มือฉบับเต็มยังไม่รวมในต้นแบบนี้)</div>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">3) ความเสียหายของโครงหลังคา</h2>
+    <p class="section-desc">FR-07</p>
+    <div class="option-row"><span class="option-box radio"></span><span class="option-text">ไม่เสียหาย</span></div>
+    <div class="option-row selected"><span class="option-box radio"></span><span class="option-text">เสียหายเล็กน้อย</span></div>
+    <div class="option-row"><span class="option-box radio"></span><span class="option-text">เสียหายปานกลาง</span></div>
+    <div class="option-row"><span class="option-box radio"></span><span class="option-text">เสียหายรุนแรง (โครงหลังคายุบ/ถล่ม)</span></div>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">4) ส่วนประกอบอาคาร</h2>
+    <p class="section-desc">FR-08</p>
+    <h3>ผนัง</h3>
+    <div class="option-row selected"><span class="option-box radio"></span><span class="option-text">ไม่เสียหาย</span></div>
+    <div class="option-row"><span class="option-box radio"></span><span class="option-text">เสียหายเล็กน้อย</span></div>
+    <div class="option-row"><span class="option-box radio"></span><span class="option-text">เสียหายปานกลาง</span></div>
+    <div class="option-row"><span class="option-box radio"></span><span class="option-text">เสียหายรุนแรง</span></div>
+    <h3>ฝ้าเพดาน</h3>
+    <div class="option-row selected"><span class="option-box radio"></span><span class="option-text">ไม่เสียหาย</span></div>
+    <div class="option-row"><span class="option-box radio"></span><span class="option-text">เสียหายเล็กน้อย</span></div>
+    <div class="option-row"><span class="option-box radio"></span><span class="option-text">เสียหายปานกลาง</span></div>
+    <div class="option-row"><span class="option-box radio"></span><span class="option-text">เสียหายรุนแรง</span></div>
+    <h3>วัสดุมุงหลังคา</h3>
+    <div class="option-row"><span class="option-box radio"></span><span class="option-text">ไม่เสียหาย</span></div>
+    <div class="option-row selected"><span class="option-box radio"></span><span class="option-text">เสียหายเล็กน้อย (กระเบื้องแตก/หลุดบางจุด)</span></div>
+    <div class="option-row"><span class="option-box radio"></span><span class="option-text">เสียหายปานกลาง</span></div>
+    <div class="option-row"><span class="option-box radio"></span><span class="option-text">เสียหายรุนแรง</span></div>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">5) ระบบไฟฟ้าและระบบอื่นๆ</h2>
+    <p class="section-desc">FR-09</p>
+    <div class="option-row"><span class="option-box checkbox"></span><span class="option-text">แผงไฟฟ้าจมน้ำ/เสียหาย</span></div>
+    <div class="option-row selected"><span class="option-box checkbox"></span><span class="option-text">สายไฟ/เต้ารับเปียกน้ำ</span></div>
+    <div class="option-row"><span class="option-box checkbox"></span><span class="option-text">ระบบประปา/สุขาภิบาลเสียหาย</span></div>
+    <div class="option-row"><span class="option-box checkbox"></span><span class="option-text">ไม่พบความเสียหายของระบบ</span></div>
+  </div>
+
+  <div class="btn-row">
+    <a class="btn btn-secondary btn-field" href="field-survey-building.html" style="text-decoration:none;">ย้อนกลับ</a>
+    <a class="btn btn-primary btn-field" href="field-survey-photo-ai.html" style="text-decoration:none;">ถัดไป: ถ่ายภาพประกอบ</a>
+  </div>
+</div>
+</body>
+</html>

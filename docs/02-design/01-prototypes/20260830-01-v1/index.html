@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CrackAI-Field — Prototype v1</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="proto-bar">
+  <strong>CrackAI-Field Prototype</strong>
+  <span class="proto-fr">20260830-01-v1</span>
+  <span class="proto-scope">ขอบเขต: ฟีเจอร์ Must have 11 รายการ</span>
+</div>
+
+<div class="layout-office">
+  <h1>CrackAI-Field — Clickable Prototype v1</h1>
+  <p class="text-sm">
+    เครื่องมือสำรวจความเสียหายขั้นต้นของโครงสร้างอาคารหลังอุทกภัย อิงแบบฟอร์ม 10 หมวดของกรมโยธาธิการและผังเมือง (DPT)
+    ต้นแบบนี้แปลงมาจาก <code>feature-list.md</code> + <code>user-journey.md</code> โดยยึด <code>DESIGN.md</code> เป็นแหล่งความจริงของภาพทั้งหมด
+  </p>
+
+  <div class="scope-note">
+    <strong>ขอบเขตรอบนี้:</strong> เฉพาะฟีเจอร์ระดับ <strong>Must have ทั้ง 11 รายการ</strong> (ฟีเจอร์ 1, 2, 3, 4, 6, 7, 9, 10, 13, 14, 15)<br>
+    <strong>ยังไม่ได้สร้างในรอบนี้ (Should have):</strong> ฟีเจอร์ 5 วาดภาพประกอบเพิ่มเติม (FR-15) · ฟีเจอร์ 8 มอบหมายงานสำรวจให้ทีม (FR-20) ·
+    ฟีเจอร์ 11 ส่งออกรายงานผลการสำรวจ (FR-23) · ฟีเจอร์ 12 ค้นหา/กรองรายการอาคาร (FR-24)
+  </div>
+
+  <div class="journey-group">
+    <h2><span class="badge role">ผู้สำรวจภาคสนาม</span> Journey: ลงพื้นที่สำรวจอาคาร</h2>
+    <div class="screen-grid">
+      <a class="screen-card" href="login.html">
+        <h3>เข้าสู่ระบบ</h3>
+        <p class="text-sm">ทุกบทบาท รวมเข้าสู่ระบบขณะออฟไลน์ที่หน้างาน</p>
+        <div class="fr-list">FR-25 · FR-26 · FR-27 · NFR-09</div>
+      </a>
+      <a class="screen-card" href="field-survey-building.html">
+        <h3>1) ข้อมูลอาคาร + สภาพแวดล้อม</h3>
+        <p class="text-sm">ข้อมูลทั่วไป พิกัด GPS ลักษณะทางกายภาพ อันตรายโดยรอบ</p>
+        <div class="fr-list">FR-01 · FR-02 · FR-03 · FR-04 · NFR-06</div>
+      </a>
+      <a class="screen-card" href="field-survey-damage.html">
+        <h3>2) ประเมินความเสียหาย</h3>
+        <p class="text-sm">โครงสร้างแยกตามวัสดุ โครงหลังคา ส่วนประกอบ ระบบไฟฟ้า + เกณฑ์อ้างอิงคู่มือ</p>
+        <div class="fr-list">FR-05 · FR-06 · FR-07 · FR-08 · FR-09 · FR-11</div>
+      </a>
+      <a class="screen-card" href="field-survey-photo-ai.html">
+        <h3>3) ภาพถ่าย + AI วิเคราะห์รอยร้าว</h3>
+        <p class="text-sm">Human-in-the-loop เต็มรูปแบบ ทั้งเส้นทาง AI สำเร็จ/ไม่สำเร็จ/กรอกเอง</p>
+        <div class="fr-list">FR-12 · FR-13 · FR-14 · FR-28 · FR-29 · NFR-05</div>
+      </a>
+      <a class="screen-card" href="field-survey-summary.html">
+        <h3>4) สรุปผล 3 ระดับสี + ผู้สำรวจ</h3>
+        <p class="text-sm">ตัวเลือกระดับความเสียหายไม่มีค่าเริ่มต้น + ข้อมูลผู้สำรวจ/เวลา + ยืนยันส่ง</p>
+        <div class="fr-list">FR-10 · FR-16 · FR-17</div>
+      </a>
+      <a class="screen-card" href="field-sync-status.html">
+        <h3>5) สถานะออฟไลน์และซิงค์</h3>
+        <p class="text-sm">รายการรอซิงค์ + คำอธิบาย auto-merge + รองรับหลายทีมพร้อมกัน</p>
+        <div class="fr-list">NFR-01 · NFR-02 · NFR-03 · NFR-04 · NFR-07</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="journey-group">
+    <h2><span class="badge role">หัวหน้าผู้สำรวจ</span> Journey: ตรวจทานและรับรองผล</h2>
+    <div class="screen-grid">
+      <a class="screen-card" href="lead-review-list.html">
+        <h3>6) รายการผลสำรวจของทีม</h3>
+        <p class="text-sm">ตารางรายการ พร้อมแจ้งเตือนข้อมูลขัดแย้งค้างอยู่</p>
+        <div class="fr-list">FR-19</div>
+      </a>
+      <a class="screen-card" href="lead-review-detail.html">
+        <h3>7) ตรวจทาน + ลงลายเซ็นดิจิทัล</h3>
+        <p class="text-sm">ส่งกลับแก้ไข หรือลงลายมือชื่อรับรองผลสรุป</p>
+        <div class="fr-list">FR-18 · FR-19</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="journey-group">
+    <h2><span class="badge role">ผู้ดูแลระบบ</span> Journey: จัดการผู้ใช้และสิทธิ์</h2>
+    <div class="screen-grid">
+      <a class="screen-card" href="admin-users.html">
+        <h3>8) จัดการผู้ใช้และสิทธิ์การเข้าถึง</h3>
+        <p class="text-sm">สร้าง/แก้ไข/ปิดการใช้งานบัญชี กำหนดบทบาท</p>
+        <div class="fr-list">FR-21 · NFR-08</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="journey-group">
+    <h2><span class="badge role">หน่วยงานส่วนกลาง/ผู้บริหาร</span> Journey: ติดตามภาพรวมผลสำรวจ</h2>
+    <div class="screen-grid">
+      <a class="screen-card" href="dashboard.html">
+        <h3>9) Dashboard ภาพรวมผลสำรวจ</h3>
+        <p class="text-sm">สัดส่วนตามระดับสี แยกตามจังหวัด + มุมมองตารางเพื่อการเข้าถึง</p>
+        <div class="fr-list">FR-22</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="journey-group">
+    <h2><span class="badge role">หัวหน้าผู้สำรวจ</span> <span class="badge role">ผู้ดูแลระบบ</span> Manual Conflict Resolution</h2>
+    <div class="screen-grid">
+      <a class="screen-card" href="conflict-list.html">
+        <h3>10) รายการระเบียนที่มีข้อมูลขัดแย้ง</h3>
+        <p class="text-sm">เฉพาะ 2 บทบาทนี้เข้าถึงได้ตาม spec</p>
+        <div class="fr-list">FR-30</div>
+      </a>
+      <a class="screen-card" href="conflict-detail.html">
+        <h3>11) เปรียบเทียบและแก้ไขข้อมูลขัดแย้งด้วยมือ</h3>
+        <p class="text-sm">เปรียบเทียบเคียงข้างกัน เลือกทั้งเวอร์ชันหรือรวมรายฟิลด์</p>
+        <div class="fr-list">FR-31 · NFR-10</div>
+      </a>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <p class="text-xs">
+    อ้างอิง: <a href="../../feature-list.md">feature-list.md</a> ·
+    <a href="../../user-journey.md">user-journey.md</a> ·
+    <a href="../../DESIGN.md">DESIGN.md</a> ·
+    รายละเอียดขอบเขตเต็มดู <a href="prototype.md">prototype.md</a>
+  </p>
+</div>
+</body>
+</html>

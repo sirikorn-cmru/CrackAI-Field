@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>เปรียบเทียบและแก้ไขข้อมูลขัดแย้ง — CrackAI-Field Prototype</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="proto-bar">
+  <a class="proto-link" href="index.html">⌂ Prototype</a>
+  <strong>11) เปรียบเทียบและแก้ไขข้อมูลขัดแย้งด้วยมือ</strong>
+  <span class="proto-fr">FR-31 · NFR-10</span>
+  <select onchange="if(this.value) location.href=this.value">
+    <option value="">ไปหน้าอื่น…</option>
+    <option value="conflict-list.html">10) รายการข้อมูลขัดแย้ง</option>
+  </select>
+  <span class="proto-scope">หัวหน้าผู้สำรวจ · ผู้ดูแลระบบ</span>
+</div>
+
+<div class="layout-office">
+  <a class="btn btn-ghost" href="conflict-list.html">&larr; กลับไปรายการ</a>
+  <h1>บ้านเลขที่ 45/2 ต.ท่าศาลา</h1>
+  <p class="text-sm">เปรียบเทียบเวอร์ชันที่ขัดแย้งกันแบบเคียงข้างกัน แล้วเลือกเก็บค่าจากเวอร์ชันใดเวอร์ชันหนึ่ง หรือรวมค่าเป็นรายฟิลด์ (FR-31)</p>
+
+  <div class="conflict-compare">
+    <div class="conflict-col">
+      <div class="conflict-meta">
+        แก้ไขโดย: <strong>สมชาย ใจดี</strong> · อุปกรณ์: แท็บเล็ต SN-0231 · เวลา: 30/08 09:52
+      </div>
+      <div class="conflict-field diff">
+        <div class="cf-label">ผลสรุประดับความเสียหาย</div>
+        <div class="cf-value">ใช้ได้แต่ต้องระวัง</div>
+      </div>
+      <div class="conflict-field diff">
+        <div class="cf-label">ความกว้างรอยร้าว (มม.)</div>
+        <div class="cf-value">2.4</div>
+      </div>
+      <div class="conflict-field">
+        <div class="cf-label">จำนวนชั้น</div>
+        <div class="cf-value">2</div>
+      </div>
+      <button type="button" class="btn btn-primary btn-office" style="width:100%; margin-top:12px;">ใช้เวอร์ชันนี้ทั้งหมด</button>
+    </div>
+
+    <div class="conflict-col">
+      <div class="conflict-meta">
+        แก้ไขโดย: <strong>วิภา สายชล</strong> · อุปกรณ์: มือถือ SN-0117 · เวลา: 30/08 10:03
+      </div>
+      <div class="conflict-field diff">
+        <div class="cf-label">ผลสรุประดับความเสียหาย</div>
+        <div class="cf-value">ห้ามเข้า</div>
+      </div>
+      <div class="conflict-field diff">
+        <div class="cf-label">ความกว้างรอยร้าว (มม.)</div>
+        <div class="cf-value">6.1</div>
+      </div>
+      <div class="conflict-field">
+        <div class="cf-label">จำนวนชั้น</div>
+        <div class="cf-value">2</div>
+      </div>
+      <button type="button" class="btn btn-primary btn-office" style="width:100%; margin-top:12px;">ใช้เวอร์ชันนี้ทั้งหมด</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:24px;">
+    <h2 class="section-title">หรือรวมค่าเป็นรายฟิลด์</h2>
+    <div class="field-group">
+      <label class="field-label">ผลสรุประดับความเสียหาย — เลือกค่าที่จะใช้จริง</label>
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text text-mono">ใช้ได้แต่ต้องระวัง (สมชาย ใจดี)</span></div>
+      <div class="option-row selected"><span class="option-box radio"></span><span class="option-text text-mono">ห้ามเข้า (วิภา สายชล)</span></div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">ความกว้างรอยร้าว (มม.) — เลือกค่าที่จะใช้จริง</label>
+      <div class="option-row selected"><span class="option-box radio"></span><span class="option-text text-mono">2.4 (สมชาย ใจดี)</span></div>
+      <div class="option-row"><span class="option-box radio"></span><span class="option-text text-mono">6.1 (วิภา สายชล)</span></div>
+    </div>
+    <button type="button" class="btn btn-primary btn-office" onclick="document.getElementById('resolve-dialog').style.display='flex'">บันทึกผลลัพธ์และปลดสถานะขัดแย้ง</button>
+  </div>
+</div>
+
+<div id="resolve-dialog" class="dialog-backdrop" style="display:none;">
+  <div class="dialog">
+    <h2>ยืนยันผลการแก้ไขความขัดแย้ง</h2>
+    <p class="text-sm">
+      ผลสรุปที่จะบันทึกเป็นข้อมูลจริง: <strong>ห้ามเข้า</strong> · ความกว้างรอยร้าว: <strong>2.4 มม.</strong> (รวมจากสองเวอร์ชัน)
+      สถานะ "รอแก้ไขความขัดแย้ง" ของระเบียนนี้จะถูกปลดทันที และระเบียนจะกลับไปนับรวมใน dashboard/รายงาน (NFR-10) — การกระทำนี้ย้อนกลับไม่ได้
+    </p>
+    <div class="btn-row">
+      <button type="button" class="btn btn-secondary btn-office" onclick="document.getElementById('resolve-dialog').style.display='none'">ยกเลิก</button>
+      <button type="button" class="btn btn-primary btn-office" onclick="document.getElementById('resolve-dialog').style.display='none'">ยืนยันบันทึกผล</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

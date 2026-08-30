@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>รายการรอตรวจทาน — CrackAI-Field Prototype</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="proto-bar">
+  <a class="proto-link" href="index.html">⌂ Prototype</a>
+  <strong>หัวหน้า 6) รายการผลสำรวจของทีม</strong>
+  <span class="proto-fr">FR-19</span>
+  <select onchange="if(this.value) location.href=this.value">
+    <option value="">ไปหน้าอื่น…</option>
+    <option value="lead-review-detail.html">หัวหน้า 7) ตรวจทาน+ลงนาม</option>
+    <option value="conflict-list.html">10) รายการข้อมูลขัดแย้ง</option>
+    <option value="login.html">เข้าสู่ระบบ</option>
+  </select>
+  <span class="proto-scope">หัวหน้าผู้สำรวจ</span>
+</div>
+
+<div class="layout-office">
+  <h1>รายการผลสำรวจของทีม</h1>
+  <p class="text-sm">ตรวจทานผลที่ทีมกรอกครบทุกอาคาร ก่อนลงลายมือชื่อรับรอง (FR-19)</p>
+
+  <div class="banner conflict">
+    <span aria-hidden="true">&#9679;</span>
+    <div>
+      <strong>มีระเบียนที่ต้องแก้ไขความขัดแย้งของข้อมูล 2 รายการ</strong>
+      <div class="text-sm">ระเบียนเหล่านี้จะไม่ถูกนับใน dashboard หรือรายงานจนกว่าจะแก้ไขเสร็จ — <a href="conflict-list.html">ไปหน้าจัดการความขัดแย้ง</a></div>
+    </div>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>อาคาร</th>
+        <th>ผู้สำรวจ</th>
+        <th>เวลาแล้วเสร็จ</th>
+        <th>ผลสรุป</th>
+        <th>สถานะ</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>บ้านเลขที่ 45/2 ต.ท่าศาลา</td>
+        <td>สมชาย ใจดี</td>
+        <td class="num">30/08 09:52</td>
+        <td><span class="badge caution">ใช้ได้แต่ต้องระวัง</span></td>
+        <td><span class="badge pending">รอตรวจทาน</span></td>
+        <td><a class="btn btn-ghost" href="lead-review-detail.html">ตรวจทาน</a></td>
+      </tr>
+      <tr>
+        <td>โรงเรียนบ้านท่าศาลา</td>
+        <td>วิภา สายชล</td>
+        <td class="num">30/08 08:40</td>
+        <td><span class="badge safe">เข้าใช้งานได้</span></td>
+        <td><span class="badge synced">รับรองแล้ว</span></td>
+        <td><a class="btn btn-ghost" href="lead-review-detail.html">ดูรายละเอียด</a></td>
+      </tr>
+      <tr>
+        <td>ร้านค้าริมทาง เลขที่ 12</td>
+        <td>สมชาย ใจดี</td>
+        <td class="num">30/08 08:30</td>
+        <td><span class="badge danger">ห้ามเข้า</span></td>
+        <td><span class="badge pending">รอตรวจทาน</span></td>
+        <td><a class="btn btn-ghost" href="lead-review-detail.html">ตรวจทาน</a></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="field-hint" style="margin-top:16px;">ต้นแบบรุ่นนี้ยังไม่มีระบบค้นหา/กรองรายการ (ฟีเจอร์ 12 — Should have, อยู่นอกขอบเขตรอบนี้)</p>
+</div>
+</body>
+</html>
