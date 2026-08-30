@@ -41,7 +41,7 @@ docs/
       technology-stack.md          ยังไม่ตัดสินใจ — รอจนกว่าจะเริ่มพัฒนาจริง
     feature-list.md
     user-journey.md
-    DESIGN.md                     Design System หลัก (สี, ตัวอักษร, ระยะห่าง, องค์ประกอบ UI) — อ้างอิงก่อนทำ Prototype ใน 01-prototypes/
+    DESIGN.md                     Design System หลัก (Brand Identity, สี, ตัวอักษร, ระยะห่าง, องค์ประกอบ UI, UX rules) — อ้างอิงก่อนทำ Prototype ใน 01-prototypes/ เจ้าของไฟล์คือ agent `design-system-writer` (ผ่าน `/sync-design-system`) เท่านั้น
   03-testing/
     01-test-plan/
       acceptance-criteria.md      เกณฑ์ยอมรับ (Given-When-Then) ต่อ FR/NFR จัดกลุ่มตาม feature-list
@@ -64,7 +64,9 @@ docs/
 จุดเริ่มต้นที่ใช้บ่อย:
 - `/capture-requirement` — แปลง requirement ดิบจากผู้ใช้เป็นเอกสาร spec ใหม่/แก้ไขของเดิม พร้อมอัปเดต backlog
 - `/audit-backlog` — ตรวจความสอดคล้องของเอกสารช่วงต้นสายงานทั้ง 4 ชั้น (spec → backlog → feature-list → user-journey) แก้ backlog ให้ตรงกับ spec แล้ว auto-chain ต่อไป `sync-feature-journey`/`requirement-writer` จนทุกชั้นกลับมาตรงกันในคำสั่งเดียว
-- `/sync-feature-journey`, `/sync-technical-spec` (รวม architecture → api-spec/db-spec → detailed-design → nfr-review), `/sync-test-plan`, `/sync-phase-plan`, `/build-prototype` — ตรวจสอบและ sync เอกสารแต่ละชั้นให้ตรงกับชั้นก่อนหน้า
+- `/sync-feature-journey`, `/sync-technical-spec` (รวม architecture → api-spec/db-spec → detailed-design → nfr-review), `/sync-test-plan`, `/sync-phase-plan` — ตรวจสอบและ sync เอกสารแต่ละชั้นให้ตรงกับชั้นก่อนหน้า
+- `/sync-design-system` — สร้าง/ปรับปรุง `docs/02-design/DESIGN.md` โดยสัมภาษณ์ผู้ใช้เรื่องโทนสี สไตล์ และโลโก้/ภาพอ้างอิงก่อนเสมอ (เอกสารนี้ derive จาก FR/NFR แบบ mechanical ไม่ได้ จึงต้องถามผู้ใช้)
+- `/build-prototype` — สร้าง/ปรับปรุง Prototype โดยระบุขอบเขตเจาะจงได้ (ทั้งระบบ/ตามบทบาท/ตาม journey/ตามฟีเจอร์/ตามรหัส FR) เสนอแผนให้ยืนยันก่อนเสมอ ถามทุกครั้งว่าจะสร้างเวอร์ชันใหม่หรือแก้โฟลเดอร์เดิม และ auto-chain ไป `sync-design-system` ถ้ายังไม่มี `DESIGN.md`
 - `/run-requirements-phase`, `/run-technical-phase`, `/run-prototype-phase` — รวมหลายขั้นตอนที่เกี่ยวข้องกันไว้ในคำสั่งเดียว
 - `/audit-pipeline` — ตรวจสอบความสอดคล้องทั้งสายงานตั้งแต่ spec ถึงปลายทางในคำสั่งเดียว
 
