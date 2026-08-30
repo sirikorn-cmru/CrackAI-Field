@@ -64,6 +64,9 @@ Skill นี้เป็น workflow มาตรฐานสำหรับต�
    - `## NEEDS_FEATURE_JOURNEY_SYNC` — **ไม่ต้อง auto-chain เองในขั้นตอนนี้** เพราะ pipeline
      จะรันชั้นที่ 2 ต่ออยู่แล้วในข้อ 4 ให้เก็บเนื้อหาใต้หัวข้อนี้ไว้แล้ว**ส่งต่อเข้า prompt ของ
      ชั้นที่ 2** เพื่อให้ `feature-journey-writer` ไม่ต้องตรวจซ้ำทั้งหมด
+   - `## NEEDS_TEST_PLAN_SYNC` — **ไม่ต้อง auto-chain เองในขั้นตอนนี้** เพราะ pipeline จะรัน
+     สาขา (ก) `sync-test-plan` ต่ออยู่แล้วในข้อ 6 ให้เก็บเนื้อหาใต้หัวข้อนี้ไว้แล้ว**ส่งต่อเข้า
+     prompt ของสาขา (ก)** เพื่อให้ `test-writer` ไม่ต้องตรวจซ้ำทั้งหมด
    - `## NEEDS_NEW_REQUIREMENT` — **ต้องจัดการก่อนไปข้อ 4** ให้เรียก subagent
      `requirement-writer` (`run_in_background: false`) พร้อมเนื้อหาใต้หัวข้อนี้แบบ verbatim
      รอผลลัพธ์ สุ่มตรวจว่ารหัสใหม่ปรากฏใน `backlog.md` จริง แล้วจึงไปข้อ 4 ต่อ (ชั้นที่ 2 จะ
