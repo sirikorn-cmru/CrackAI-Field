@@ -10,7 +10,7 @@ description: >
 
 # Run Technical Phase
 
-Skill นี้เป็น orchestrator สำหรับ "ช่วงที่ 3" ของ pipeline เอกสาร tasks-mng ตามที่ผู้ใช้แบ่งไว้:
+Skill นี้เป็น orchestrator สำหรับ "ช่วงที่ 3" ของ pipeline เอกสาร CrackAI-Field ตามที่ผู้ใช้แบ่งไว้:
 architecture → api + db → detailed design → nfr review โดยเรียก skill ย่อยที่มีอยู่แล้วเรียงตาม
 ลำดับ **เอกสารทั้งหมดในช่วงนี้ตั้งใจเขียนแบบไม่ผูก tech stack** จนกว่า `technology-stack.md`
 จะถูกตัดสินใจแล้วจริง Skill นี้**ไม่รวมการวางแผนแบ่ง phase/release** (`sync-phase-plan`/

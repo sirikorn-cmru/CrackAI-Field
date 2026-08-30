@@ -11,7 +11,7 @@ description: >
 
 # Run Requirements Phase
 
-Skill นี้เป็น orchestrator สำหรับ "ช่วงที่ 1" ของ pipeline เอกสาร tasks-mng ตามที่ผู้ใช้แบ่งไว้:
+Skill นี้เป็น orchestrator สำหรับ "ช่วงที่ 1" ของ pipeline เอกสาร CrackAI-Field ตามที่ผู้ใช้แบ่งไว้:
 requirement → backlog → feature-list + user journey → test case + acceptance criteria + test
 plan โดยเรียก skill/subagent ย่อยที่มีอยู่แล้วเรียงตามลำดับ ไม่เขียนไฟล์เอง ต่างจาก
 `audit-pipeline` ตรงที่ scope แค่ช่วงที่ 1 เท่านั้น (ไม่ลากต่อไปช่วง prototype/technical) และ

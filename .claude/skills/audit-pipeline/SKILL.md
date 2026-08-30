@@ -1,7 +1,7 @@
 ---
 name: audit-pipeline
 description: >
-  ตรวจสอบความสอดคล้องของเอกสารทั้งสายงานในโปรเจกต์ tasks-mng ตามลำดับชั้นเดียวในคำสั่งเดียว:
+  ตรวจสอบความสอดคล้องของเอกสารทั้งสายงานในโปรเจกต์ CrackAI-Field ตามลำดับชั้นเดียวในคำสั่งเดียว:
   spec (docs/01-requirements/01-spec/) → docs/01-requirements/backlog.md →
   docs/02-design/feature-list.md/user-journey.md → แยกเป็น 3 สาขาขนานกัน: (ก)
   docs/03-testing/01-test-plan/ (acceptance-criteria.md, test-plan.md, test-cases/), (ข)
@@ -17,7 +17,7 @@ description: >
 # Audit Pipeline
 
 Skill นี้เป็น workflow มาตรฐานสำหรับตรวจสอบความสอดคล้อง (consistency) ของเอกสารทั้งสายงานใน
-โปรเจกต์ tasks-mng ตามลำดับชั้น: spec (`01-spec/`) → `backlog.md` →
+โปรเจกต์ CrackAI-Field ตามลำดับชั้น: spec (`01-spec/`) → `backlog.md` →
 `feature-list.md`/`user-journey.md` → จากนั้นแยกเป็น **3 สาขาขนานกัน** ที่ต่างพึ่ง
 `feature-list.md`/`user-journey.md` เหมือนกันแต่ไม่ขึ้นต่อกันเอง:
 - **(ก) เอกสารทดสอบ** ใน `docs/03-testing/01-test-plan/` (`acceptance-criteria.md`,

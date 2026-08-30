@@ -1,7 +1,7 @@
 ---
 name: capture-requirement
 description: >
-  รับความต้องการดิบ (raw requirement) จากผู้ใช้สำหรับโปรเจกต์ tasks-mng แล้วผลิตเอกสาร
+  รับความต้องการดิบ (raw requirement) จากผู้ใช้สำหรับโปรเจกต์ CrackAI-Field แล้วผลิตเอกสาร
   Requirement Specification ใน docs/01-requirements/01-spec/, อัปเดต backlog.md,
   และบันทึกสรุปลง log ประจำวัน ใช้เมื่อผู้ใช้พิมพ์ /capture-requirement หรือขอให้ "เขียน
   requirement ใหม่", "แปลง requirement ดิบเป็นเอกสาร", "อัปเดต backlog จากความต้องการนี้"
@@ -11,7 +11,7 @@ description: >
 
 Skill นี้เป็น workflow มาตรฐานสำหรับแปลงความต้องการดิบที่ผู้ใช้เล่ามา (ข้อความอิสระ,
 บันทึกการประชุม, รายการ feature ที่อยากได้ ฯลฯ) ให้กลายเป็นเอกสาร Requirement
-Specification ที่เป็นทางการของโปรเจกต์ tasks-mng พร้อมอัปเดต backlog และ log ให้ครบ
+Specification ที่เป็นทางการของโปรเจกต์ CrackAI-Field พร้อมอัปเดต backlog และ log ให้ครบ
 ตามกฎใน `CLAUDE.md`
 
 ## เมื่อถูกเรียกใช้

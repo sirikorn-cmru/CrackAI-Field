@@ -10,7 +10,7 @@ description: >
 
 # Run Prototype Phase
 
-Skill นี้เป็น orchestrator สำหรับ "ช่วงที่ 2" ของ pipeline เอกสาร tasks-mng ตามที่ผู้ใช้แบ่งไว้:
+Skill นี้เป็น orchestrator สำหรับ "ช่วงที่ 2" ของ pipeline เอกสาร CrackAI-Field ตามที่ผู้ใช้แบ่งไว้:
 prototype เพียงหัวข้อเดียว แต่แยกเป็น 2 sub-step เสมอ (ตรวจสอบก่อน แล้วค่อยตัดสินใจสร้าง/แก้ไข)
 เพราะการสร้าง/แก้ prototype ต้องมีขั้นตอนยืนยัน scope กับผู้ใช้แบบโต้ตอบเสมอตามกฎของ
 `build-prototype`
