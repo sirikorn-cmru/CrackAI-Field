@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ค้นหา/กรองรายการอาคาร — CrackAI-Field Prototype</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .role-panel { display: none; }
+  .role-panel.active { display: block; }
+  .result-panel { display: none; }
+  .result-panel.active { display: block; }
+</style>
+</head>
+<body>
+<div class="proto-bar">
+  <a class="proto-link" href="index.html">⌂ Prototype</a>
+  <strong>ค้นหา/กรองรายการอาคาร + ส่งออกรายงาน</strong>
+  <span class="proto-fr">FR-23 · FR-24 · NFR-10</span>
+  <select onchange="if(this.value) location.href=this.value">
+    <option value="">ไปหน้าอื่น…</option>
+    <option value="dashboard.html">ส่วนกลาง 9) Dashboard</option>
+    <option value="lead-review-list.html">หัวหน้า 6) รายการรอตรวจทาน</option>
+    <option value="login.html">เข้าสู่ระบบ</option>
+  </select>
+  <span class="proto-scope">หน่วยงานส่วนกลาง/ผู้บริหาร, หัวหน้าผู้สำรวจ</span>
+</div>
+
+<div class="layout-office">
+  <h1>ค้นหา/กรองรายการอาคารที่สำรวจแล้ว</h1>
+  <p class="text-sm">ใช้ประกอบทั้งการติดตามความคืบหน้าของทีม (หัวหน้าผู้สำรวจ) และการดูภาพรวมระดับพื้นที่พร้อมส่งออกรายงาน (หน่วยงานส่วนกลาง/ผู้บริหาร) (FR-24)</p>
+
+  <div class="card">
+    <h2 class="section-title">มุมมองสาธิต (สำหรับรีวิว Prototype เท่านั้น)</h2>
+    <p class="section-desc">ระบบจริงกำหนดสิทธิ์การส่งออกรายงานจากบทบาทของบัญชีผู้ใช้ ไม่ใช่จากปุ่มนี้ — ปุ่มด้านล่างมีไว้เพื่อสาธิตความแตกต่างของสิทธิ์การเข้าถึงระหว่าง 2 บทบาทที่ใช้หน้าจอนี้ร่วมกัน</p>
+    <div class="btn-row">
+      <button type="button" class="btn btn-secondary btn-field" onclick="showRole('central')">มุมมอง: หน่วยงานส่วนกลาง/ผู้บริหาร (ค้นหา+ส่งออก)</button>
+      <button type="button" class="btn btn-secondary btn-field" onclick="showRole('lead')">มุมมอง: หัวหน้าผู้สำรวจ (ค้นหาเพื่อติดตามความคืบหน้า)</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">เงื่อนไขค้นหา/กรอง</h2>
+    <div class="field-group">
+      <label class="field-label" for="f-province">พื้นที่/จังหวัด</label>
+      <select class="select" id="f-province">
+        <option>ทั้งหมด</option>
+        <option>นครศรีธรรมราช</option>
+        <option>สุราษฎร์ธานี</option>
+        <option>ชุมพร</option>
+        <option>พังงา</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <label class="field-label">ระดับสีผลสรุป</label>
+      <div class="option-row selected"><span class="option-box checkbox"></span><span class="option-text">เข้าใช้งานได้</span></div>
+      <div class="option-row selected"><span class="option-box checkbox"></span><span class="option-text">ใช้ได้แต่ต้องระวัง</span></div>
+      <div class="option-row selected"><span class="option-box checkbox"></span><span class="option-text">ห้ามเข้า</span></div>
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="f-from">ช่วงวันที่สำรวจ</label>
+      <div class="btn-row">
+        <input class="input text-mono" id="f-from" type="text" placeholder="วว/ดด/ปปปป — เริ่ม">
+        <input class="input text-mono" id="f-to" type="text" placeholder="วว/ดด/ปปปป — สิ้นสุด">
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="f-surveyor">ผู้สำรวจ/หัวหน้าผู้สำรวจ</label>
+      <input class="input" id="f-surveyor" type="text" placeholder="ค้นหาด้วยชื่อ">
+    </div>
+    <div class="btn-row">
+      <button type="button" class="btn btn-primary btn-office" onclick="showResult('list')">ค้นหา</button>
+      <button type="button" class="btn btn-secondary btn-office" onclick="showResult('empty')">จำลอง: ค้นหาไม่พบผลลัพธ์</button>
+    </div>
+  </div>
+
+  <div class="banner conflict">
+    <span aria-hidden="true">&#9679;</span>
+    <div>
+      <strong>มีระเบียนที่ถูกซ่อนจากผลค้นหานี้ 2 รายการ</strong>
+      <div class="text-sm">เนื่องจากยังมีสถานะ "รอแก้ไขความขัดแย้ง" (ฟีเจอร์ 15, NFR-10) ระเบียนเหล่านี้จะไม่ถูกนับรวมในผลค้นหาหรือรายงานที่ส่งออกจนกว่าจะแก้ไขเสร็จ — <a href="conflict-list.html">ไปหน้าจัดการความขัดแย้ง</a></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">ผลการค้นหา</h2>
+
+    <div id="result-list" class="result-panel active">
+      <p class="section-desc">พบ 24 อาคารที่ตรงเงื่อนไข (จากทั้งหมด 1,248 อาคารที่สำรวจแล้ว)</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>อาคาร</th><th>พื้นที่/จังหวัด</th><th>ผลสรุป</th><th>วันที่สำรวจ</th><th>ผู้สำรวจ</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>บ้านเลขที่ 45/2 ต.ท่าศาลา</td>
+            <td>นครศรีธรรมราช</td>
+            <td><span class="badge caution">ใช้ได้แต่ต้องระวัง</span></td>
+            <td class="num">30/08/2569</td>
+            <td>สมชาย ใจดี</td>
+          </tr>
+          <tr>
+            <td>โรงเรียนบ้านท่าศาลา</td>
+            <td>นครศรีธรรมราช</td>
+            <td><span class="badge safe">เข้าใช้งานได้</span></td>
+            <td class="num">30/08/2569</td>
+            <td>วิภา สายชล</td>
+          </tr>
+          <tr>
+            <td>ร้านค้าริมทาง เลขที่ 12</td>
+            <td>สุราษฎร์ธานี</td>
+            <td><span class="badge danger">ห้ามเข้า</span></td>
+            <td class="num">30/08/2569</td>
+            <td>สมชาย ใจดี</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="result-empty" class="result-panel">
+      <div class="empty-state">
+        <div style="font-size:32px;" aria-hidden="true">&#128269;</div>
+        <div><strong>ไม่พบอาคารที่ตรงกับเงื่อนไขที่เลือก</strong></div>
+        <div class="text-sm">
+          อาจเป็นเพราะยังไม่มีทีมลงพื้นที่สำรวจในพื้นที่หรือช่วงวันที่ที่เลือก หรือระเบียนที่ตรงเงื่อนไขทั้งหมดอยู่ระหว่างรอแก้ไขความขัดแย้ง (ฟีเจอร์ 15) จึงถูกซ่อนจากผลค้นหาไว้ก่อน —
+          ลองขยายช่วงวันที่ เลือกพื้นที่อื่น หรือติดต่อหัวหน้าผู้สำรวจเพื่อตรวจสอบสถานะการมอบหมายงาน (ฟีเจอร์ 8)
+        </div>
+        <button type="button" class="btn btn-secondary btn-office" style="margin-top:12px;" onclick="showResult('list')">ล้างตัวกรอง</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="role-central" class="role-panel active">
+    <div class="card">
+      <h2 class="section-title">ส่งออกรายงานผลการสำรวจ (เฉพาะบทบาทนี้)</h2>
+      <p class="section-desc">ส่งออกเฉพาะระเบียนที่ตรงกับเงื่อนไขค้นหาด้านบน — ไม่รวมระเบียนที่ยังรอแก้ไขความขัดแย้ง (NFR-10) (FR-23)</p>
+      <div class="field-group">
+        <label class="field-label">รูปแบบรายงานที่ต้องการ</label>
+        <div class="option-row selected"><span class="option-box radio"></span><span class="option-text">สรุปข้อมูลแบบตาราง (รวมทุกอาคารที่ค้นพบไว้ในไฟล์เดียว)</span></div>
+        <div class="option-row"><span class="option-box radio"></span><span class="option-text">รายงานแบบเอกสารต่ออาคาร (สำหรับพิมพ์/นำเสนอ)</span></div>
+      </div>
+      <p class="field-hint">รูปแบบไฟล์จริง (เช่น ตารางคำนวณ หรือเอกสารพร้อมพิมพ์) ยังไม่กำหนด — เป็นข้อสมมติที่ค้างอยู่ในหัวข้อ 6 ของ spec ต้นทาง รอการตัดสินใจเชิงเทคนิคก่อนนำไปพัฒนาจริง</p>
+      <button type="button" class="btn btn-primary btn-office" style="margin-top:8px;" onclick="alert('ส่งออกรายงานแล้ว (สาธิต) — รูปแบบไฟล์จริงยังไม่กำหนด')">ส่งออกรายงาน</button>
+    </div>
+  </div>
+
+  <div id="role-lead" class="role-panel">
+    <div class="banner info">
+      <span aria-hidden="true">ⓘ</span>
+      <div>
+        <strong>บทบาทนี้ไม่มีสิทธิ์ส่งออกรายงาน</strong>
+        <div class="text-sm">การส่งออกรายงานผลการสำรวจ (ฟีเจอร์ 11, FR-23) จำกัดเฉพาะบทบาทหน่วยงานส่วนกลาง/ผู้บริหารตาม spec — หัวหน้าผู้สำรวจใช้หน้าจอนี้เพื่อค้นหา/กรองติดตามความคืบหน้าของทีมเท่านั้น (FR-24)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showRole(id) {
+  document.querySelectorAll('.role-panel').forEach(function (el) { el.classList.remove('active'); });
+  var target = document.getElementById('role-' + id);
+  if (target) { target.classList.add('active'); }
+}
+function showResult(id) {
+  document.querySelectorAll('.result-panel').forEach(function (el) { el.classList.remove('active'); });
+  var target = document.getElementById('result-' + id);
+  if (target) { target.classList.add('active'); target.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+}
+</script>
+</body>
+</html>

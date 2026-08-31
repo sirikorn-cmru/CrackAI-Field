@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>วาดภาพประกอบเพิ่มเติม — CrackAI-Field Prototype</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="proto-bar">
+  <a class="proto-link" href="index.html">⌂ Prototype</a>
+  <strong>สำรวจ 3.5) วาดภาพประกอบเพิ่มเติม (ไม่บังคับ)</strong>
+  <span class="proto-fr">FR-15</span>
+  <select onchange="if(this.value) location.href=this.value">
+    <option value="">ไปหน้าอื่น…</option>
+    <option value="field-survey-photo-ai.html">ภาคสนาม 3) ภาพถ่าย+AI</option>
+    <option value="field-survey-summary.html">ภาคสนาม 4) สรุปผล+ผู้สำรวจ</option>
+  </select>
+  <span class="proto-scope">ผู้สำรวจภาคสนาม</span>
+</div>
+
+<div class="sync-bar-wrap">
+  <div class="sync-indicator offline" role="status">
+    <span aria-hidden="true">&#9679;</span> ออฟไลน์ — ภาพวาดบันทึกในเครื่อง จะซิงค์อัตโนมัติเมื่อมีสัญญาณ
+  </div>
+</div>
+
+<div class="layout-field">
+  <div class="wizard-steps">
+    <span class="wizard-step done">1. ข้อมูลอาคาร</span>
+    <span class="wizard-step done">2. ความเสียหาย</span>
+    <span class="wizard-step done">3. ภาพถ่าย+AI</span>
+    <span class="wizard-step">4. สรุปผล</span>
+  </div>
+
+  <h1>วาดภาพประกอบเพิ่มเติม</h1>
+  <p class="text-sm">นอกเหนือจากภาพถ่ายในขั้นตอนที่แล้ว ท่านสามารถวาด/เขียนภาพประกอบเพิ่มเติมได้ (เช่น ร่างตำแหน่งความเสียหายที่ถ่ายภาพลำบาก) ตามหมวด "พื้นที่สำหรับวาดภาพประกอบที่จำเป็น" ของแบบฟอร์มต้นฉบับ (FR-15) — ขั้นตอนนี้ไม่บังคับ</p>
+
+  <div class="card">
+    <div class="field-group">
+      <label class="field-label" for="pos1">ตำแหน่ง/บริเวณที่เกี่ยวข้อง</label>
+      <select class="select" id="pos1">
+        <option>เสา ชั้น 1 ด้านหน้า</option>
+        <option>คาน ชั้น 1</option>
+        <option>ผนังภายนอก ด้านทิศเหนือ</option>
+      </select>
+    </div>
+    <div class="signature-pad">แตะเพื่อวาดภาพประกอบ (ตัวอย่างพื้นที่วาด)</div>
+    <div class="field-group" style="margin-top:16px;">
+      <label class="field-label" for="desc1">คำอธิบายเพิ่มเติม</label>
+      <textarea class="textarea" id="desc1" placeholder="เช่น ตำแหน่งรอยแตกที่มองจากมุมนี้ไม่ชัด จึงร่างภาพประกอบเพิ่มเติม"></textarea>
+    </div>
+  </div>
+
+  <p class="field-hint">รองรับการวาดภาพประกอบได้มากกว่า 1 จุดต่อการสำรวจ 1 อาคาร (เพิ่มการ์ดใหม่ต่อ 1 จุดที่ต้องการวาด)</p>
+
+  <hr class="divider">
+  <div class="btn-row">
+    <a class="btn btn-secondary btn-field" href="field-survey-photo-ai.html" style="text-decoration:none;">ย้อนกลับ</a>
+    <a class="btn btn-primary btn-field" href="field-survey-summary.html" style="text-decoration:none;">ถัดไป: สรุปผล</a>
+  </div>
+</div>
+</body>
+</html>

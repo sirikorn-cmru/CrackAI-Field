@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>มอบหมายงานสำรวจให้ทีม — CrackAI-Field Prototype</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="proto-bar">
+  <a class="proto-link" href="index.html">⌂ Prototype</a>
+  <strong>หัวหน้า 0) มอบหมายงานให้ทีม</strong>
+  <span class="proto-fr">FR-20</span>
+  <select onchange="if(this.value) location.href=this.value">
+    <option value="">ไปหน้าอื่น…</option>
+    <option value="login.html">เข้าสู่ระบบ</option>
+    <option value="lead-review-list.html">หัวหน้า 6) รายการรอตรวจทาน</option>
+    <option value="field-my-tasks.html">ภาคสนาม 0) งานที่ได้รับมอบหมาย</option>
+  </select>
+  <span class="proto-scope">หัวหน้าผู้สำรวจ</span>
+</div>
+
+<div class="layout-office">
+  <h1>มอบหมายงานสำรวจให้ทีม</h1>
+  <p class="text-sm">สร้าง/มอบหมายรายการอาคารหรือพื้นที่ที่ต้องสำรวจให้ผู้สำรวจแต่ละคนหรือทีม (FR-20) — เป็นจุดเริ่มต้นของ journey การสำรวจภาคสนาม (ฟีเจอร์ 1–6) งานที่มอบหมายจะปรากฏใน <a href="field-my-tasks.html">หน้า "งานที่ได้รับมอบหมาย"</a> ของผู้สำรวจที่เลือกทันที</p>
+
+  <div class="card form-max">
+    <h2 class="section-title">สร้างรายการมอบหมายใหม่</h2>
+    <div class="field-group">
+      <label class="field-label">มอบหมายให้ผู้สำรวจ <span class="required">จำเป็น</span></label>
+      <div class="option-row selected"><span class="option-box checkbox"></span><span class="option-text">สมชาย ใจดี</span></div>
+      <div class="option-row"><span class="option-box checkbox"></span><span class="option-text">วิภา สายชล</span></div>
+      <div class="option-row"><span class="option-box checkbox"></span><span class="option-text">ประเสริฐ ทองดี</span></div>
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="building">อาคาร/พื้นที่ที่ต้องสำรวจ <span class="required">จำเป็น</span></label>
+      <input class="input" id="building" type="text" placeholder="เช่น บ้านเลขที่ 78 ต.ท่าศาลา หรือ ระบุพื้นที่/หมู่บ้าน">
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="due">กำหนดสำรวจให้แล้วเสร็จภายใน</label>
+      <input class="input text-mono" id="due" type="text" value="30/08/2569">
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="note">หมายเหตุเพิ่มเติมถึงทีม</label>
+      <textarea class="textarea" id="note" placeholder="เช่น จุดสังเกต เส้นทางเข้าถึง หรือข้อควรระวังหน้างาน"></textarea>
+    </div>
+    <button type="button" class="btn btn-primary btn-office" onclick="alert('มอบหมายงานแล้ว (สาธิต) — งานนี้จะปรากฏในรายการของผู้สำรวจที่เลือกทันที')">มอบหมายงาน</button>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">รายการที่มอบหมายไปแล้ว</h2>
+    <table class="data-table">
+      <thead>
+        <tr><th>อาคาร/พื้นที่</th><th>ผู้สำรวจที่ได้รับมอบหมาย</th><th>กำหนดส่ง</th><th>สถานะ</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>บ้านเลขที่ 78 ต.ท่าศาลา</td>
+          <td>สมชาย ใจดี</td>
+          <td class="num">30/08/2569</td>
+          <td><span class="badge pending">ยังไม่เริ่ม</span></td>
+        </tr>
+        <tr>
+          <td>บ้านเลขที่ 45/2 ต.ท่าศาลา</td>
+          <td>สมชาย ใจดี</td>
+          <td class="num">30/08/2569</td>
+          <td><span class="badge synced">เสร็จแล้ว</span></td>
+        </tr>
+        <tr>
+          <td>โรงเรียนบ้านท่าศาลา</td>
+          <td>วิภา สายชล</td>
+          <td class="num">31/08/2569</td>
+          <td><span class="badge pending">ยังไม่เริ่ม</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

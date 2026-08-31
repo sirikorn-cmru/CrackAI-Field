@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>งานที่ได้รับมอบหมาย — CrackAI-Field Prototype</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="proto-bar">
+  <a class="proto-link" href="index.html">⌂ Prototype</a>
+  <strong>สำรวจ 0) งานที่ได้รับมอบหมาย</strong>
+  <span class="proto-fr">FR-20</span>
+  <select onchange="if(this.value) location.href=this.value">
+    <option value="">ไปหน้าอื่น…</option>
+    <option value="login.html">เข้าสู่ระบบ</option>
+    <option value="field-survey-building.html">ภาคสนาม 1) ข้อมูลอาคาร</option>
+    <option value="lead-assign.html">หัวหน้า 0) มอบหมายงานให้ทีม</option>
+  </select>
+  <span class="proto-scope">ผู้สำรวจภาคสนาม</span>
+</div>
+
+<div class="sync-bar-wrap">
+  <div class="sync-indicator offline" role="status">
+    <span aria-hidden="true">&#9679;</span> ออฟไลน์ — รายการงานที่ดาวน์โหลดไว้ล่าสุด จะอัปเดตอัตโนมัติเมื่อมีสัญญาณ
+  </div>
+</div>
+
+<div class="layout-field">
+  <h1>งานที่ได้รับมอบหมาย</h1>
+  <p class="text-sm">รายการอาคาร/พื้นที่ที่หัวหน้าผู้สำรวจมอบหมายให้ท่าน (FR-20) — แตะ "เริ่มสำรวจ" เพื่อไปกรอกแบบสำรวจของอาคารนั้น เป็นจุดเริ่มต้นของ journey การสำรวจภาคสนาม (ฟีเจอร์ 1–6)</p>
+
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+      <div>
+        <strong>บ้านเลขที่ 78 ต.ท่าศาลา</strong>
+        <div class="text-sm">มอบหมายโดย: หัวหน้าทีม ก. อนันต์ · กำหนดสำรวจให้แล้วเสร็จ: 30/08/2569</div>
+      </div>
+      <span class="badge pending">ยังไม่เริ่ม</span>
+    </div>
+    <a class="btn btn-primary btn-field" style="margin-top:12px; text-decoration:none;" href="field-survey-building.html">เริ่มสำรวจ</a>
+  </div>
+
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+      <div>
+        <strong>บ้านเลขที่ 45/2 ต.ท่าศาลา</strong>
+        <div class="text-sm">มอบหมายโดย: หัวหน้าทีม ก. อนันต์ · กำหนดสำรวจให้แล้วเสร็จ: 30/08/2569</div>
+      </div>
+      <span class="badge synced">เสร็จแล้ว</span>
+    </div>
+    <a class="btn btn-secondary btn-field" style="margin-top:12px; text-decoration:none;" href="field-survey-summary.html">ดูผลที่บันทึกไว้</a>
+  </div>
+
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+      <div>
+        <strong>โรงเรียนบ้านท่าศาลา</strong>
+        <div class="text-sm">มอบหมายโดย: หัวหน้าทีม ก. อนันต์ · กำหนดสำรวจให้แล้วเสร็จ: 31/08/2569</div>
+      </div>
+      <span class="badge pending">ยังไม่เริ่ม</span>
+    </div>
+    <a class="btn btn-primary btn-field" style="margin-top:12px; text-decoration:none;" href="field-survey-building.html">เริ่มสำรวจ</a>
+  </div>
+
+  <hr class="divider">
+  <p class="field-hint">รายการนี้เป็นข้อมูลตัวอย่างสำหรับสาธิต Prototype เท่านั้น ระบบจริงจะดึงจากรายการที่หัวหน้าผู้สำรวจมอบหมายไว้ — ดู <a href="lead-assign.html">หน้าจอมอบหมายงานของหัวหน้าผู้สำรวจ</a></p>
+</div>
+</body>
+</html>

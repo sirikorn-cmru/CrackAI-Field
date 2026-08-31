@@ -17,19 +17,23 @@
   <span class="proto-fr">FR-25 · FR-26 · FR-27 · NFR-09</span>
   <select onchange="if(this.value) location.href=this.value">
     <option value="">ไปหน้าอื่น…</option>
+    <option value="field-my-tasks.html">ภาคสนาม 0) งานที่ได้รับมอบหมาย</option>
     <option value="field-survey-building.html">ภาคสนาม 1) ข้อมูลอาคาร</option>
     <option value="field-survey-damage.html">ภาคสนาม 2) ประเมินความเสียหาย</option>
     <option value="field-survey-photo-ai.html">ภาคสนาม 3) ภาพถ่าย+AI</option>
+    <option value="field-survey-sketch.html">ภาคสนาม 3.5) วาดภาพประกอบ</option>
     <option value="field-survey-summary.html">ภาคสนาม 4) สรุปผล+ผู้สำรวจ</option>
     <option value="field-sync-status.html">ภาคสนาม 5) สถานะซิงค์</option>
+    <option value="lead-assign.html">หัวหน้า 0) มอบหมายงานให้ทีม</option>
     <option value="lead-review-list.html">หัวหน้า 6) รายการรอตรวจทาน</option>
     <option value="lead-review-detail.html">หัวหน้า 7) ตรวจทาน+ลงนาม</option>
     <option value="admin-users.html">ผู้ดูแล 8) จัดการผู้ใช้</option>
     <option value="dashboard.html">ส่วนกลาง 9) Dashboard</option>
+    <option value="building-search.html">ค้นหา/กรอง + ส่งออกรายงาน</option>
     <option value="conflict-list.html">10) รายการข้อมูลขัดแย้ง</option>
     <option value="conflict-detail.html">11) แก้ไขข้อมูลขัดแย้ง</option>
   </select>
-  <span class="proto-scope">Must have only · v1</span>
+  <span class="proto-scope">ครบ 15 ฟีเจอร์ (Must+Should) · v1</span>
 </div>
 
 <div class="layout-field" style="max-width:400px; padding-top:64px;">
@@ -60,14 +64,14 @@
     <div class="field-group">
       <label class="field-label" for="demo-role">บทบาทตัวอย่าง (สำหรับสาธิต Prototype เท่านั้น — ระบบจริงกำหนดจากบัญชีผู้ใช้)</label>
       <select class="select" id="demo-role" onchange="document.getElementById('go-btn').dataset.target = this.value">
-        <option value="field-survey-building.html">ผู้สำรวจภาคสนาม</option>
-        <option value="lead-review-list.html">หัวหน้าผู้สำรวจ</option>
+        <option value="field-my-tasks.html">ผู้สำรวจภาคสนาม</option>
+        <option value="lead-assign.html">หัวหน้าผู้สำรวจ</option>
         <option value="admin-users.html">ผู้ดูแลระบบ</option>
         <option value="dashboard.html">หน่วยงานส่วนกลาง/ผู้บริหาร</option>
       </select>
     </div>
 
-    <button type="button" id="go-btn" class="btn btn-primary btn-field" data-target="field-survey-building.html"
+    <button type="button" id="go-btn" class="btn btn-primary btn-field" data-target="field-my-tasks.html"
       onclick="location.href=this.dataset.target">เข้าสู่ระบบ</button>
   </form>
 

@@ -10,7 +10,7 @@
 <div class="proto-bar">
   <strong>CrackAI-Field Prototype</strong>
   <span class="proto-fr">20260830-01-v1</span>
-  <span class="proto-scope">ขอบเขต: ฟีเจอร์ Must have 11 รายการ</span>
+  <span class="proto-scope">ขอบเขต: ครบ 15 ฟีเจอร์ (Must have 11 + Should have 4)</span>
 </div>
 
 <div class="layout-office">
@@ -21,9 +21,10 @@
   </p>
 
   <div class="scope-note">
-    <strong>ขอบเขตรอบนี้:</strong> เฉพาะฟีเจอร์ระดับ <strong>Must have ทั้ง 11 รายการ</strong> (ฟีเจอร์ 1, 2, 3, 4, 6, 7, 9, 10, 13, 14, 15)<br>
-    <strong>ยังไม่ได้สร้างในรอบนี้ (Should have):</strong> ฟีเจอร์ 5 วาดภาพประกอบเพิ่มเติม (FR-15) · ฟีเจอร์ 8 มอบหมายงานสำรวจให้ทีม (FR-20) ·
-    ฟีเจอร์ 11 ส่งออกรายงานผลการสำรวจ (FR-23) · ฟีเจอร์ 12 ค้นหา/กรองรายการอาคาร (FR-24)
+    <strong>ขอบเขต (อัปเดต 20260830):</strong> ครบทั้ง <strong>15 ฟีเจอร์</strong> — Must have 11 รายการ (รอบแรก) + <strong>Should have 4 รายการ (รอบนี้)</strong>:
+    ฟีเจอร์ 5 วาดภาพประกอบเพิ่มเติม (FR-15) · ฟีเจอร์ 8 มอบหมายงานสำรวจให้ทีม (FR-20) ·
+    ฟีเจอร์ 11 ส่งออกรายงานผลการสำรวจ (FR-23) · ฟีเจอร์ 12 ค้นหา/กรองรายการอาคาร (FR-24)<br>
+    การเพิ่มฟีเจอร์ 8 ทำให้ขั้นตอน "รับมอบหมายงานสำรวจจากหัวหน้าผู้สำรวจ" กลับเข้าสู่ journey ภาคสนามอีกครั้ง (ตรงกับ <code>user-journey.md</code>) — ดูรายละเอียดเต็มใน <a href="prototype.md">prototype.md</a>
   </div>
 
   <div class="journey-group">
@@ -33,6 +34,11 @@
         <h3>เข้าสู่ระบบ</h3>
         <p class="text-sm">ทุกบทบาท รวมเข้าสู่ระบบขณะออฟไลน์ที่หน้างาน</p>
         <div class="fr-list">FR-25 · FR-26 · FR-27 · NFR-09</div>
+      </a>
+      <a class="screen-card" href="field-my-tasks.html">
+        <h3>0) งานที่ได้รับมอบหมาย</h3>
+        <p class="text-sm">รับมอบหมายงานสำรวจอาคาร/พื้นที่จากหัวหน้าผู้สำรวจ ก่อนเริ่มกรอกแบบสำรวจ</p>
+        <div class="fr-list">FR-20</div>
       </a>
       <a class="screen-card" href="field-survey-building.html">
         <h3>1) ข้อมูลอาคาร + สภาพแวดล้อม</h3>
@@ -48,6 +54,11 @@
         <h3>3) ภาพถ่าย + AI วิเคราะห์รอยร้าว</h3>
         <p class="text-sm">Human-in-the-loop เต็มรูปแบบ ทั้งเส้นทาง AI สำเร็จ/ไม่สำเร็จ/กรอกเอง</p>
         <div class="fr-list">FR-12 · FR-13 · FR-14 · FR-28 · FR-29 · NFR-05</div>
+      </a>
+      <a class="screen-card" href="field-survey-sketch.html">
+        <h3>3.5) วาดภาพประกอบเพิ่มเติม (ไม่บังคับ)</h3>
+        <p class="text-sm">วาด/เขียนภาพประกอบเพิ่มเติมนอกเหนือจากภาพถ่าย</p>
+        <div class="fr-list">FR-15</div>
       </a>
       <a class="screen-card" href="field-survey-summary.html">
         <h3>4) สรุปผล 3 ระดับสี + ผู้สำรวจ</h3>
@@ -65,6 +76,11 @@
   <div class="journey-group">
     <h2><span class="badge role">หัวหน้าผู้สำรวจ</span> Journey: ตรวจทานและรับรองผล</h2>
     <div class="screen-grid">
+      <a class="screen-card" href="lead-assign.html">
+        <h3>0) มอบหมายงานให้ทีม</h3>
+        <p class="text-sm">สร้าง/มอบหมายรายการอาคารหรือพื้นที่ให้สมาชิกทีม — จุดเริ่มต้นของ journey ภาคสนาม</p>
+        <div class="fr-list">FR-20</div>
+      </a>
       <a class="screen-card" href="lead-review-list.html">
         <h3>6) รายการผลสำรวจของทีม</h3>
         <p class="text-sm">ตารางรายการ พร้อมแจ้งเตือนข้อมูลขัดแย้งค้างอยู่</p>
@@ -74,6 +90,11 @@
         <h3>7) ตรวจทาน + ลงลายเซ็นดิจิทัล</h3>
         <p class="text-sm">ส่งกลับแก้ไข หรือลงลายมือชื่อรับรองผลสรุป</p>
         <div class="fr-list">FR-18 · FR-19</div>
+      </a>
+      <a class="screen-card" href="building-search.html">
+        <h3>ค้นหา/กรองรายการอาคาร</h3>
+        <p class="text-sm">ติดตามความคืบหน้าของทีม (ไม่มีสิทธิ์ส่งออกรายงาน — ดูมุมมองบทบาทนี้ในหน้าจอ)</p>
+        <div class="fr-list">FR-24</div>
       </a>
     </div>
   </div>
@@ -96,6 +117,11 @@
         <h3>9) Dashboard ภาพรวมผลสำรวจ</h3>
         <p class="text-sm">สัดส่วนตามระดับสี แยกตามจังหวัด + มุมมองตารางเพื่อการเข้าถึง</p>
         <div class="fr-list">FR-22</div>
+      </a>
+      <a class="screen-card" href="building-search.html">
+        <h3>ค้นหา/กรองรายการอาคาร + ส่งออกรายงาน</h3>
+        <p class="text-sm">กรองตามพื้นที่/ระดับสี/วันที่/ผู้สำรวจ แล้วส่งออกรายงาน (รูปแบบไฟล์ยังไม่กำหนด)</p>
+        <div class="fr-list">FR-23 · FR-24 · NFR-10</div>
       </a>
     </div>
   </div>
