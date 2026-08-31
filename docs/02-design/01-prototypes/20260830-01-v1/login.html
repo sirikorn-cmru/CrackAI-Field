@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>เข้าสู่ระบบ — CrackAI-Field Prototype</title>
 <link rel="stylesheet" href="style.css">
+<style>
+  .path-panel { display: none; }
+  .path-panel.active { display: block; }
+</style>
 </head>
 <body>
 <div class="proto-bar">
@@ -67,9 +71,69 @@
       onclick="location.href=this.dataset.target">เข้าสู่ระบบ</button>
   </form>
 
+  <hr class="divider">
+
+  <div class="card">
+    <h2 class="section-title">สาธิตสถานการณ์ปฏิเสธการเข้าสู่ระบบ (สำหรับรีวิว Prototype เท่านั้น)</h2>
+    <p class="section-desc">ปุ่มด้านล่างมีไว้เพื่อสาธิตสถานะที่ test case กำหนดไว้เท่านั้น — ระบบจริงตัดสินผลจากเซิร์ฟเวอร์/credential ที่แคชไว้จริง ไม่ใช่จากการกดปุ่ม</p>
+    <div class="btn-row">
+      <button type="button" class="btn btn-secondary btn-field" onclick="showLoginDemo('invalid')">จำลอง: ข้อมูลเข้าสู่ระบบไม่ถูกต้อง</button>
+      <button type="button" class="btn btn-secondary btn-field" onclick="showLoginDemo('forbidden')">จำลอง: ไม่มีสิทธิ์เข้าถึงหน้าจอ</button>
+      <button type="button" class="btn btn-secondary btn-field" onclick="showLoginDemo('expired')">จำลอง: credential ออฟไลน์หมดอายุ</button>
+    </div>
+  </div>
+
+  <!-- เส้นทาง: ชื่อผู้ใช้/รหัสผ่านไม่ถูกต้อง (FR-25 AC-2 · TC-14-02) -->
+  <div class="path-panel" id="panel-invalid">
+    <div class="card">
+      <div class="field-group">
+        <label class="field-label" for="d-username">ชื่อผู้ใช้ (ตัวอย่าง)</label>
+        <input class="input error" id="d-username" type="text" value="somchai" readonly>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="d-password">รหัสผ่าน (ตัวอย่าง)</label>
+        <input class="input error" id="d-password" type="password" value="********" readonly>
+        <div class="field-error"><span aria-hidden="true">&#9888;</span> ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณาตรวจสอบและลองใหม่อีกครั้ง</div>
+      </div>
+      <p class="field-hint">ข้อความนี้ไม่ระบุว่าผิดที่ช่องชื่อผู้ใช้หรือรหัสผ่าน ตามข้อกำหนด (FR-25 AC-2 · TC-14-02)</p>
+    </div>
+  </div>
+
+  <!-- เส้นทาง: ไม่มีสิทธิ์เข้าถึงหน้าจอนอกบทบาท (FR-26 AC-2 · TC-14-05) -->
+  <div class="path-panel" id="panel-forbidden">
+    <div class="banner danger" role="alert">
+      <span aria-hidden="true">&#9940;</span>
+      <div>
+        <strong>ไม่มีสิทธิ์เข้าถึงหน้าจอนี้</strong>
+        <div class="text-sm">บัญชีนี้ (บทบาทผู้สำรวจภาคสนาม) พยายามเข้าถึงหน้าจอที่สงวนไว้สำหรับบทบาทอื่นโดยตรง (เช่น หน้าจัดการผู้ใช้ของผู้ดูแลระบบ) ระบบปฏิเสธการเข้าถึงและนำกลับสู่หน้าจอที่ตรงกับบทบาทของท่าน (FR-26 AC-2 · TC-14-05)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- เส้นทาง: credential ที่แคชไว้ออฟไลน์หมดอายุ (NFR-09 AC-1 · TC-14-07/08) -->
+  <div class="path-panel" id="panel-expired">
+    <div class="banner danger" role="alert">
+      <span aria-hidden="true">&#9940;</span>
+      <div>
+        <strong>ไม่สามารถเข้าสู่ระบบด้วยข้อมูลที่บันทึกไว้ในเครื่องได้</strong>
+        <div class="text-sm">ข้อมูลเข้าสู่ระบบที่แคชไว้บนอุปกรณ์นี้หมดอายุการใช้งานออฟไลน์แล้ว กรุณาเชื่อมต่อสัญญาณอินเทอร์เน็ตเพื่อยืนยันตัวตนใหม่ก่อนใช้งานต่อ (NFR-09 AC-1 · TC-14-07/08)</div>
+      </div>
+    </div>
+  </div>
+
   <p class="text-xs" style="text-align:center; margin-top:24px;">
     หลังเข้าสู่ระบบสำเร็จ ระบบแสดงเฉพาะฟังก์ชัน/หน้าจอที่ตรงกับบทบาทของบัญชีนี้เท่านั้น (FR-21, NFR-08 — ดู [[feature-list|ฟีเจอร์ 9]])
   </p>
 </div>
+
+<script>
+function showLoginDemo(id) {
+  document.querySelectorAll('.path-panel').forEach(function (el) {
+    el.classList.remove('active');
+  });
+  var target = document.getElementById('panel-' + id);
+  if (target) { target.classList.add('active'); target.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+}
+</script>
 </body>
 </html>

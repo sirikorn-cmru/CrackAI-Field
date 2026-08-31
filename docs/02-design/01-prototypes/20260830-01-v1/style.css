@@ -398,6 +398,7 @@ a { color: var(--accent-info); }
 .banner.offline { background: var(--state-offline-bg); color: var(--state-offline-fg); border-color: transparent; }
 .banner.conflict { background: var(--state-conflict-bg); color: var(--state-conflict-fg); border-color: transparent; }
 .banner.info { background: var(--accent-info-subtle); color: var(--accent-info); border-color: transparent; }
+.banner.danger { background: var(--severity-danger-bg); color: var(--severity-danger-fg); border-color: transparent; }
 .dialog-backdrop { position: fixed; inset: 0; background: rgba(43,38,32,0.35); display: flex; align-items: center; justify-content: center; padding: var(--space-4); }
 .dialog { background: var(--surface-raised); border-radius: var(--radius-lg); box-shadow: var(--shadow-overlay); padding: var(--space-6); max-width: 420px; width: 100%; }
 .dialog .btn-row { justify-content: flex-end; margin-top: var(--space-6); }
