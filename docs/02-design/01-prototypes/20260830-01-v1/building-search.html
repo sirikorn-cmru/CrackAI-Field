@@ -10,6 +10,8 @@
   .role-panel.active { display: block; }
   .result-panel { display: none; }
   .result-panel.active { display: block; }
+  .export-panel { display: none; }
+  .export-panel.active { display: block; }
 </style>
 </head>
 <body>
@@ -131,16 +133,31 @@
   </div>
 
   <div id="role-central" class="role-panel active">
-    <div class="card">
-      <h2 class="section-title">ส่งออกรายงานผลการสำรวจ (เฉพาะบทบาทนี้)</h2>
-      <p class="section-desc">ส่งออกเฉพาะระเบียนที่ตรงกับเงื่อนไขค้นหาด้านบน — ไม่รวมระเบียนที่ยังรอแก้ไขความขัดแย้ง (NFR-10) (FR-23)</p>
-      <div class="field-group">
-        <label class="field-label">รูปแบบรายงานที่ต้องการ</label>
-        <div class="option-row selected"><span class="option-box radio"></span><span class="option-text">สรุปข้อมูลแบบตาราง (รวมทุกอาคารที่ค้นพบไว้ในไฟล์เดียว)</span></div>
-        <div class="option-row"><span class="option-box radio"></span><span class="option-text">รายงานแบบเอกสารต่ออาคาร (สำหรับพิมพ์/นำเสนอ)</span></div>
+    <div id="export-has-data" class="export-panel active">
+      <div class="card">
+        <h2 class="section-title">ส่งออกรายงานผลการสำรวจ (เฉพาะบทบาทนี้)</h2>
+        <p class="section-desc">ส่งออกเฉพาะระเบียนที่ตรงกับเงื่อนไขค้นหาด้านบน — ไม่รวมระเบียนที่ยังรอแก้ไขความขัดแย้ง (NFR-10) (FR-23)</p>
+        <div class="field-group">
+          <label class="field-label">รูปแบบรายงานที่ต้องการ</label>
+          <div class="option-row selected"><span class="option-box radio"></span><span class="option-text">สรุปข้อมูลแบบตาราง (รวมทุกอาคารที่ค้นพบไว้ในไฟล์เดียว)</span></div>
+          <div class="option-row"><span class="option-box radio"></span><span class="option-text">รายงานแบบเอกสารต่ออาคาร (สำหรับพิมพ์/นำเสนอ)</span></div>
+        </div>
+        <p class="field-hint">รูปแบบไฟล์จริง (เช่น ตารางคำนวณ หรือเอกสารพร้อมพิมพ์) ยังไม่กำหนด — เป็นข้อสมมติที่ค้างอยู่ในหัวข้อ 6 ของ spec ต้นทาง รอการตัดสินใจเชิงเทคนิคก่อนนำไปพัฒนาจริง</p>
+        <button type="button" class="btn btn-primary btn-office" style="margin-top:8px;" onclick="alert('ส่งออกรายงานแล้ว (สาธิต) — รูปแบบไฟล์จริงยังไม่กำหนด')">ส่งออกรายงาน</button>
       </div>
-      <p class="field-hint">รูปแบบไฟล์จริง (เช่น ตารางคำนวณ หรือเอกสารพร้อมพิมพ์) ยังไม่กำหนด — เป็นข้อสมมติที่ค้างอยู่ในหัวข้อ 6 ของ spec ต้นทาง รอการตัดสินใจเชิงเทคนิคก่อนนำไปพัฒนาจริง</p>
-      <button type="button" class="btn btn-primary btn-office" style="margin-top:8px;" onclick="alert('ส่งออกรายงานแล้ว (สาธิต) — รูปแบบไฟล์จริงยังไม่กำหนด')">ส่งออกรายงาน</button>
+    </div>
+    <div id="export-empty" class="export-panel">
+      <div class="card">
+        <h2 class="section-title">ส่งออกรายงานผลการสำรวจ (เฉพาะบทบาทนี้)</h2>
+        <div class="empty-state">
+          <div style="font-size:32px;" aria-hidden="true">&#128194;</div>
+          <div><strong>ไม่มีข้อมูลให้ส่งออก</strong></div>
+          <div class="text-sm">
+            ไม่มีอาคารใดตรงกับเงื่อนไขค้นหาปัจจุบันเลย (FR-23 AC-2) ระบบจะไม่สร้างไฟล์รายงานเปล่าให้ —
+            ลองปรับเงื่อนไขค้นหาด้านบน (พื้นที่/ระดับสี/ช่วงวันที่/ผู้สำรวจ) แล้วค้นหาใหม่ก่อนสั่งส่งออกอีกครั้ง
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -165,6 +182,9 @@ function showResult(id) {
   document.querySelectorAll('.result-panel').forEach(function (el) { el.classList.remove('active'); });
   var target = document.getElementById('result-' + id);
   if (target) { target.classList.add('active'); target.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+  document.querySelectorAll('.export-panel').forEach(function (el) { el.classList.remove('active'); });
+  var exportTarget = document.getElementById(id === 'empty' ? 'export-empty' : 'export-has-data');
+  if (exportTarget) { exportTarget.classList.add('active'); }
 }
 </script>
 </body>

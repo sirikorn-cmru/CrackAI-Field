@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>มอบหมายงานสำรวจให้ทีม — CrackAI-Field Prototype</title>
 <link rel="stylesheet" href="style.css">
+<style>
+  .assignee-panel { display: none; }
+  .assignee-panel.active { display: block; }
+</style>
 </head>
 <body>
 <div class="proto-bar">
@@ -28,9 +32,27 @@
     <h2 class="section-title">สร้างรายการมอบหมายใหม่</h2>
     <div class="field-group">
       <label class="field-label">มอบหมายให้ผู้สำรวจ <span class="required">จำเป็น</span></label>
-      <div class="option-row selected"><span class="option-box checkbox"></span><span class="option-text">สมชาย ใจดี</span></div>
-      <div class="option-row"><span class="option-box checkbox"></span><span class="option-text">วิภา สายชล</span></div>
-      <div class="option-row"><span class="option-box checkbox"></span><span class="option-text">ประเสริฐ ทองดี</span></div>
+      <p class="section-desc" style="margin-bottom:8px;">มุมมองสาธิต (สำหรับรีวิว Prototype เท่านั้น) — สลับดูพฤติกรรมเมื่อยังไม่มีบัญชีผู้สำรวจภาคสนามในระบบเลย (FR-20 AC-2)</p>
+      <div class="btn-row" style="margin-bottom:12px;">
+        <button type="button" class="btn btn-secondary btn-office" onclick="showAssignees('list')">มุมมอง: มีผู้สำรวจให้เลือก</button>
+        <button type="button" class="btn btn-secondary btn-office" onclick="showAssignees('empty')">จำลอง: ไม่มีผู้สำรวจภาคสนามให้เลือก</button>
+      </div>
+      <div id="assignee-list" class="assignee-panel active">
+        <div class="option-row selected"><span class="option-box checkbox"></span><span class="option-text">สมชาย ใจดี</span></div>
+        <div class="option-row"><span class="option-box checkbox"></span><span class="option-text">วิภา สายชล</span></div>
+        <div class="option-row"><span class="option-box checkbox"></span><span class="option-text">ประเสริฐ ทองดี</span></div>
+      </div>
+      <div id="assignee-empty" class="assignee-panel">
+        <div class="empty-state">
+          <div style="font-size:32px;" aria-hidden="true">&#128101;</div>
+          <div><strong>ไม่มีผู้สำรวจภาคสนามให้เลือกมอบหมาย</strong></div>
+          <div class="text-sm">
+            ยังไม่มีบัญชีผู้ใช้บทบาท "ผู้สำรวจภาคสนาม" อยู่ในระบบเลย จึงยังมอบหมายงานให้ใครไม่ได้ (FR-20 AC-2) —
+            กรุณาแจ้งผู้ดูแลระบบให้สร้างบัญชีผู้สำรวจภาคสนามก่อน แล้วจึงกลับมามอบหมายงานอีกครั้ง —
+            <a href="admin-users.html">ไปหน้าจัดการผู้ใช้และสิทธิ์ (ฟีเจอร์ 9)</a>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="field-group">
       <label class="field-label" for="building">อาคาร/พื้นที่ที่ต้องสำรวจ <span class="required">จำเป็น</span></label>
@@ -44,7 +66,7 @@
       <label class="field-label" for="note">หมายเหตุเพิ่มเติมถึงทีม</label>
       <textarea class="textarea" id="note" placeholder="เช่น จุดสังเกต เส้นทางเข้าถึง หรือข้อควรระวังหน้างาน"></textarea>
     </div>
-    <button type="button" class="btn btn-primary btn-office" onclick="alert('มอบหมายงานแล้ว (สาธิต) — งานนี้จะปรากฏในรายการของผู้สำรวจที่เลือกทันที')">มอบหมายงาน</button>
+    <button type="button" id="assign-submit-btn" class="btn btn-primary btn-office" onclick="alert('มอบหมายงานแล้ว (สาธิต) — งานนี้จะปรากฏในรายการของผู้สำรวจที่เลือกทันที')">มอบหมายงาน</button>
   </div>
 
   <div class="card">
@@ -58,23 +80,32 @@
           <td>บ้านเลขที่ 78 ต.ท่าศาลา</td>
           <td>สมชาย ใจดี</td>
           <td class="num">30/08/2569</td>
-          <td><span class="badge pending">ยังไม่เริ่ม</span></td>
+          <td><span class="badge task-todo">ยังไม่เริ่ม</span></td>
         </tr>
         <tr>
           <td>บ้านเลขที่ 45/2 ต.ท่าศาลา</td>
           <td>สมชาย ใจดี</td>
           <td class="num">30/08/2569</td>
-          <td><span class="badge synced">เสร็จแล้ว</span></td>
+          <td><span class="badge task-done">เสร็จแล้ว</span></td>
         </tr>
         <tr>
           <td>โรงเรียนบ้านท่าศาลา</td>
           <td>วิภา สายชล</td>
           <td class="num">31/08/2569</td>
-          <td><span class="badge pending">ยังไม่เริ่ม</span></td>
+          <td><span class="badge task-todo">ยังไม่เริ่ม</span></td>
         </tr>
       </tbody>
     </table>
   </div>
 </div>
+<script>
+function showAssignees(id) {
+  document.querySelectorAll('.assignee-panel').forEach(function (el) { el.classList.remove('active'); });
+  var target = document.getElementById('assignee-' + id);
+  if (target) { target.classList.add('active'); }
+  var submitBtn = document.getElementById('assign-submit-btn');
+  if (submitBtn) { submitBtn.disabled = (id === 'empty'); }
+}
+</script>
 </body>
 </html>
