@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ประเมินความเสียหาย — CrackAI-Field Prototype</title>
 <link rel="stylesheet" href="style.css">
+<style>
+  .demo-panel { display: none; }
+  .demo-panel.active { display: block; }
+</style>
 </head>
 <body>
 <div class="proto-bar">
@@ -123,10 +127,52 @@
     <div class="option-row"><span class="option-box checkbox"></span><span class="option-text">ไม่พบความเสียหายของระบบ</span></div>
   </div>
 
+  <div class="card">
+    <h2 class="section-title">มุมมองสาธิต: กรณีข้ามหมวดโดยไม่กรอก (สำหรับรีวิว Prototype เท่านั้น)</h2>
+    <p class="section-desc">ปุ่มด้านล่างสาธิตสถานะที่ test case กำหนดไว้เท่านั้น — ระบบจริงตรวจสอบตอนกดไปหมวดถัดไปจริง</p>
+    <div class="btn-row" style="flex-wrap:wrap;">
+      <button type="button" class="btn btn-secondary btn-field" onclick="showDamageDemo('ext')">จำลอง: ข้ามหมวด 1 (ภายนอกอาคาร) — TC-02-02</button>
+      <button type="button" class="btn btn-secondary btn-field" onclick="showDamageDemo('comp')">จำลอง: ข้ามหมวด 4 (ส่วนประกอบอาคาร) — TC-02-06</button>
+    </div>
+
+    <div id="demo-ext" class="demo-panel">
+      <hr class="divider">
+      <div class="banner danger" role="alert">
+        <span aria-hidden="true">&#9940;</span>
+        <div>
+          <strong>ยังไม่ได้เลือกระดับความเสียหายในหมวด "ความเสียหายที่สังเกตจากภายนอกอาคาร"</strong>
+          <div class="text-sm">กรุณาเลือกอย่างน้อยหนึ่งรายการในหมวดนี้ก่อนไปหมวดถัดไป — ระบบไม่อนุญาตให้ข้ามหมวดที่ยังไม่ได้กรอก (FR-05 AC-2 · TC-02-02)</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="demo-comp" class="demo-panel">
+      <hr class="divider">
+      <div class="banner danger" role="alert">
+        <span aria-hidden="true">&#9940;</span>
+        <div>
+          <strong>ยังกรอกหมวด "ส่วนประกอบอาคาร" ไม่ครบ</strong>
+          <div class="text-sm">กรุณาเลือกระดับความเสียหายของผนัง ฝ้าเพดาน และวัสดุมุงหลังคาให้ครบทุกส่วนก่อนไปหมวดถัดไป (FR-08 AC-2 · TC-02-06)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="btn-row">
     <a class="btn btn-secondary btn-field" href="field-survey-building.html" style="text-decoration:none;">ย้อนกลับ</a>
     <a class="btn btn-primary btn-field" href="field-survey-photo-ai.html" style="text-decoration:none;">ถัดไป: ถ่ายภาพประกอบ</a>
   </div>
 </div>
+<script>
+function showDamageDemo(id) {
+  var target = document.getElementById('demo-' + id);
+  var alreadyActive = target.classList.contains('active');
+  document.querySelectorAll('.demo-panel').forEach(function (el) { el.classList.remove('active'); });
+  if (!alreadyActive) {
+    target.classList.add('active');
+    target.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+}
+</script>
 </body>
 </html>

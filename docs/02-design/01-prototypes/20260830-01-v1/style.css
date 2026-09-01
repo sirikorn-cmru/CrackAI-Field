@@ -59,6 +59,15 @@
   --state-progress-done-fg: #41564A;
   --state-progress-done-bg: #E9EEEA;
 
+  /* 2.4 สี — สถานะบัญชีผู้ใช้ (Account Status) — UX-14 โดเมนที่สาม
+     คนละกลุ่มความหมายกับสถานะซิงค์และความคืบหน้าของงานด้านบนโดยสิ้นเชิง (แม้ค่าสีจะซ้ำกันทุกตัวอักษรโดยตั้งใจ)
+     ใช้เฉพาะ: admin-users.html (badge "ใช้งานอยู่"/"ปิดใช้งานแล้ว")
+     ห้ามใช้กับสถานะซิงค์/ความคืบหน้าของงาน และห้ามใช้ token กลุ่มนี้สื่อความหมายอื่น */
+  --state-account-active-fg: #41564A;
+  --state-account-active-bg: #E9EEEA;
+  --state-account-inactive-fg: #5C5346;
+  --state-account-inactive-bg: #EFEBE4;
+
   /* 2.5 ตัวอักษร */
   --font-sans: "IBM Plex Sans Thai", "Noto Sans Thai", "Sarabun",
                -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -378,6 +387,9 @@ a { color: var(--accent-info); }
 /* ความคืบหน้าของงาน/การตรวจทาน (UX-14) — คนละความหมายกับ .badge.pending/.badge.synced ด้านบนซึ่งสงวนไว้เฉพาะสถานะซิงค์เท่านั้น */
 .badge.task-todo { background: var(--state-progress-todo-bg); color: var(--state-progress-todo-fg); }
 .badge.task-done { background: var(--state-progress-done-bg); color: var(--state-progress-done-fg); }
+/* สถานะบัญชีผู้ใช้ (UX-14) — คนละความหมายกับ .badge.pending/.badge.synced/.badge.task-* ด้านบน สงวนไว้เฉพาะ admin-users.html */
+.badge.account-active { background: var(--state-account-active-bg); color: var(--state-account-active-fg); }
+.badge.account-inactive { background: var(--state-account-inactive-bg); color: var(--state-account-inactive-fg); }
 .badge.conflict { background: var(--state-conflict-bg); color: var(--state-conflict-fg); }
 .badge.info { background: var(--accent-info-subtle); color: var(--accent-info); }
 .badge.role { background: var(--surface-sunken); color: var(--text-secondary); border: var(--border-width) solid var(--border-subtle); }

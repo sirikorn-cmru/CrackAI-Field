@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ข้อมูลอาคารและสภาพแวดล้อม — CrackAI-Field Prototype</title>
 <link rel="stylesheet" href="style.css">
+<style>
+  .demo-panel { display: none; }
+  .demo-panel.active { display: block; }
+</style>
 </head>
 <body>
 <div class="proto-bar">
@@ -119,6 +123,52 @@
     </div>
   </div>
 
+  <div class="card">
+    <h2 class="section-title">มุมมองสาธิต: กรณีข้อมูลไม่ถูกต้อง (สำหรับรีวิว Prototype เท่านั้น)</h2>
+    <p class="section-desc">ปุ่มด้านล่างสาธิตสถานะที่ test case กำหนดไว้เท่านั้น — ระบบจริงตรวจสอบค่าที่กรอกจริงตอนกดถัดไป/บันทึก</p>
+    <div class="btn-row" style="flex-wrap:wrap;">
+      <button type="button" class="btn btn-secondary btn-field" onclick="showBuildingDemo('name')">จำลอง: เว้นว่างชื่ออาคาร (TC-01-02)</button>
+      <button type="button" class="btn btn-secondary btn-field" onclick="showBuildingDemo('gps')">จำลอง: สัญญาณ GPS อ่อนเกินเกณฑ์ (TC-01-03)</button>
+      <button type="button" class="btn btn-secondary btn-field" onclick="showBuildingDemo('physical')">จำลอง: จำนวนชั้น/พื้นที่ไม่ถูกต้อง (TC-01-04)</button>
+    </div>
+
+    <div id="demo-name" class="demo-panel">
+      <hr class="divider">
+      <div class="field-group">
+        <label class="field-label" for="b-name-demo">ชื่ออาคาร/สถานที่ <span class="required">จำเป็น</span></label>
+        <input class="input error" id="b-name-demo" type="text" value="">
+        <div class="field-error"><span aria-hidden="true">&#9888;</span> กรุณากรอกชื่ออาคาร/สถานที่ก่อนไปหมวดถัดไป (ช่องนี้จำเป็น)</div>
+      </div>
+      <p class="field-hint">ระบบจะไม่อนุญาตให้ไปหมวดถัดไปจนกว่าจะกรอกช่องบังคับทุกช่องครบ (FR-01 AC-2 · TC-01-02)</p>
+    </div>
+
+    <div id="demo-gps" class="demo-panel">
+      <hr class="divider">
+      <div class="field-group">
+        <label class="field-label" for="b-lat-demo">ละติจูด / ลองจิจูด</label>
+        <input class="input text-mono error" id="b-lat-demo" type="text" value="ยังไม่สามารถระบุพิกัดได้" readonly>
+        <div class="field-error"><span aria-hidden="true">&#9888;</span> สัญญาณ GPS อ่อนเกินไป (ความแม่นยำปัจจุบัน: ±35 เมตร) ยังไม่บันทึกพิกัดนี้จนกว่าความแม่นยำจะดีขึ้นตามเกณฑ์ (FR-02 AC-2 · NFR-06 · TC-01-03)</div>
+      </div>
+      <button type="button" class="btn btn-secondary btn-field">📍 ลองจับพิกัดอีกครั้ง</button>
+      <p class="field-hint" style="margin-top:8px;">กรุณาเดินไปยังที่โล่งหรือรอสัญญาณเสถียรกว่านี้ก่อนลองใหม่</p>
+    </div>
+
+    <div id="demo-physical" class="demo-panel">
+      <hr class="divider">
+      <div class="field-group">
+        <label class="field-label" for="b-floors-demo">จำนวนชั้น <span class="required">จำเป็น</span></label>
+        <input class="input error" id="b-floors-demo" type="text" value="-2">
+        <div class="field-error"><span aria-hidden="true">&#9888;</span> จำนวนชั้นต้องเป็นตัวเลขที่มากกว่า 0 กรุณาแก้ไขก่อนบันทึก (FR-03 AC-2 · TC-01-04)</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="b-area-demo">พื้นที่ใช้สอยโดยประมาณ (ตร.ม.)</label>
+        <input class="input error" id="b-area-demo" type="text" value="abc">
+        <div class="field-error"><span aria-hidden="true">&#9888;</span> พื้นที่ใช้สอยต้องเป็นตัวเลข ไม่ใช่ตัวอักษร กรุณาแก้ไขก่อนบันทึก (FR-03 AC-2 · TC-01-04)</div>
+      </div>
+      <p class="field-hint">ระบบไม่บันทึกค่าที่ไม่ถูกต้องเหล่านี้จนกว่าจะแก้ไขให้เป็นตัวเลขที่มากกว่า 0</p>
+    </div>
+  </div>
+
   <div class="field-hint" style="margin-bottom:24px;">ระบบบันทึกร่างอัตโนมัติทุกครั้งที่ค่าเปลี่ยน — ปิดแอปกลางคันแล้วกลับมาเปิดใหม่ ข้อมูลจะไม่หาย (UX-05)</div>
 
   <div class="btn-row">
@@ -126,5 +176,16 @@
     <a class="btn btn-primary btn-field" href="field-survey-damage.html" style="text-decoration:none;">ถัดไป: ประเมินความเสียหาย</a>
   </div>
 </div>
+<script>
+function showBuildingDemo(id) {
+  var panels = document.querySelectorAll('.demo-panel');
+  var alreadyActive = document.getElementById('demo-' + id).classList.contains('active');
+  panels.forEach(function (el) { el.classList.remove('active'); });
+  if (!alreadyActive) {
+    var target = document.getElementById('demo-' + id);
+    if (target) { target.classList.add('active'); target.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+  }
+}
+</script>
 </body>
 </html>

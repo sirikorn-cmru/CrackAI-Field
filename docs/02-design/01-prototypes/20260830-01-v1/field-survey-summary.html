@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>สรุปผลและข้อมูลผู้สำรวจ — CrackAI-Field Prototype</title>
 <link rel="stylesheet" href="style.css">
+<style>
+  .summary-state { display: none; }
+  .summary-state.active { display: block; }
+</style>
 </head>
 <body>
 <div class="proto-bar">
@@ -37,20 +41,47 @@
   <div class="card">
     <h2 class="section-title">สรุปผลการประเมินความเสียหาย</h2>
     <p class="section-desc">FR-10 — เลือกระดับด้วยตนเองเสมอ ระบบไม่เลือกค่าเริ่มต้นให้อัตโนมัติ</p>
-    <div class="severity-selector" role="radiogroup" aria-label="ระดับความเสียหายโดยรวม">
-      <div class="severity-option safe" role="radio" aria-checked="false" tabindex="0">
-        <svg class="sev-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>
-        <div class="sev-text"><strong>เข้าใช้งานได้</strong><span>เสียหายเล็กน้อยหรือไม่เสียหาย ใช้งานได้ปกติ</span></div>
-      </div>
-      <div class="severity-option caution" role="radio" aria-checked="false" tabindex="0">
-        <svg class="sev-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3L21 20H3L12 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
-        <div class="sev-text"><strong>ใช้ได้แต่ต้องระวัง</strong><span>เสียหายปานกลาง ควรจำกัดการใช้งานบางส่วน</span></div>
-      </div>
-      <div class="severity-option danger" role="radio" aria-checked="false" tabindex="0">
-        <svg class="sev-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 3h8l5 5v8l-5 5H8l-5-5V8l5-5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
-        <div class="sev-text"><strong>ห้ามเข้า</strong><span>เสียหายหนัก มีความเสี่ยงพังถล่ม</span></div>
+
+    <p class="section-desc">มุมมองสาธิต (สำหรับรีวิว Prototype เท่านั้น) — สลับดูพฤติกรรมเมื่อกรอกข้อมูลความเสียหายไม่ครบทุกหมวดบังคับ (FR-10 AC-2 · TC-03-02)</p>
+    <div class="btn-row" style="margin-bottom:12px;">
+      <button type="button" class="btn btn-secondary btn-field" onclick="showSummaryState('ready')">มุมมอง: กรอกข้อมูลครบแล้ว</button>
+      <button type="button" class="btn btn-secondary btn-field" onclick="showSummaryState('incomplete')">จำลอง: ยังกรอกไม่ครบทุกหมวด</button>
+    </div>
+
+    <div id="summary-incomplete" class="summary-state">
+      <div class="banner danger" role="alert">
+        <span aria-hidden="true">&#9940;</span>
+        <div>
+          <strong>ยังกรอกข้อมูลความเสียหายไม่ครบทุกหมวดบังคับ</strong>
+          <div class="text-sm">หมวดที่ยังขาด: ความเสียหายของโครงสร้าง (คสล.), ส่วนประกอบอาคาร (ฝ้าเพดาน) — ระบบไม่อนุญาตให้สรุปผลจนกว่าจะกรอกข้อมูลที่จำเป็นครบถ้วน (FR-10 AC-2 · TC-03-02) <a href="field-survey-damage.html">กลับไปกรอกหมวดที่ขาด</a></div>
+        </div>
       </div>
     </div>
+
+    <div id="summary-ready" class="summary-state active">
+      <div class="severity-selector" role="radiogroup" aria-label="ระดับความเสียหายโดยรวม">
+        <div class="severity-option safe" role="radio" aria-checked="false" tabindex="0">
+          <svg class="sev-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>
+          <div class="sev-text"><strong>เข้าใช้งานได้</strong><span>เสียหายเล็กน้อยหรือไม่เสียหาย ใช้งานได้ปกติ</span></div>
+        </div>
+        <div class="severity-option caution" role="radio" aria-checked="false" tabindex="0">
+          <svg class="sev-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3L21 20H3L12 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          <div class="sev-text"><strong>ใช้ได้แต่ต้องระวัง</strong><span>เสียหายปานกลาง ควรจำกัดการใช้งานบางส่วน</span></div>
+        </div>
+        <div class="severity-option danger" role="radio" aria-checked="false" tabindex="0">
+          <svg class="sev-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 3h8l5 5v8l-5 5H8l-5-5V8l5-5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          <div class="sev-text"><strong>ห้ามเข้า</strong><span>เสียหายหนัก มีความเสี่ยงพังถล่ม</span></div>
+        </div>
+      </div>
+      <div id="severity-error" class="banner danger" style="display:none; margin-top:16px;" role="alert">
+        <span aria-hidden="true">&#9940;</span>
+        <div>
+          <strong>กรุณาเลือกระดับความเสียหายก่อนดำเนินการต่อ</strong>
+          <div class="text-sm">ระบบไม่อนุญาตให้ส่งผลสำรวจเข้าคิวตรวจทานจนกว่าจะเลือกระดับความเสียหายโดยรวม — เลือกระดับด้านบนก่อน (FR-10, UX-09)</div>
+        </div>
+      </div>
+    </div>
+
     <div class="field-group" style="margin-top:24px;">
       <label class="field-label" for="note">ข้อแนะนำเพิ่มเติม</label>
       <textarea class="textarea" id="note" placeholder=""></textarea>
@@ -64,10 +95,14 @@
       <label class="field-label" for="s1">ผู้สำรวจคนที่ 1 <span class="required">จำเป็น</span></label>
       <input class="input" id="s1" type="text" value="สมชาย ใจดี">
     </div>
-    <div class="field-group">
-      <label class="field-label" for="s2">ผู้สำรวจคนที่ 2</label>
-      <input class="input" id="s2" type="text">
+    <div id="surveyor-extra">
+      <div class="field-group">
+        <label class="field-label" for="s2">ผู้สำรวจคนที่ 2</label>
+        <input class="input" id="s2" type="text">
+      </div>
     </div>
+    <button type="button" id="add-surveyor-btn" class="btn btn-secondary btn-field" style="margin-bottom:12px;" onclick="addSurveyor()">+ เพิ่มผู้สำรวจ</button>
+    <div id="surveyor-max-msg" class="field-error" style="display:none; margin-bottom:24px;"><span aria-hidden="true">&#9888;</span> ไม่สามารถเพิ่มผู้สำรวจเกิน 3 คนได้ (สูงสุด 3 คนตามแบบฟอร์ม DPT) — FR-16 AC-2 · TC-06-02</div>
     <div class="field-group">
       <label class="field-label" for="lead">หัวหน้าผู้สำรวจ <span class="required">จำเป็น</span></label>
       <input class="input" id="lead" type="text">
@@ -93,7 +128,7 @@
 
   <div class="btn-row">
     <a class="btn btn-secondary btn-field" href="field-survey-photo-ai.html" style="text-decoration:none;">ย้อนกลับ</a>
-    <button type="button" class="btn btn-primary btn-field" onclick="document.getElementById('confirm-dialog').style.display='flex'">บันทึกและส่งเข้าคิวตรวจทาน</button>
+    <button type="button" class="btn btn-primary btn-field" onclick="openConfirmDialog()">บันทึกและส่งเข้าคิวตรวจทาน</button>
   </div>
 
   <p class="field-hint" style="margin-top:16px;">การส่งเข้าคิวตรวจทานเป็นการกระทำที่ย้อนกลับได้ยาก จึงมีขั้นตอนยืนยันสรุปผลก่อนเสมอ (UX-09)</p>
@@ -103,7 +138,7 @@
   <div class="dialog">
     <h2>ยืนยันการส่งผลสำรวจ</h2>
     <p class="text-sm">
-      อาคาร: (ตามข้อมูลที่กรอก) · ผลสรุป: <strong>ยังไม่ได้เลือกระดับความเสียหาย</strong> · ผู้สำรวจ: สมชาย ใจดี ·
+      อาคาร: (ตามข้อมูลที่กรอก) · ผลสรุป: <strong id="dialog-severity-value">—</strong> · ผู้สำรวจ: สมชาย ใจดี ·
       เวลาสำรวจ: 09:15–09:52 น. ระบบจะส่งข้อมูลนี้เข้าคิวให้หัวหน้าผู้สำรวจตรวจทานทันทีที่มีสัญญาณ
     </p>
     <div class="btn-row">
@@ -112,5 +147,55 @@
     </div>
   </div>
 </div>
+<script>
+function showSummaryState(id) {
+  document.querySelectorAll('.summary-state').forEach(function (el) { el.classList.remove('active'); });
+  var target = document.getElementById('summary-' + id);
+  if (target) { target.classList.add('active'); }
+}
+
+document.querySelectorAll('.severity-option').forEach(function (el) {
+  el.addEventListener('click', function () {
+    document.querySelectorAll('.severity-option').forEach(function (o) {
+      o.classList.remove('selected');
+      o.setAttribute('aria-checked', 'false');
+    });
+    el.classList.add('selected');
+    el.setAttribute('aria-checked', 'true');
+    document.getElementById('severity-error').style.display = 'none';
+  });
+});
+
+// แก้ไข: เดิม dialog เปิดได้เสมอแม้ยังไม่ได้เลือกระดับความเสียหาย และข้อความในตัวเองขัดแย้งกัน
+// ("ยังไม่ได้เลือกระดับความเสียหาย" แต่กดยืนยันผ่านได้) — ตอนนี้บล็อกไม่ให้เปิด dialog จนกว่าจะเลือกระดับจริง (FR-10, UX-09)
+function openConfirmDialog() {
+  var selected = document.querySelector('.severity-option.selected');
+  var errorBox = document.getElementById('severity-error');
+  if (!selected) {
+    errorBox.style.display = 'flex';
+    errorBox.scrollIntoView({behavior: 'smooth', block: 'center'});
+    return;
+  }
+  errorBox.style.display = 'none';
+  document.getElementById('dialog-severity-value').textContent = selected.querySelector('.sev-text strong').textContent;
+  document.getElementById('confirm-dialog').style.display = 'flex';
+}
+
+var surveyorCount = 2;
+function addSurveyor() {
+  var msg = document.getElementById('surveyor-max-msg');
+  if (surveyorCount >= 3) {
+    msg.style.display = 'flex';
+    return;
+  }
+  msg.style.display = 'none';
+  surveyorCount++;
+  var wrap = document.getElementById('surveyor-extra');
+  var div = document.createElement('div');
+  div.className = 'field-group';
+  div.innerHTML = '<label class="field-label" for="s' + surveyorCount + '">ผู้สำรวจคนที่ ' + surveyorCount + '</label><input class="input" id="s' + surveyorCount + '" type="text">';
+  wrap.appendChild(div);
+}
+</script>
 </body>
 </html>

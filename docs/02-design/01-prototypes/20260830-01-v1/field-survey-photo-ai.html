@@ -8,6 +8,8 @@
 <style>
   .path-panel { display: none; }
   .path-panel.active { display: block; }
+  .manual-state { display: none; }
+  .manual-state.active { display: block; }
 </style>
 </head>
 <body>
@@ -58,30 +60,98 @@
   </div>
 
   <div class="card">
-    <h2 class="section-title">เลือกวิธีประเมินระดับความเสียหายของรอยร้าวนี้</h2>
-    <p class="section-desc">ทั้งสองเส้นทางเป็นเส้นทางใช้งานปกติ น้ำหนักเท่ากัน (FR-29 / UX-08) — ลองกดเพื่อดูแต่ละสถานการณ์</p>
+    <h2 class="section-title">มีรอยร้าวที่ต้องบันทึกระดับความเสียหายในตำแหน่งนี้หรือไม่</h2>
+    <p class="section-desc">ถ้ามี เลือกวิธีประเมิน — ทั้งสองเส้นทางเป็นเส้นทางใช้งานปกติ น้ำหนักเท่ากัน (FR-29 / UX-08) ถ้าไม่มี ข้ามขั้นตอนนี้ได้ทันที (ดู decision node ขั้นตอนที่ 10 ใน [[user-journey#Journey: ผู้สำรวจภาคสนามลงพื้นที่สำรวจอาคาร|user-journey.md]]) — ลองกดเพื่อดูแต่ละสถานการณ์</p>
     <div class="btn-row">
       <button type="button" class="btn btn-secondary btn-field" onclick="showPath('ai-pending')">ให้ AI ช่วยวิเคราะห์ก่อน</button>
       <button type="button" class="btn btn-secondary btn-field" onclick="showPath('manual')">กรอกระดับความเสียหายด้วยตนเอง</button>
     </div>
+    <button type="button" class="btn btn-ghost" style="margin-top:8px;" onclick="showPath('no-crack')">ไม่มีรอยร้าวที่ต้องบันทึกในตำแหน่งนี้ &rarr;</button>
   </div>
 
-  <!-- เส้นทาง: กรอกเองโดยตรง (FR-29) -->
+  <!-- เส้นทาง: ไม่มีรอยร้าวที่ต้องบันทึก (decision node ขั้นตอนที่ 10 ใน user-journey.md — ข้ามไปขั้นตอนที่ 18) -->
+  <div class="path-panel" id="panel-no-crack">
+    <div class="card">
+      <h2 class="section-title">ไม่มีรอยร้าวที่ต้องบันทึกในตำแหน่งนี้</h2>
+      <p class="section-desc">ตรวจสอบแล้วไม่มีรอยร้าวที่ต้องประเมินระดับความเสียหายในตำแหน่ง/บริเวณนี้ — ข้ามขั้นตอนเลือกวิธีประเมิน (AI/กรอกเอง) แล้วไปยังขั้นตอนถัดไปได้ทันที</p>
+      <div class="btn-row">
+        <a class="btn btn-secondary btn-field" href="field-survey-sketch.html" style="text-decoration:none;">วาดภาพประกอบเพิ่มเติม (ไม่บังคับ)</a>
+        <a class="btn btn-primary btn-field" href="field-survey-summary.html" style="text-decoration:none;">ไปยังสรุปผล</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- เส้นทาง: กรอกเองโดยตรง (FR-29) — source_of_value = กรอกเอง ใช้ทั้งกรณีเลือกกรอกเองตั้งแต่ต้น, กด "กรอกเอง" จากการ์ด AI (ทิ้งค่าที่ AI เสนอทั้งหมด), และกรณี AI ล้มเหลว -->
   <div class="path-panel" id="panel-manual">
     <div class="card">
       <h2 class="section-title">กรอกระดับความเสียหายของรอยร้าวด้วยตนเอง</h2>
-      <p class="section-desc">FR-29 — เส้นทางปกติ ไม่ต้องพึ่ง AI</p>
+      <p class="section-desc">FR-29 — เส้นทางปกติ ไม่ต้องพึ่ง AI (source_of_value = กรอกเอง)</p>
       <div class="field-group">
         <label class="field-label" for="m-width">ความกว้างรอยร้าว โดยประมาณ (มม.)</label>
         <input class="input" id="m-width" type="number" inputmode="decimal">
+      </div>
+
+      <p class="section-desc">มุมมองสาธิต (สำหรับรีวิว Prototype เท่านั้น) — สลับดูพฤติกรรมเมื่อกดบันทึกโดยยังไม่เลือกระดับ (FR-29 AC-3 · TC-04-12)</p>
+      <div class="btn-row" style="margin-bottom:12px;">
+        <button type="button" class="btn btn-secondary btn-field" onclick="showManualState('filled')">มุมมอง: เลือกระดับแล้ว</button>
+        <button type="button" class="btn btn-secondary btn-field" onclick="showManualState('empty')">จำลอง: ยังไม่ได้เลือกระดับ</button>
+      </div>
+
+      <div id="manual-filled" class="manual-state active">
+        <div class="field-group">
+          <label class="field-label">ระดับความเสียหายของรอยร้าวนี้</label>
+          <div class="option-row"><span class="option-box radio"></span><span class="option-text">เล็กน้อย (&lt; 1 มม.)</span></div>
+          <div class="option-row selected"><span class="option-box radio"></span><span class="option-text">ปานกลาง (1–5 มม.)</span></div>
+          <div class="option-row"><span class="option-box radio"></span><span class="option-text">รุนแรง (&gt; 5 มม. หรือเห็นเหล็กเสริม)</span></div>
+        </div>
+        <button type="button" class="btn btn-primary btn-field" onclick="alert('บันทึกค่าที่กรอกเองแล้ว (สาธิต) — source_of_value = กรอกเอง')">บันทึกค่าที่กรอกเอง</button>
+      </div>
+
+      <div id="manual-empty" class="manual-state">
+        <div class="field-group">
+          <label class="field-label">ระดับความเสียหายของรอยร้าวนี้</label>
+          <div class="option-row"><span class="option-box radio"></span><span class="option-text">เล็กน้อย (&lt; 1 มม.)</span></div>
+          <div class="option-row"><span class="option-box radio"></span><span class="option-text">ปานกลาง (1–5 มม.)</span></div>
+          <div class="option-row"><span class="option-box radio"></span><span class="option-text">รุนแรง (&gt; 5 มม. หรือเห็นเหล็กเสริม)</span></div>
+          <div class="field-error"><span aria-hidden="true">&#9888;</span> กรุณาเลือกระดับความเสียหายก่อนบันทึก (ช่องนี้จำเป็น) — ระบบไม่บันทึกข้อมูลที่ไม่ครบถ้วน (FR-29 AC-3 · TC-04-12)</div>
+        </div>
+        <button type="button" class="btn btn-primary btn-field" disabled>บันทึกค่าที่กรอกเอง</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- เส้นทาง: แก้ไขค่าที่ AI เสนอ (FR-14 AC-2, NFR-05 · TC-04-05) — แยกออกจาก panel-manual โดยเจตนา เพราะ source_of_value คนละค่ากัน (แก้ไขจาก AI ≠ กรอกเอง) -->
+  <div class="path-panel" id="panel-ai-edit">
+    <div class="card">
+      <h2 class="section-title">แก้ไขค่าที่ AI เสนอ</h2>
+      <p class="section-desc">FR-14 · NFR-05 — ค่าตั้งต้นด้านล่างมาจาก AI ท่านสามารถแก้ไขก่อนบันทึกเป็นผลจริง ระบบจะเก็บทั้งค่าที่ AI เสนอเดิมและค่าที่แก้ไขไว้ตรวจสอบย้อนหลัง (source_of_value = แก้ไขจากผลที่ AI เสนอ — คนละค่ากับ "กรอกเอง")</p>
+      <div class="field-group">
+        <label class="field-label" for="e-width">ความกว้างรอยร้าว โดยประมาณ (มม.)</label>
+        <input class="input text-mono" id="e-width" type="number" inputmode="decimal" value="2.4">
+        <div class="field-hint">ค่าที่ AI เสนอเดิม: 2.4 มม.</div>
       </div>
       <div class="field-group">
         <label class="field-label">ระดับความเสียหายของรอยร้าวนี้</label>
         <div class="option-row"><span class="option-box radio"></span><span class="option-text">เล็กน้อย (&lt; 1 มม.)</span></div>
         <div class="option-row selected"><span class="option-box radio"></span><span class="option-text">ปานกลาง (1–5 มม.)</span></div>
         <div class="option-row"><span class="option-box radio"></span><span class="option-text">รุนแรง (&gt; 5 มม. หรือเห็นเหล็กเสริม)</span></div>
+        <div class="field-hint">ระดับที่ AI เสนอเดิม: ปานกลาง</div>
       </div>
-      <button type="button" class="btn btn-primary btn-field">บันทึกค่าที่กรอกเอง</button>
+      <button type="button" class="btn btn-primary btn-field" onclick="showPath('ai-edited-confirmed')">บันทึกค่าที่แก้ไข</button>
+    </div>
+  </div>
+
+  <!-- เส้นทาง: ยืนยันค่าที่แก้ไขจาก AI แล้ว (FR-14 AC-2, NFR-05) — ต่างจาก panel-ai-confirmed (ยืนยันตรงตามที่ AI เสนอ ไม่มีการแก้ไข) -->
+  <div class="path-panel" id="panel-ai-edited-confirmed">
+    <div class="ai-card confirmed">
+      <span class="ai-badge">✓ ยืนยันแล้ว (แก้ไขจาก AI)</span>
+      <div class="ai-card-value">ความกว้าง 3.2 มม. → ระดับรุนแรง</div>
+      <div class="ai-card-source">ที่มา: แก้ไขจากผลที่ AI เสนอ (source_of_value = ai_edited)</div>
+    </div>
+    <div class="card">
+      <h3>ประวัติการแก้ไขผล (NFR-05)</h3>
+      <div class="text-sm" style="margin-bottom:8px;">10:42 — AI เสนอค่าเริ่มต้น: 2.4 มม. / ปานกลาง</div>
+      <div class="text-sm">10:45 — ผู้สำรวจ (สมชาย ใจดี) แก้ไขค่าที่ AI เสนอเป็น: 3.2 มม. / รุนแรง</div>
     </div>
   </div>
 
@@ -104,7 +174,7 @@
       <div class="ai-card-source">วิเคราะห์จากภาพที่ถ่ายไว้ด้านบน (FR-13)</div>
       <div class="ai-card-actions">
         <button type="button" class="btn btn-primary btn-field" onclick="showPath('ai-confirmed')">ยืนยันตามที่เสนอ</button>
-        <button type="button" class="btn btn-secondary btn-field" onclick="showPath('manual')">แก้ไขค่า</button>
+        <button type="button" class="btn btn-secondary btn-field" onclick="showPath('ai-edit')">แก้ไขค่า</button>
         <button type="button" class="btn btn-secondary btn-field" onclick="showPath('manual')">กรอกเอง</button>
       </div>
     </div>
@@ -157,6 +227,13 @@ function showPath(id) {
   });
   var target = document.getElementById('panel-' + id);
   if (target) { target.classList.add('active'); target.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+}
+function showManualState(id) {
+  document.querySelectorAll('.manual-state').forEach(function (el) {
+    el.classList.remove('active');
+  });
+  var target = document.getElementById('manual-' + id);
+  if (target) { target.classList.add('active'); }
 }
 </script>
 </body>

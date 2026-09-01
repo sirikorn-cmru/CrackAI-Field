@@ -45,28 +45,28 @@
         <td>สมชาย ใจดี</td>
         <td>somchai@dpt.go.th</td>
         <td><span class="badge role">ผู้สำรวจภาคสนาม</span></td>
-        <td><span class="badge synced">ใช้งานอยู่</span></td>
+        <td><span class="badge account-active">ใช้งานอยู่</span></td>
         <td><a class="btn btn-ghost" href="#">แก้ไข</a> <button type="button" class="btn btn-destructive" style="height:32px; padding:0 12px;" onclick="document.getElementById('disable-dialog').style.display='flex'">ปิดการใช้งาน</button></td>
       </tr>
       <tr>
         <td>วิภา สายชล</td>
         <td>wipa@dpt.go.th</td>
         <td><span class="badge role">หัวหน้าผู้สำรวจ</span></td>
-        <td><span class="badge synced">ใช้งานอยู่</span></td>
-        <td><a class="btn btn-ghost" href="#">แก้ไข</a> <button type="button" class="btn btn-destructive" style="height:32px; padding:0 12px;">ปิดการใช้งาน</button></td>
+        <td><span class="badge account-active">ใช้งานอยู่</span></td>
+        <td><a class="btn btn-ghost" href="#">แก้ไข</a> <button type="button" class="btn btn-destructive" style="height:32px; padding:0 12px;" onclick="document.getElementById('disable-dialog-2').style.display='flex'">ปิดการใช้งาน</button></td>
       </tr>
       <tr>
         <td>ประดิษฐ์ คงยั่งยืน</td>
         <td>pradit@dpt.go.th</td>
         <td><span class="badge role">ผู้ดูแลระบบ</span></td>
-        <td><span class="badge synced">ใช้งานอยู่</span></td>
-        <td><a class="btn btn-ghost" href="#">แก้ไข</a> <button type="button" class="btn btn-destructive" style="height:32px; padding:0 12px;">ปิดการใช้งาน</button></td>
+        <td><span class="badge account-active">ใช้งานอยู่</span></td>
+        <td><a class="btn btn-ghost" href="#">แก้ไข</a> <button type="button" class="btn btn-destructive" style="height:32px; padding:0 12px;" onclick="document.getElementById('disable-dialog-3').style.display='flex'">ปิดการใช้งาน</button></td>
       </tr>
       <tr>
         <td>อรทัย ยุติธรรม</td>
         <td>orathai@dpt.go.th</td>
         <td><span class="badge role">หน่วยงานส่วนกลาง/ผู้บริหาร</span></td>
-        <td><span class="badge offline">ปิดใช้งานแล้ว</span></td>
+        <td><span class="badge account-inactive">ปิดใช้งานแล้ว</span></td>
         <td><a class="btn btn-ghost" href="#">แก้ไข</a></td>
       </tr>
     </tbody>
@@ -107,6 +107,30 @@
     <div class="btn-row">
       <button type="button" class="btn btn-secondary btn-office" onclick="document.getElementById('disable-dialog').style.display='none'">ยกเลิก</button>
       <button type="button" class="btn btn-destructive btn-office" onclick="document.getElementById('disable-dialog').style.display='none'">ยืนยันปิดการใช้งาน</button>
+    </div>
+  </div>
+</div>
+
+<!-- แก้ไข: ปุ่ม "ปิดการใช้งาน" แถววิภา สายชล — เดิมไม่มี onclick เลย (FR-21 AC-3 · TC-09-03 · UX-09) -->
+<div id="disable-dialog-2" class="dialog-backdrop" style="display:none;">
+  <div class="dialog">
+    <h2>ยืนยันการปิดการใช้งานบัญชี</h2>
+    <p class="text-sm">บัญชี "วิภา สายชล" (หัวหน้าผู้สำรวจ) จะไม่สามารถเข้าสู่ระบบได้อีก รวมถึง session ที่แคชไว้บนอุปกรณ์ภาคสนามของบัญชีนี้ (การกระทำนี้ย้อนกลับได้โดยเปิดใช้งานใหม่ในภายหลัง)</p>
+    <div class="btn-row">
+      <button type="button" class="btn btn-secondary btn-office" onclick="document.getElementById('disable-dialog-2').style.display='none'">ยกเลิก</button>
+      <button type="button" class="btn btn-destructive btn-office" onclick="document.getElementById('disable-dialog-2').style.display='none'">ยืนยันปิดการใช้งาน</button>
+    </div>
+  </div>
+</div>
+
+<!-- แก้ไข: ปุ่ม "ปิดการใช้งาน" แถวประดิษฐ์ คงยั่งยืน — เดิมไม่มี onclick เลย (FR-21 AC-3 · TC-09-03 · UX-09) -->
+<div id="disable-dialog-3" class="dialog-backdrop" style="display:none;">
+  <div class="dialog">
+    <h2>ยืนยันการปิดการใช้งานบัญชี</h2>
+    <p class="text-sm">บัญชี "ประดิษฐ์ คงยั่งยืน" (ผู้ดูแลระบบ) จะไม่สามารถเข้าสู่ระบบได้อีก รวมถึง session ที่แคชไว้บนอุปกรณ์ภาคสนามของบัญชีนี้ (การกระทำนี้ย้อนกลับได้โดยเปิดใช้งานใหม่ในภายหลัง)</p>
+    <div class="btn-row">
+      <button type="button" class="btn btn-secondary btn-office" onclick="document.getElementById('disable-dialog-3').style.display='none'">ยกเลิก</button>
+      <button type="button" class="btn btn-destructive btn-office" onclick="document.getElementById('disable-dialog-3').style.display='none'">ยืนยันปิดการใช้งาน</button>
     </div>
   </div>
 </div>

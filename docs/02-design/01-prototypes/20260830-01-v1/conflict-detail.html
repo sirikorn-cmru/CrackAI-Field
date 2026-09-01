@@ -40,7 +40,7 @@
         <div class="cf-label">จำนวนชั้น</div>
         <div class="cf-value">2</div>
       </div>
-      <button type="button" class="btn btn-primary btn-office" style="width:100%; margin-top:12px;">ใช้เวอร์ชันนี้ทั้งหมด</button>
+      <button type="button" class="btn btn-primary btn-office" style="width:100%; margin-top:12px;" onclick="document.getElementById('use-all-1-dialog').style.display='flex'">ใช้เวอร์ชันนี้ทั้งหมด</button>
     </div>
 
     <div class="conflict-col">
@@ -59,7 +59,7 @@
         <div class="cf-label">จำนวนชั้น</div>
         <div class="cf-value">2</div>
       </div>
-      <button type="button" class="btn btn-primary btn-office" style="width:100%; margin-top:12px;">ใช้เวอร์ชันนี้ทั้งหมด</button>
+      <button type="button" class="btn btn-primary btn-office" style="width:100%; margin-top:12px;" onclick="document.getElementById('use-all-2-dialog').style.display='flex'">ใช้เวอร์ชันนี้ทั้งหมด</button>
     </div>
   </div>
 
@@ -89,6 +89,38 @@
     <div class="btn-row">
       <button type="button" class="btn btn-secondary btn-office" onclick="document.getElementById('resolve-dialog').style.display='none'">ยกเลิก</button>
       <button type="button" class="btn btn-primary btn-office" onclick="document.getElementById('resolve-dialog').style.display='none'">ยืนยันบันทึกผล</button>
+    </div>
+  </div>
+</div>
+
+<!-- แก้ไข: ปุ่ม "ใช้เวอร์ชันนี้ทั้งหมด" คอลัมน์ 1 (สมชาย ใจดี) — เดิมไม่มี onclick เลย (FR-31 AC-2 · TC-15-05 · UX-09) -->
+<div id="use-all-1-dialog" class="dialog-backdrop" style="display:none;">
+  <div class="dialog">
+    <h2>ยืนยันใช้เวอร์ชันของสมชาย ใจดีทั้งหมด</h2>
+    <p class="text-sm">
+      ผลสรุปที่จะบันทึกเป็นข้อมูลจริงทั้งระเบียน: ผลสรุประดับความเสียหาย = <strong>ใช้ได้แต่ต้องระวัง</strong> · ความกว้างรอยร้าว = <strong>2.4 มม.</strong> · จำนวนชั้น = <strong>2</strong>
+      (ค่าทั้งหมดจากเวอร์ชันของสมชาย ใจดี บันทึกเมื่อ 30/08 09:52) — เวอร์ชันของวิภา สายชล (บันทึกเมื่อ 30/08 10:03) จะถูกละทิ้งทั้งหมด
+      สถานะ "รอแก้ไขความขัดแย้ง" ของระเบียนนี้จะถูกปลดทันที และระเบียนจะกลับไปนับรวมใน dashboard/รายงาน (NFR-10) — การกระทำนี้ย้อนกลับไม่ได้
+    </p>
+    <div class="btn-row">
+      <button type="button" class="btn btn-secondary btn-office" onclick="document.getElementById('use-all-1-dialog').style.display='none'">ยกเลิก</button>
+      <button type="button" class="btn btn-primary btn-office" onclick="document.getElementById('use-all-1-dialog').style.display='none'; alert('บันทึกแล้ว (สาธิต) — ใช้เวอร์ชันของสมชาย ใจดีทั้งหมด')">ยืนยันใช้เวอร์ชันนี้ทั้งหมด</button>
+    </div>
+  </div>
+</div>
+
+<!-- แก้ไข: ปุ่ม "ใช้เวอร์ชันนี้ทั้งหมด" คอลัมน์ 2 (วิภา สายชล) — เดิมไม่มี onclick เลย (FR-31 AC-2 · TC-15-05 · UX-09) -->
+<div id="use-all-2-dialog" class="dialog-backdrop" style="display:none;">
+  <div class="dialog">
+    <h2>ยืนยันใช้เวอร์ชันของวิภา สายชลทั้งหมด</h2>
+    <p class="text-sm">
+      ผลสรุปที่จะบันทึกเป็นข้อมูลจริงทั้งระเบียน: ผลสรุประดับความเสียหาย = <strong>ห้ามเข้า</strong> · ความกว้างรอยร้าว = <strong>6.1 มม.</strong> · จำนวนชั้น = <strong>2</strong>
+      (ค่าทั้งหมดจากเวอร์ชันของวิภา สายชล บันทึกเมื่อ 30/08 10:03) — เวอร์ชันของสมชาย ใจดี (บันทึกเมื่อ 30/08 09:52) จะถูกละทิ้งทั้งหมด
+      สถานะ "รอแก้ไขความขัดแย้ง" ของระเบียนนี้จะถูกปลดทันที และระเบียนจะกลับไปนับรวมใน dashboard/รายงาน (NFR-10) — การกระทำนี้ย้อนกลับไม่ได้
+    </p>
+    <div class="btn-row">
+      <button type="button" class="btn btn-secondary btn-office" onclick="document.getElementById('use-all-2-dialog').style.display='none'">ยกเลิก</button>
+      <button type="button" class="btn btn-primary btn-office" onclick="document.getElementById('use-all-2-dialog').style.display='none'; alert('บันทึกแล้ว (สาธิต) — ใช้เวอร์ชันของวิภา สายชลทั้งหมด')">ยืนยันใช้เวอร์ชันนี้ทั้งหมด</button>
     </div>
   </div>
 </div>
