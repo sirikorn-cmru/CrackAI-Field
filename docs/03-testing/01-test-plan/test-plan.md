@@ -119,13 +119,13 @@
 | 5 | วาดภาพประกอบเพิ่มเติม | `test-cases/additional-sketch.md` | FR-15 | 2 |
 | 6 | บันทึกข้อมูลผู้สำรวจและระยะเวลาการสำรวจ | `test-cases/surveyor-info-duration.md` | FR-16, FR-17 | 3 |
 | 7 | ตรวจทานและรับรองผลสำรวจด้วยลายเซ็นดิจิทัล | `test-cases/survey-review-signature.md` | FR-18, FR-19 | 4 |
-| 8 | มอบหมายงานสำรวจให้ทีม | `test-cases/team-assignment.md` | FR-20 | 2 |
+| 8 | มอบหมายงานสำรวจให้ทีม | `test-cases/team-assignment.md` | FR-20 | 3 |
 | 9 | จัดการผู้ใช้และสิทธิ์การเข้าถึง | `test-cases/user-management.md` | FR-21, NFR-08 | 4 |
 | 10 | Dashboard ภาพรวมผลสำรวจ | `test-cases/dashboard-overview.md` | FR-22 | 2 |
 | 11 | ส่งออกรายงานผลการสำรวจ | `test-cases/export-report.md` | FR-23 | 2 |
 | 12 | ค้นหา/กรองรายการอาคารที่สำรวจแล้ว | `test-cases/search-filter-buildings.md` | FR-24 | 2 |
-| 13 | การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม | `test-cases/offline-sync.md` | NFR-01, NFR-02, NFR-03, NFR-04, NFR-07 | 6 |
+| 13 | การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม | `test-cases/offline-sync.md` | NFR-01, NFR-02, NFR-03, NFR-04, NFR-07 | 7 |
 | 14 | ยืนยันตัวตนและเข้าสู่ระบบ | `test-cases/authentication-login.md` | FR-25, FR-26, FR-27, NFR-09 | 8 |
 | 15 | แก้ไขความขัดแย้งของข้อมูลจากการซิงค์ด้วยมือ (Manual Conflict Resolution) | `test-cases/manual-conflict-resolution.md` | FR-30, FR-31, NFR-10 | 10 |
 
-รวม 79 AC ครอบคลุมครบ 41 รหัส FR/NFR ทั้งหมดตาม [[backlog]] (อัปเดตให้ครอบคลุม FR-30, FR-31, NFR-10 ของฟีเจอร์ 15 ที่เพิ่มเข้ามาภายหลัง)
+รวม 81 AC ครอบคลุมครบ 41 รหัส FR/NFR ทั้งหมดตาม [[backlog]] (อัปเดตให้ครอบคลุม FR-30, FR-31, NFR-10 ของฟีเจอร์ 15 ที่เพิ่มเข้ามาภายหลัง และเพิ่ม AC สถานะว่าง (empty state) ของ FR-20/NFR-02 อีกรวม 2 ข้อ จากสัญญาณ `audit-prototype` รอบ 5)
