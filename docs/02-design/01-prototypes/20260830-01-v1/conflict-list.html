@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>รายการข้อมูลขัดแย้งรอแก้ไข — CrackAI-Field Prototype</title>
 <link rel="stylesheet" href="style.css">
+<style>
+  .conflict-panel { display: none; }
+  .conflict-panel.active { display: block; }
+</style>
 </head>
 <body>
 <div class="proto-bar">
@@ -24,29 +28,56 @@
   <h1>รายการระเบียนที่มีข้อมูลขัดแย้งจากการซิงค์</h1>
   <p class="text-sm">แสดงระเบียนที่ระบบตรวจพบว่าหลายอุปกรณ์แก้ไขข้อมูลชุดเดียวกันแล้ว merge อัตโนมัติไม่ได้ (FR-30) — เข้าถึงได้เฉพาะหัวหน้าผู้สำรวจและผู้ดูแลระบบ</p>
 
-  <table class="data-table">
-    <thead>
-      <tr><th>อาคาร / ระเบียน</th><th>ฟิลด์ที่ขัดแย้ง</th><th>จำนวนเวอร์ชัน</th><th>แจ้งเตือนเมื่อ</th><th></th></tr>
-    </thead>
-    <tbody>
-      <tr class="has-conflict">
-        <td>บ้านเลขที่ 45/2 ต.ท่าศาลา</td>
-        <td>ผลสรุประดับความเสียหาย, ความกว้างรอยร้าว</td>
-        <td class="num">2</td>
-        <td class="num">30/08 10:05</td>
-        <td><a class="btn btn-ghost" href="conflict-detail.html">เปรียบเทียบ/แก้ไข</a></td>
-      </tr>
-      <tr class="has-conflict">
-        <td>ร้านค้าริมทาง เลขที่ 12</td>
-        <td>จำนวนชั้น, ชนิดโครงสร้างหลัก</td>
-        <td class="num">2</td>
-        <td class="num">30/08 09:48</td>
-        <td><a class="btn btn-ghost" href="conflict-detail.html">เปรียบเทียบ/แก้ไข</a></td>
-      </tr>
-    </tbody>
-  </table>
+  <p class="section-desc" style="margin-bottom:8px;">มุมมองสาธิต (สำหรับรีวิว Prototype เท่านั้น) — สลับดูพฤติกรรมเมื่อไม่มีระเบียนขัดแย้งค้างอยู่เลย (FR-30 AC-3)</p>
+  <div class="btn-row" style="margin-bottom:12px;">
+    <button type="button" class="btn btn-secondary btn-office" onclick="showConflicts('list')">มุมมอง: มีระเบียนขัดแย้ง</button>
+    <button type="button" class="btn btn-secondary btn-office" onclick="showConflicts('empty')">จำลอง: ไม่มีระเบียนขัดแย้งค้างอยู่เลย</button>
+  </div>
 
-  <p class="field-hint" style="margin-top:16px;">ระเบียนในตารางนี้ไม่ถูกนับรวมใน Dashboard (ฟีเจอร์ 10) หรือรายงานที่ส่งออก (ฟีเจอร์ 11) จนกว่าจะแก้ไขเสร็จและปลดสถานะขัดแย้ง</p>
+  <div id="conflict-list-panel" class="conflict-panel active">
+    <table class="data-table">
+      <thead>
+        <tr><th>อาคาร / ระเบียน</th><th>ฟิลด์ที่ขัดแย้ง</th><th>จำนวนเวอร์ชัน</th><th>แจ้งเตือนเมื่อ</th><th></th></tr>
+      </thead>
+      <tbody>
+        <tr class="has-conflict">
+          <td>บ้านเลขที่ 45/2 ต.ท่าศาลา</td>
+          <td>ผลสรุประดับความเสียหาย, ความกว้างรอยร้าว</td>
+          <td class="num">2</td>
+          <td class="num">30/08 10:05</td>
+          <td><a class="btn btn-ghost" href="conflict-detail.html">เปรียบเทียบ/แก้ไข</a></td>
+        </tr>
+        <tr class="has-conflict">
+          <td>ร้านค้าริมทาง เลขที่ 12</td>
+          <td>จำนวนชั้น, ชนิดโครงสร้างหลัก</td>
+          <td class="num">2</td>
+          <td class="num">30/08 09:48</td>
+          <td><a class="btn btn-ghost" href="conflict-detail.html">เปรียบเทียบ/แก้ไข</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="field-hint" style="margin-top:16px;">ระเบียนในตารางนี้ไม่ถูกนับรวมใน Dashboard (ฟีเจอร์ 10) หรือรายงานที่ส่งออก (ฟีเจอร์ 11) จนกว่าจะแก้ไขเสร็จและปลดสถานะขัดแย้ง</p>
+  </div>
+
+  <div id="conflict-empty-panel" class="conflict-panel">
+    <div class="empty-state">
+      <div style="font-size:32px;" aria-hidden="true">&#9989;</div>
+      <div><strong>ไม่มีระเบียนรอแก้ไขความขัดแย้ง</strong></div>
+      <div class="text-sm">
+        ไม่มีข้อมูลชุดใดที่ถูกแก้ไขจากหลายอุปกรณ์จนขัดแย้งกันในขณะนี้ (FR-30 AC-3) — นี่คือสถานะปกติที่ดี ไม่ใช่ข้อผิดพลาดหรือสัญญาณว่ามีอะไรผิดพลาด
+        หมายความว่าข้อมูลที่ซิงค์เข้ามาล่าสุดจากทุกอุปกรณ์ merge กันได้สำเร็จทั้งหมด ไม่ต้องดำเนินการใดๆ เพิ่มเติมในหน้านี้ —
+        หากมีอุปกรณ์หลายเครื่องแก้ไขข้อมูลชุดเดียวกันจนขัดแย้งกันในอนาคต ระบบจะแสดงระเบียนนั้นในรายการนี้ให้เองโดยอัตโนมัติ
+      </div>
+    </div>
+  </div>
 </div>
+<script>
+function showConflicts(id) {
+  document.querySelectorAll('.conflict-panel').forEach(function (el) { el.classList.remove('active'); });
+  var target = document.getElementById('conflict-' + id + '-panel');
+  if (target) { target.classList.add('active'); }
+}
+</script>
 </body>
 </html>
