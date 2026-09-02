@@ -34,7 +34,7 @@ sequenceDiagram
 
 ## 3. ความเชื่อมโยงกับ review_status
 
-[[api-spec#6. สรุปผลประเมินเป็น 3 ระดับสีพร้อมเกณฑ์อ้างอิงคู่มือ|api-spec 6.1]] ระบุว่าต้องมีค่า `overall_severity_level` ก่อนเปลี่ยน `review_status` เป็น "รอตรวจทาน" — transition นี้ทำผ่าน operation [[api-spec#10. ตรวจทานและรับรองผลสำรวจด้วยลายเซ็นดิจิทัล|10.1 ส่งแบบสำรวจเข้าสู่คิวตรวจทาน]] (เพิ่มโดย `api-db-writer` ปิดช่องว่างที่เคยรายงานไว้แล้ว) — ดู state diagram เต็มที่ [[survey-review-signature#3. State Diagram review_status|survey-review-signature หัวข้อ 3]]
+[[api-spec#6. สรุปผลประเมินเป็น 3 ระดับสีพร้อมเกณฑ์อ้างอิงคู่มือ|api-spec 6.1]] ระบุว่าต้องมีค่า `overall_severity_level` ก่อนเปลี่ยน `review_status` เป็น "รอตรวจทาน" — transition นี้ทำผ่าน operation [[api-spec#10. ตรวจทานและรับรองผลสำรวจด้วยลายเซ็นดิจิทัล|10.1 ส่งแบบสำรวจเข้าสู่คิวตรวจทาน]] (เพิ่มโดย `api-db-writer` ปิดช่องว่างที่เคยรายงานไว้แล้ว) — ดู state diagram เต็มที่ [[survey-review-signature#3. State Diagram: review_status|survey-review-signature หัวข้อ 3]]
 
 ## 4. Edge Case และวิธีจัดการ
 

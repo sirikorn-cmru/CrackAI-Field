@@ -2,7 +2,7 @@
 
 รองรับ [[feature-list#15. แก้ไขความขัดแย้งของข้อมูลจากการซิงค์ด้วยมือ (Manual Conflict Resolution)|ฟีเจอร์ 15]] (Must have) — อ้างอิง operation จาก [[api-spec#15. การแก้ไขความขัดแย้งของข้อมูลจากการซิงค์ (Manual Conflict Resolution)|api-spec หัวข้อ 15]] และ entity จาก [[db-spec#8.1 SyncConflict|SyncConflict]], [[db-spec#8.2 SyncConflictVersion|SyncConflictVersion]]
 
-เป็นขั้นตอนต่อเนื่องจาก [[offline-sync#3. State Diagram sync_status|offline-sync]] เมื่อ operation 14.2 ตรวจพบว่า merge อัตโนมัติไม่ได้ ใช้งานผ่าน [[architecture#2. Logical Component|Management Web Client]] (ต้องมีสัญญาณอินเทอร์เน็ต) โดยหัวหน้าผู้สำรวจ/ผู้ดูแลระบบ ปิดช่องว่างที่เคยรายงานไว้ในรอบก่อน (ไม่มีกลไกแก้ไขความขัดแย้งด้วยมือ) การแก้ไขสำเร็จเป็นเงื่อนไขที่ปลดล็อกให้อาคารไหลเข้า [[dashboard-overview]]/[[export-report]]/[[search-filter-buildings]] ได้ตาม NFR-10
+เป็นขั้นตอนต่อเนื่องจาก [[offline-sync#3. State Diagram: sync_status|offline-sync]] เมื่อ operation 14.2 ตรวจพบว่า merge อัตโนมัติไม่ได้ ใช้งานผ่าน [[architecture#2. Logical Component|Management Web Client]] (ต้องมีสัญญาณอินเทอร์เน็ต) โดยหัวหน้าผู้สำรวจ/ผู้ดูแลระบบ ปิดช่องว่างที่เคยรายงานไว้ในรอบก่อน (ไม่มีกลไกแก้ไขความขัดแย้งด้วยมือ) การแก้ไขสำเร็จเป็นเงื่อนไขที่ปลดล็อกให้อาคารไหลเข้า [[dashboard-overview]]/[[export-report]]/[[search-filter-buildings]] ได้ตาม NFR-10
 
 ## 1. Sequence Diagram
 
@@ -50,7 +50,7 @@ stateDiagram-v2
     แก้ไขแล้ว --> [*]
 ```
 
-การเปลี่ยนสถานะนี้เกิดขึ้นพร้อมกันในธุรกรรมเดียวกับ `SurveyedBuilding.sync_status: มีความขัดแย้งรอแก้ไข → ซิงค์สำเร็จ` เสมอ (ตาม [[db-spec#8.2 SyncConflictVersion|db-spec หัวข้อ 8]] กฎทางธุรกิจ) — ดู lifecycle เต็มของ `sync_status` ที่ [[offline-sync#3. State Diagram sync_status|offline-sync]]
+การเปลี่ยนสถานะนี้เกิดขึ้นพร้อมกันในธุรกรรมเดียวกับ `SurveyedBuilding.sync_status: มีความขัดแย้งรอแก้ไข → ซิงค์สำเร็จ` เสมอ (ตาม [[db-spec#8.2 SyncConflictVersion|db-spec หัวข้อ 8]] กฎทางธุรกิจ) — ดู lifecycle เต็มของ `sync_status` ที่ [[offline-sync#3. State Diagram: sync_status|offline-sync]]
 
 ## 4. Edge Case และวิธีจัดการ
 

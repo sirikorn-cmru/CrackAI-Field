@@ -44,7 +44,7 @@ stateDiagram-v2
 ```
 
 - `SurveyedBuilding.review_status` เริ่มที่ `ฉบับร่าง` เสมอเมื่อสร้างด้วย 4.1 — lifecycle เต็ม (รวมช่องว่างที่พบใน api-spec) อยู่ที่ [[survey-review-signature#3. State Diagram: review_status|survey-review-signature]]
-- `SurveyedBuilding.sync_status` เริ่มที่ `ยังไม่ซิงค์` เสมอเมื่อสร้างด้วย 4.1 — lifecycle เต็มอยู่ที่ [[offline-sync#3. State Diagram sync_status|offline-sync]]
+- `SurveyedBuilding.sync_status` เริ่มที่ `ยังไม่ซิงค์` เสมอเมื่อสร้างด้วย 4.1 — lifecycle เต็มอยู่ที่ [[offline-sync#3. State Diagram: sync_status|offline-sync]]
 
 ## 4. Edge Case และวิธีจัดการ
 
@@ -52,7 +52,7 @@ stateDiagram-v2
 |---|---|---|
 | `client_generated_id` ซ้ำกับระเบียนที่มีอยู่แล้วบนอุปกรณ์เดียวกัน | ปฏิเสธการสร้างซ้ำ ให้ผู้สำรวจแก้ไขระเบียนเดิมแทน | [[api-spec#4. บันทึกข้อมูลอาคารและสภาพแวดล้อม\|api-spec 4.1]] |
 | ไม่มีสัญญาณ GPS ขณะเริ่มแบบสำรวจ | บันทึกไม่ได้จนกว่าจะได้พิกัด (GPS เป็น field จำเป็น) — ต้องรอสัญญาณ GPS ของอุปกรณ์เอง ไม่เกี่ยวกับสัญญาณอินเทอร์เน็ต | [[api-spec#4. บันทึกข้อมูลอาคารและสภาพแวดล้อม\|api-spec 4.1]] |
-| `gps_accuracy_meters` แย่กว่าเกณฑ์ที่ยอมรับได้ | แจ้งเตือนผู้สำรวจก่อนยอมรับการบันทึก แต่ไม่บล็อกการทำงานต่อขณะออฟไลน์ (เกณฑ์ตัวเลขจริงยังไม่กำหนด — รอ `technology-stack.md`) | NFR-06, [[api-spec#15. ประเด็นรอตัดสินใจ\|api-spec หัวข้อ 15]] |
+| `gps_accuracy_meters` แย่กว่าเกณฑ์ที่ยอมรับได้ | แจ้งเตือนผู้สำรวจก่อนยอมรับการบันทึก แต่ไม่บล็อกการทำงานต่อขณะออฟไลน์ (เกณฑ์ตัวเลขจริงยังไม่กำหนด — รอ `technology-stack.md`) | NFR-06, [[api-spec#16. ประเด็นรอตัดสินใจ\|api-spec หัวข้อ 16]] |
 | พยายามแก้ไขข้อมูลกายภาพของระเบียนที่ `review_status = รับรองแล้ว` | ปฏิเสธการแก้ไข | [[api-spec#4. บันทึกข้อมูลอาคารและสภาพแวดล้อม\|api-spec 4.2]] |
 | บันทึกอันตรายโดยรอบอาคารโดยไม่พบ `SurveyedBuilding` ที่อ้างอิง | ปฏิเสธการบันทึก | [[api-spec#4. บันทึกข้อมูลอาคารและสภาพแวดล้อม\|api-spec 4.3]] |
 

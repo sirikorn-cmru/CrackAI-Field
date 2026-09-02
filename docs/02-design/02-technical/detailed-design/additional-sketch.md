@@ -30,7 +30,7 @@ sequenceDiagram
 
 ## 3. State Transition
 
-`Sketch.sync_status` ใช้ค่าเลือกจากรายการชุดเดียวกับ `SurveyedBuilding`/`DamagePhoto` — ไม่ออกแบบซ้ำในไฟล์นี้ ดู lifecycle เต็มที่ [[offline-sync#3. State Diagram sync_status|offline-sync]]
+`Sketch.sync_status` ใช้ค่าเลือกจากรายการชุดเดียวกับ `SurveyedBuilding`/`DamagePhoto` — ไม่ออกแบบซ้ำในไฟล์นี้ ดู lifecycle เต็มที่ [[offline-sync#3. State Diagram: sync_status|offline-sync]]
 
 ## 4. Edge Case และวิธีจัดการ
 

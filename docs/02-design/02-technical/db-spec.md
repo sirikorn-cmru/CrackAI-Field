@@ -1,6 +1,6 @@
 # โมเดลข้อมูล (Data Specification)
 
-เอกสารนี้อธิบายโมเดลข้อมูลระดับ **logical/conceptual** (entity, attribute, ความสัมพันธ์) ของระบบสำรวจความเสียหายขั้นต้นของโครงสร้างอาคารหลังอุทกภัย โดยอิงจาก [[architecture]] (7 logical component), [[feature-list]] (15 ฟีเจอร์ / 41 รหัส FR-NFR) และ [[backlog]]
+เอกสารนี้อธิบายโมเดลข้อมูลระดับ **logical/conceptual** (entity, attribute, ความสัมพันธ์) ของระบบสำรวจความเสียหายขั้นต้นของโครงสร้างอาคารหลังอุทกภัย โดยอิงจาก [[architecture]] (7 logical component), [[feature-list]] (17 ฟีเจอร์ / 43 รหัส FR-NFR) และ [[backlog]]
 
 > **หมายเหตุสำคัญ**: [[technology-stack.md|technology-stack]] ยังไม่มีเนื้อหา เอกสารนี้จึงจงใจไม่ระบุชนิดข้อมูลแบบ SQL (เช่น `VARCHAR`, `INT`, `TIMESTAMP`) และไม่ระบุว่าเป็น SQL/NoSQL/ชื่อ database engine ใดๆ ทั้งสิ้น ใช้เฉพาะ **ชนิดข้อมูลเชิงตรรกะ** ตามที่นิยามในหัวข้อ 0 เท่านั้น ประเด็นเชิงเทคนิคที่ยังไม่ตัดสินใจถูกรวบรวมไว้ในหัวข้อ 11
 
@@ -28,10 +28,10 @@
 | แกนกลางการสำรวจ | [[#4.1 SurveyedBuilding\|SurveyedBuilding]], [[#4.2 SurveyParticipant\|SurveyParticipant]] | [[feature-list#1. บันทึกข้อมูลอาคารและสภาพแวดล้อม\|ฟีเจอร์ 1]], [[feature-list#6. บันทึกข้อมูลผู้สำรวจและระยะเวลาการสำรวจ\|ฟีเจอร์ 6]] |
 | ความเสียหายแยกหมวด | [[#5.1 SurroundingHazard\|SurroundingHazard]], [[#5.2 ExternalDamage\|ExternalDamage]], [[#5.3 StructuralDamage\|StructuralDamage]], [[#5.4 ComponentDamage\|ComponentDamage]], [[#5.5 ElectricalSystemDamage\|ElectricalSystemDamage]] | [[feature-list#2. ประเมินความเสียหายโครงสร้างและส่วนประกอบอาคารแยกตามหมวด\|ฟีเจอร์ 2]], [[feature-list#3. สรุปผลประเมินเป็น 3 ระดับสีพร้อมเกณฑ์อ้างอิงคู่มือ\|ฟีเจอร์ 3]] |
 | ภาพประกอบและ AI | [[#6.1 DamagePhoto\|DamagePhoto]], [[#6.2 AIAnalysisResult\|AIAnalysisResult]], [[#6.3 Sketch\|Sketch]] | [[feature-list#4. ถ่ายภาพและประเมินรอยร้าวด้วย AI พร้อมทางเลือกกรอกเอง (Human-in-the-loop)\|ฟีเจอร์ 4]], [[feature-list#5. วาดภาพประกอบเพิ่มเติม\|ฟีเจอร์ 5]] |
-| การรับรองผลและ audit | [[#7.1 CertificationRecord\|CertificationRecord]], [[#7.2 AuditTrailEntry\|AuditTrailEntry]] | [[feature-list#7. ตรวจทานและรับรองผลสำรวจด้วยลายเซ็นดิจิทัล\|ฟีเจอร์ 7]] |
+| การรับรองผลและ audit | [[#7.1 CertificationRecord\|CertificationRecord]], [[#7.2 AuditTrailEntry\|AuditTrailEntry]] | [[feature-list#7. ตรวจทานและรับรองผลสำรวจด้วยลายเซ็นดิจิทัล\|ฟีเจอร์ 7]], [[feature-list#16. เรียกดูประวัติการแก้ไขผลประเมินรายอาคาร (Audit Trail รายอาคาร)\|ฟีเจอร์ 16]], [[feature-list#17. ค้นหา/กรองประวัติการแก้ไขทั่วทั้งระบบ (Audit Trail ระดับหน่วยงาน)\|ฟีเจอร์ 17]] |
 | การแก้ไขความขัดแย้งของข้อมูลจากการซิงค์ | [[#8.1 SyncConflict\|SyncConflict]], [[#8.2 SyncConflictVersion\|SyncConflictVersion]] | [[feature-list#15. แก้ไขความขัดแย้งของข้อมูลจากการซิงค์ด้วยมือ (Manual Conflict Resolution)\|ฟีเจอร์ 15]] |
 
-รวม **18 entity** ครอบคลุมทั้ง 15 ฟีเจอร์ (ฟีเจอร์ 10 "Dashboard", 11 "ส่งออกรายงาน", 12 "ค้นหา/กรอง", 13 "ออฟไลน์และซิงค์" เป็นการ**อ่าน/ประมวลผลข้อมูลของ entity ที่มีอยู่แล้ว** ไม่ต้องมี entity เฉพาะเพิ่ม ยกเว้น attribute ด้าน sync/conflict ที่ฝังอยู่ใน `SurveyedBuilding`/`DamagePhoto`/`Sketch` ตามหัวข้อ 10 — ฟีเจอร์ 15 (ใหม่) ใช้ entity เฉพาะเพิ่ม 2 ตัวตามหัวข้อ 8)
+รวม **18 entity** ครอบคลุมทั้ง 17 ฟีเจอร์ (ฟีเจอร์ 10 "Dashboard", 11 "ส่งออกรายงาน", 12 "ค้นหา/กรอง", 13 "ออฟไลน์และซิงค์" เป็นการ**อ่าน/ประมวลผลข้อมูลของ entity ที่มีอยู่แล้ว** ไม่ต้องมี entity เฉพาะเพิ่ม ยกเว้น attribute ด้าน sync/conflict ที่ฝังอยู่ใน `SurveyedBuilding`/`DamagePhoto`/`Sketch` ตามหัวข้อ 10 — ฟีเจอร์ 15 ใช้ entity เฉพาะเพิ่ม 2 ตัวตามหัวข้อ 8 — ฟีเจอร์ 16/17 (เพิ่มเข้ามา 2026-09-02) เป็นการ**อ่าน/ค้นหา**ข้อมูล `AuditTrailEntry` ที่มีอยู่แล้วเช่นกัน ไม่มี entity ใหม่ แต่ต้องเพิ่ม attribute เสริม 1 ตัวใน `AuditTrailEntry` เพื่อให้สืบย้อนไปยังอาคารได้โดยตรง — ดูหัวข้อ 7.2)
 
 ## 2. ผู้ใช้และการเข้าสู่ระบบ
 
@@ -287,18 +287,19 @@ Junction entity ระหว่าง SurveyedBuilding และ User แทน�
 
 ### 7.2 AuditTrailEntry
 
-รองรับ [[architecture#5. Mapping NFR ไปยัง Component|NFR-05]] — บันทึกทุกการแก้ไขผล AI (FR-14), การรับรอง/ส่งกลับแก้ไข (FR-18, FR-19), **ผลการซิงค์ข้อมูล (NFR-02, NFR-03)**, การแก้ไขความขัดแย้ง (FR-30, FR-31) และการเปลี่ยนแปลงบัญชีผู้ใช้ (FR-21) — ครอบคลุมทั้ง 4 กรณีตาม [[architecture#5.5 Cross-cutting concerns|architecture §5.5 Cross-cutting concerns]]
+รองรับ [[architecture#5. Mapping NFR ไปยัง Component|NFR-05]] — บันทึกทุกการแก้ไขผล AI (FR-14), การรับรอง/ส่งกลับแก้ไข (FR-18, FR-19), **ผลการซิงค์ข้อมูล (NFR-02, NFR-03)**, การแก้ไขความขัดแย้ง (FR-30, FR-31) และการเปลี่ยนแปลงบัญชีผู้ใช้ (FR-21) — ครอบคลุมทั้ง 4 กรณีตาม [[architecture#5.5 Cross-cutting concerns|architecture §5.5 Cross-cutting concerns]] — **ตั้งแต่ 2026-09-02 เอกสารนี้ยังต้องรองรับการอ่าน/ค้นหาประวัติที่เก็บไว้ตาม [[feature-list#16. เรียกดูประวัติการแก้ไขผลประเมินรายอาคาร (Audit Trail รายอาคาร)|FR-32]] และ [[feature-list#17. ค้นหา/กรองประวัติการแก้ไขทั่วทั้งระบบ (Audit Trail ระดับหน่วยงาน)|FR-33]] ด้วย (ดู operation ที่ [[api-spec#15.5 เรียกดู/ค้นหาประวัติการแก้ไข (Audit Trail)|api-spec หัวข้อ 15.5]])**
 
 | Attribute | ชนิด | จำเป็น | คำอธิบาย |
 |---|---|---|---|
 | id | ตัวระบุเฉพาะ | ใช่ | รหัสระเบียน |
 | related_entity_name | ค่าเลือกจากรายการ (ชื่อ entity ที่เกี่ยวข้อง เช่น StructuralDamage, ComponentDamage, SurveyedBuilding, User, SyncConflict) | ใช่ | entity ที่ถูกกระทำ |
 | related_entity_id | อ้างอิงถึง Entity อื่น (ขึ้นกับ `related_entity_name` — polymorphic) | ใช่ | ระเบียนที่ถูกกระทำ |
-| action_type | ค่าเลือกจากรายการ (แก้ไขผลประเมินความเสียหาย / รับรองผล / ส่งกลับแก้ไข / สร้างบัญชีผู้ใช้ / แก้ไขบัญชีผู้ใช้ / ปิดการใช้งานบัญชีผู้ใช้ / เปิดใช้งานบัญชีผู้ใช้คืน / ซิงค์ข้อมูลสำเร็จ / ตรวจพบความขัดแย้งของข้อมูล / แก้ไขความขัดแย้งของข้อมูล / อื่นๆ) | ใช่ | ประเภทการกระทำ (ค่า `ซิงค์ข้อมูลสำเร็จ`/`ตรวจพบความขัดแย้งของข้อมูล` รองรับผลการซิงค์ตาม [[api-spec#14. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม|api-spec หัวข้อ 14]]; ค่า `แก้ไขความขัดแย้งของข้อมูล` รองรับฟีเจอร์ 15 — ดูหัวข้อ 8) |
-| performed_by_user_id | อ้างอิงถึง Entity อื่น (User) | ไม่ (จำเป็นเมื่อ `action_type` ไม่ใช่ `ซิงค์ข้อมูลสำเร็จ` หรือ `ตรวจพบความขัดแย้งของข้อมูล`) | ผู้กระทำ (ไม่บังคับเมื่อผู้กระทำคือระบบภายในเอง เช่น `action_type = ซิงค์ข้อมูลสำเร็จ`/`ตรวจพบความขัดแย้งของข้อมูล` ที่ Sync & Conflict Resolution Service เป็นผู้บันทึก ไม่ใช่ผู้ใช้คนใดโดยตรง — ใช้ `related_entity_id`/`note` ระบุ `device_id` ต้นทางแทน) |
+| related_surveyedbuilding_id | อ้างอิงถึง Entity อื่น (SurveyedBuilding) | ไม่ (จำเป็นเมื่อ `related_entity_name` เป็น entity ที่สืบย้อนไปถึงอาคารได้ เช่น SurveyedBuilding, StructuralDamage, ComponentDamage, ExternalDamage, SyncConflict) | อาคารต้นทางที่เหตุการณ์นี้เกี่ยวข้อง แม้ `related_entity_id` จะชี้ไปที่ entity ย่อยของอาคาร (เช่น `StructuralDamage`) ก็ตาม เป็น attribute เสริมที่ resolve ไว้ล่วงหน้าตอนสร้างระเบียน เพื่อให้ (1) ดึงประวัติรายอาคารครบทุกเหตุการณ์รวมถึงเหตุการณ์ที่เกิดกับ entity ย่อยได้โดยตรง (FR-32) และ (2) กรองตามพื้นที่/จังหวัดได้โดย join ไปยัง `SurveyedBuilding.province`/`district` เพียงครั้งเดียว (FR-33) โดยไม่ต้องไล่ตรวจ `related_entity_name` ทีละชนิดทุกครั้งที่อ่าน — ไม่มีค่าเมื่อ `related_entity_name = User` (เหตุการณ์เกี่ยวกับบัญชีผู้ใช้ไม่ผูกกับอาคารใด) — เพิ่มเข้ามา 2026-09-02 |
+| action_type | ค่าเลือกจากรายการ (แก้ไขผลประเมินความเสียหาย / รับรองผล / ส่งกลับแก้ไข / สร้างบัญชีผู้ใช้ / แก้ไขบัญชีผู้ใช้ / ปิดการใช้งานบัญชีผู้ใช้ / เปิดใช้งานบัญชีผู้ใช้คืน / ซิงค์ข้อมูลสำเร็จ / ตรวจพบความขัดแย้งของข้อมูล / แก้ไขความขัดแย้งของข้อมูล / อื่นๆ) | ใช่ | ประเภทการกระทำ (ค่า `ซิงค์ข้อมูลสำเร็จ`/`ตรวจพบความขัดแย้งของข้อมูล` รองรับผลการซิงค์ตาม [[api-spec#14. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม|api-spec หัวข้อ 14]]; ค่า `แก้ไขความขัดแย้งของข้อมูล` รองรับฟีเจอร์ 15 — ดูหัวข้อ 8; ใช้เป็นเงื่อนไขกรองประเภทการกระทำใน FR-33 ด้วย) |
+| performed_by_user_id | อ้างอิงถึง Entity อื่น (User) | ไม่ (จำเป็นเมื่อ `action_type` ไม่ใช่ `ซิงค์ข้อมูลสำเร็จ` หรือ `ตรวจพบความขัดแย้งของข้อมูล`) | ผู้กระทำ (ไม่บังคับเมื่อผู้กระทำคือระบบภายในเอง เช่น `action_type = ซิงค์ข้อมูลสำเร็จ`/`ตรวจพบความขัดแย้งของข้อมูล` ที่ Sync & Conflict Resolution Service เป็นผู้บันทึก ไม่ใช่ผู้ใช้คนใดโดยตรง — ใช้ `related_entity_id`/`note` ระบุ `device_id` ต้นทางแทน) — ใช้เป็นเงื่อนไขกรอง "ผู้แก้ไข" ใน FR-33 ด้วย |
 | value_before | ข้อความ | ไม่ | ค่าก่อนแก้ไข |
 | value_after | ข้อความ | ไม่ | ค่าหลังแก้ไข |
-| performed_at | วันที่-เวลา | ใช่ | เวลาที่กระทำ |
+| performed_at | วันที่-เวลา | ใช่ | เวลาที่กระทำ — ใช้เป็นลำดับการแสดงผลของ FR-32 และเงื่อนไขกรอง "ช่วงเวลา" ของ FR-33 |
 | note | ข้อความ | ไม่ | หมายเหตุเพิ่มเติม |
 
 ## 8. การแก้ไขความขัดแย้งของข้อมูลจากการซิงค์ (Manual Conflict Resolution)
@@ -363,6 +364,7 @@ erDiagram
     SurveyedBuilding ||--o{ CertificationRecord : "ถูกตรวจทาน"
     User ||--o{ CertificationRecord : "ตรวจทานโดย"
     User ||--o{ AuditTrailEntry : "กระทำโดย"
+    SurveyedBuilding |o--o{ AuditTrailEntry : "เกี่ยวข้องกับอาคาร (ไม่บังคับ, resolved จาก related_entity_id แบบ polymorphic)"
     SurveyedBuilding ||--o{ SyncConflict : "เกิดความขัดแย้ง"
     SyncConflict ||--o{ SyncConflictVersion : "มีเวอร์ชันที่ขัดแย้งกัน"
     User |o--o{ SyncConflict : "แก้ไขโดย (ไม่บังคับ)"
@@ -434,6 +436,7 @@ erDiagram
 5. **ความสมบูรณ์ก่อนรับรองผล (FR-18/19)**: `CertificationRecord.review_result = รับรอง` ต้องมี `digital_signature_file` เสมอ และ `SurveyedBuilding.review_status` ต้องเป็น "รับรองแล้ว" ก็ต่อเมื่อมี `CertificationRecord` ที่ผลเป็น "รับรอง" อย่างน้อย 1 รายการ
 6. **ทีมสำรวจ 1-3 คน + หัวหน้า (FR-16)**: บังคับที่ระดับ operation ใน [[api-spec]] ว่า `SurveyParticipant` ต่อ `SurveyedBuilding` หนึ่งชุดต้องมีอย่างน้อย 1 รายการที่ `role_in_team = หัวหน้าผู้สำรวจ` และรวมไม่เกิน 3 รายการ
 7. **ภาพถ่ายผูกกับบริเวณที่ตรวจสอบ (FR-12)**: `DamagePhoto.linked_area_type` + `linked_area_id` ต้องสอดคล้องกัน (เช่นถ้า `linked_area_type = ความเสียหายโครงสร้าง` ต้องอ้างอิงระเบียนใน `StructuralDamage` เท่านั้น) — ถ้าไม่ผูกกับบริเวณใดโดยตรง ให้ใช้ `linked_area_type = ทั่วไป` และ `area_description_text` แทน
+8. **`AuditTrailEntry.related_surveyedbuilding_id` ต้องถูก resolve ให้ถูกต้องเสมอทุกครั้งที่สร้างระเบียน (FR-32, FR-33) — เพิ่มเข้ามา 2026-09-02**: operation ทุกตัวที่สร้าง `AuditTrailEntry` (ดู [[api-spec#2.2 แก้ไขข้อมูล/บทบาทผู้ใช้|2.2]]–[[api-spec#2.4 เปิดใช้งานบัญชีผู้ใช้คืน|2.4]], [[api-spec#7.3 ยืนยัน/แก้ไขผลวิเคราะห์ AI ก่อนบันทึกจริง|7.3]], [[api-spec#10.2 ตรวจทานผลสำรวจ (ส่งกลับแก้ไข)|10.2]]–[[api-spec#10.3 ลงลายมือชื่อดิจิทัลรับรองผล|10.3]], [[api-spec#14.1 ซิงค์ข้อมูลแบบสำรวจที่ค้างจากอุปกรณ์|14.1]]–[[api-spec#14.2 ตรวจสอบ/แก้ไขความขัดแย้งของข้อมูลที่ซิงค์|14.2]], [[api-spec#15.2 เปรียบเทียบเวอร์ชันข้อมูลที่ขัดแย้งกันและเลือก/รวมค่าด้วยมือ|15.2]]) ต้องกำหนดค่านี้ตามกฎ: ถ้า `related_entity_name = SurveyedBuilding` ให้เท่ากับ `related_entity_id` โดยตรง; ถ้าเป็น `StructuralDamage`/`ComponentDamage`/`ExternalDamage` ให้ใช้ค่า `surveyedbuilding_id` ของระเบียนนั้น; ถ้าเป็น `SyncConflict` ให้ใช้ค่า `SyncConflict.surveyedbuilding_id`; ถ้าเป็น `User` ให้ปล่อยว่าง — กฎนี้ทำให้ [[api-spec#15.5 เรียกดู/ค้นหาประวัติการแก้ไข (Audit Trail)|api-spec หัวข้อ 15.5]] (FR-32 ดึงประวัติรายอาคารครบทุกเหตุการณ์รวม entity ย่อย, FR-33 กรองตามพื้นที่) ทำงานได้ถูกต้องโดยไม่ต้อง join ตาม `related_entity_name` ทีละชนิดทุกครั้งที่อ่าน
 
 ## 11. ประเด็นรอตัดสินใจ
 
@@ -444,10 +447,12 @@ erDiagram
 - รูปแบบ/format จริงของ `SyncConflictVersion.snapshot_content` (เช่น โครงสร้างคล้าย JSON หรือรูปแบบอื่น) — เป็นการตัดสินใจเชิงเทคนิคที่ต้องรอ `technology-stack.md`
 - ขนาด/ความละเอียดของชนิด "ตัวเลข" และ "ข้อความ" แต่ละ attribute (เช่น ทศนิยมกี่ตำแหน่งของ GPS)
 - รูปแบบการจัดเก็บ `credential_secret` และ mechanism ของ RBAC จริง (ตาราง permission แยกหรือฝังในตัว `role`)
+- **นโยบายเก็บรักษา/archive ข้อมูล `AuditTrailEntry` ระยะยาว (retention policy) — เพิ่มเข้ามา 2026-09-02**: spec สมมติไว้ก่อนว่า "เก็บไว้ตลอดอายุของระเบียนที่เกี่ยวข้อง ไม่มีการลบอัตโนมัติในเฟสนี้" ([[20260828-01-flood-damage-survey#6. ข้อสมมติ / ประเด็นค้างพิจารณา|ข้อสมมติข้อ 10]], [[architecture#7. ข้อสมมติ|architecture §7 ข้อสมมติ 6]]) เอกสารนี้จึงยังไม่ออกแบบกลไก archive/purge ใดๆ ให้ `AuditTrailEntry` รอผู้ใช้ยืนยันนโยบายเก็บรักษาข้อมูลของหน่วยงานราชการก่อน — ถ้าในอนาคตมีการกำหนดระยะเวลาที่ชัดเจน จะกระทบโครงสร้างข้อมูลส่วนนี้โดยตรง (ต้องเพิ่ม attribute สถานะ archive และ/หรือกลไกย้ายข้อมูลเก่าออก)
+- กลยุทธ์การทำดัชนี/ค้นหาที่มีประสิทธิภาพสำหรับ `AuditTrailEntry` เมื่อข้อมูลสะสมมากขึ้นเรื่อยๆ โดยไม่มีการลบอัตโนมัติ (รองรับการค้นหา/กรองของ FR-33 ตาม [[architecture#8. ประเด็นรอตัดสินใจ|architecture §8]]) — เป็นการตัดสินใจเชิงเทคนิคที่ต้องรอ `technology-stack.md`
 
 ## เอกสารที่เกี่ยวข้อง
 
 - [[api-spec]] — operation contract ที่ใช้ entity/attribute ชุดนี้ทั้งหมด
 - [[architecture]] — component ที่เป็นเจ้าของ entity แต่ละกลุ่ม (Primary Data Store, Media/Object Storage)
-- [[feature-list]] — ฟีเจอร์ทั้ง 14 รายการที่โมเดลนี้ต้องรองรับ
+- [[feature-list]] — ฟีเจอร์ทั้ง 17 รายการที่โมเดลนี้ต้องรองรับ
 - [[backlog]] — รายการ FR/NFR ต้นทาง
