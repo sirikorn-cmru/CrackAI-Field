@@ -374,19 +374,19 @@
 
 - **ผู้เรียกได้**: ผู้สำรวจภาคสนาม (เรียกอัตโนมัติโดย Field Client App ผ่านคิวรอซิงค์เมื่อมีสัญญาณ)
 - **Input**: รายการระเบียนที่ค้างซิงค์ทั้งหมดจากอุปกรณ์ (`SurveyedBuilding`, `SurroundingHazard`, `ExternalDamage`, `StructuralDamage`, `ComponentDamage`, `ElectricalSystemDamage`, `DamagePhoto`, `AIAnalysisResult`, `Sketch`, `SurveyParticipant`) ระบุด้วย `client_generated_id` ของแต่ละระเบียน, `device_id`
-- **Output**: สถานะการซิงค์ต่อระเบียน (`sync_status = ซิงค์สำเร็จ` พร้อม `id` ที่เซิร์ฟเวอร์กำหนดให้, หรือ `sync_status = มีความขัดแย้งรอแก้ไข`)
+- **Output**: สถานะการซิงค์ต่อระเบียน (`sync_status = ซิงค์สำเร็จ` พร้อม `id` ที่เซิร์ฟเวอร์กำหนดให้, หรือ `sync_status = มีความขัดแย้งรอแก้ไข`) + `AuditTrailEntry` ใหม่ต่อ `SurveyedBuilding` ที่ซิงค์สำเร็จแต่ละอาคาร (`related_entity_name = SurveyedBuilding`, `action_type = ซิงค์ข้อมูลสำเร็จ`, `performed_by_user_id` ไม่บังคับ, `note` ระบุ `device_id` ต้นทาง) เพื่อ auditability ของผลการซิงค์ (NFR-05, ดู [[architecture#5.5 Cross-cutting concerns|architecture §5.5]])
 - **กฎทางธุรกิจ**: ต้องรองรับไฟล์ภาพขนาดใหญ่แบบทำต่อได้เมื่อสัญญาณขาดหาย (NFR-02) และรองรับหลายอุปกรณ์/หลายทีมซิงค์พร้อมกันจำนวนมาก (NFR-07) โดยไม่บล็อกการทำงานอื่นของ Field Client — คำขอซิงค์เข้าคิวผ่าน [[architecture#2. Logical Component|คิวรับคำขอซิงค์ฝั่งเซิร์ฟเวอร์ (Server-side Sync Intake Queue)]] ก่อนประมวลผลเพื่อจัดลำดับ/จำกัดอัตราไม่ให้ระบบล่มเมื่อหลายทีมซิงค์พร้อมกันหลังเกิดเหตุ; ใช้ `client_generated_id` เป็น idempotency key กันบันทึกซ้ำสำหรับทุก entity ที่ระบุไว้ใน Input — **แต่การตรวจจับความขัดแย้ง (conflict) ทำที่ระดับ `SurveyedBuilding` (aggregate) เท่านั้น** โดยเทียบ `data_version`/`last_modified_at`/`last_modified_by_device_id` ของอาคารแม่ ส่วน `client_generated_id` ของ entity ย่อย (`SurveyParticipant`, `SurroundingHazard`, `ExternalDamage`, `StructuralDamage`, `ComponentDamage`, `ElectricalSystemDamage`) มีไว้เพื่อ idempotent upsert และให้ `DamagePhoto.linked_area_id` อ้างอิงได้อย่างเสถียรเท่านั้น (ดูเหตุผลเต็มที่ [[db-spec#10. กฎทางธุรกิจที่กระทบโครงสร้างข้อมูล|db-spec หัวข้อ 10 ข้อ 2-3]])
 - **กรณี error**: ไฟล์ภาพส่งไม่สำเร็จบางส่วน (ต้องส่งต่อได้โดยไม่ต้องเริ่มใหม่ทั้งหมด), พบข้อมูลชุดเดียวกันถูกแก้ไขจากหลายอุปกรณ์ → ส่งต่อไปยัง 14.2
-- **FR/NFR**: [[feature-list#13. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม|NFR-01, NFR-02, NFR-04, NFR-07]]
+- **FR/NFR**: [[feature-list#13. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม|NFR-01, NFR-02, NFR-04, NFR-07]], [[architecture#5.5 Cross-cutting concerns|NFR-05]]
 
 ### 14.2 ตรวจสอบ/แก้ไขความขัดแย้งของข้อมูลที่ซิงค์
 
 - **ผู้เรียกได้**: ระบบภายใน (Sync & Conflict Resolution Service ไม่มีผู้ใช้เรียกตรง)
 - **Input**: ระเบียนที่ขัดแย้งกัน (เทียบ `data_version`/`last_modified_at` ของ `SurveyedBuilding` จากหลายอุปกรณ์)
-- **Output**: ผลการ merge อัตโนมัติ (ถ้าทำได้) หรือถ้า merge ไม่ได้: สร้าง `SyncConflict` ใหม่ (`status = รอแก้ไขด้วยมือ`) พร้อม `SyncConflictVersion` เก็บทุกเวอร์ชันที่ส่งเข้ามา และตั้ง `SurveyedBuilding.sync_status = มีความขัดแย้งรอแก้ไข`
-- **กฎทางธุรกิจ**: ต้องมีกฎ merge/แจ้งเตือนที่ชัดเจนก่อนบันทึกเป็นข้อมูลจริง (กลยุทธ์ auto-merge ที่เป็นรูปธรรมยังไม่ตัดสินใจ ดูหัวข้อ 16); เมื่อ merge อัตโนมัติไม่ได้ ต้องส่งต่อให้มนุษย์ตัดสินใจผ่าน [[#15. การแก้ไขความขัดแย้งของข้อมูลจากการซิงค์ (Manual Conflict Resolution)|หัวข้อ 15]] เสมอ (แก้ช่องว่างที่เคยรายงานไว้ใน `## NEEDS_NEW_REQUIREMENT` รอบก่อน ด้วย FR-30/FR-31)
+- **Output**: ผลการ merge อัตโนมัติ (ถ้าทำได้: `AuditTrailEntry` ใหม่ `related_entity_name = SurveyedBuilding`, `action_type = ซิงค์ข้อมูลสำเร็จ`) หรือถ้า merge ไม่ได้: สร้าง `SyncConflict` ใหม่ (`status = รอแก้ไขด้วยมือ`) พร้อม `SyncConflictVersion` เก็บทุกเวอร์ชันที่ส่งเข้ามา ตั้ง `SurveyedBuilding.sync_status = มีความขัดแย้งรอแก้ไข` และสร้าง `AuditTrailEntry` ใหม่เสมอ (`related_entity_name = SurveyedBuilding`, `action_type = ตรวจพบความขัดแย้งของข้อมูล`, `performed_by_user_id` ไม่บังคับ)
+- **กฎทางธุรกิจ**: ต้องมีกฎ merge/แจ้งเตือนที่ชัดเจนก่อนบันทึกเป็นข้อมูลจริง (กลยุทธ์ auto-merge ที่เป็นรูปธรรมยังไม่ตัดสินใจ ดูหัวข้อ 16); เมื่อ merge อัตโนมัติไม่ได้ ต้องส่งต่อให้มนุษย์ตัดสินใจผ่าน [[#15. การแก้ไขความขัดแย้งของข้อมูลจากการซิงค์ (Manual Conflict Resolution)|หัวข้อ 15]] เสมอ (แก้ช่องว่างที่เคยรายงานไว้ใน `## NEEDS_NEW_REQUIREMENT` รอบก่อน ด้วย FR-30/FR-31); ทุกผลการซิงค์ (สำเร็จหรือขัดแย้ง) ต้องถูกแนบเข้า audit trail เสมอ (NFR-05, ดู [[architecture#5.5 Cross-cutting concerns|architecture §5.5]])
 - **กรณี error**: ไม่สามารถ merge อัตโนมัติได้ → คงสถานะ `มีความขัดแย้งรอแก้ไข`/`SyncConflict.status = รอแก้ไขด้วยมือ` ไว้จนกว่าหัวหน้าผู้สำรวจ/ผู้ดูแลระบบจะแก้ไขผ่านหัวข้อ 15
-- **FR/NFR**: [[feature-list#13. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม|NFR-03, NFR-07]]
+- **FR/NFR**: [[feature-list#13. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม|NFR-03, NFR-07]], [[architecture#5.5 Cross-cutting concerns|NFR-05]]
 
 ## 15. การแก้ไขความขัดแย้งของข้อมูลจากการซิงค์ (Manual Conflict Resolution)
 

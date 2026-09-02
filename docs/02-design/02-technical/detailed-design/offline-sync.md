@@ -22,27 +22,30 @@ sequenceDiagram
     alt ไม่พบความขัดแย้ง
         Sync->>DB: บันทึกข้อมูลเชิงโครงสร้าง + กำหนด id ฝั่งเซิร์ฟเวอร์ (client_generated_id ของทุก entity ที่ระบุใช้เป็น idempotency key)
         Sync->>Media: บันทึกไฟล์ภาพ/ภาพวาด (รองรับทำต่อได้เมื่อสัญญาณขาดหาย)
+        Sync->>DB: สร้าง AuditTrailEntry ต่อ SurveyedBuilding ที่ซิงค์สำเร็จแต่ละอาคาร (related_entity_name=SurveyedBuilding, action_type=ซิงค์ข้อมูลสำเร็จ, performed_by_user_id ไม่บังคับ, note=device_id ต้นทาง) (NFR-05)
         Sync-->>Queue: sync_status=ซิงค์สำเร็จ
     else พบ SurveyedBuilding ชุดเดียวกันถูกแก้ไขจากหลายอุปกรณ์ (เทียบ data_version/last_modified_at ระดับอาคารแม่เท่านั้น)
         Sync->>Sync: 14.2 ตรวจสอบ/แก้ไขความขัดแย้งของข้อมูลที่ซิงค์
         alt merge อัตโนมัติสำเร็จ
             Sync->>DB: บันทึกผล merge
+            Sync->>DB: สร้าง AuditTrailEntry (related_entity_name=SurveyedBuilding, action_type=ซิงค์ข้อมูลสำเร็จ, performed_by_user_id ไม่บังคับ) (NFR-05)
             Sync-->>Queue: sync_status=ซิงค์สำเร็จ
         else merge อัตโนมัติไม่ได้
             Sync->>DB: สร้าง SyncConflict (status=รอแก้ไขด้วยมือ) + SyncConflictVersion เก็บทุกเวอร์ชันที่ส่งเข้ามา
+            Sync->>DB: สร้าง AuditTrailEntry เสมอ (related_entity_name=SurveyedBuilding, action_type=ตรวจพบความขัดแย้งของข้อมูล, performed_by_user_id ไม่บังคับ) (NFR-05)
             Sync-->>Queue: sync_status=มีความขัดแย้งรอแก้ไข
             Note over Sync,DB: ส่งต่อให้หัวหน้าผู้สำรวจ/ผู้ดูแลระบบแก้ไขด้วยมือ — ดู [[manual-conflict-resolution]]
         end
     end
-    Sync->>BE: แจ้งผลการซิงค์ + audit trail (NFR-05)
+    Sync->>BE: แจ้งผลการซิงค์
 ```
 
 ## 2. Operation ↔ Entity ที่กระทบ
 
 | Operation ([[api-spec#14. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม\|api-spec 14.x]]) | Entity ที่กระทบ | การกระทำ | ลำดับ/เงื่อนไข |
 |---|---|---|---|
-| 14.1 ซิงค์ข้อมูลแบบสำรวจที่ค้างจากอุปกรณ์ | [[db-spec#4.1 SurveyedBuilding\|SurveyedBuilding]], [[db-spec#6.1 DamagePhoto\|DamagePhoto]], [[db-spec#6.3 Sketch\|Sketch]] (มี `client_generated_id`/`sync_status` ของตัวเอง) + [[db-spec#4.2 SurveyParticipant\|SurveyParticipant]], [[db-spec#5.1 SurroundingHazard\|SurroundingHazard]], [[db-spec#5.2 ExternalDamage\|ExternalDamage]], [[db-spec#5.3 StructuralDamage\|StructuralDamage]], [[db-spec#5.4 ComponentDamage\|ComponentDamage]], [[db-spec#5.5 ElectricalSystemDamage\|ElectricalSystemDamage]] (มี `client_generated_id` เพื่อ idempotent upsert เท่านั้น — ไม่มี `sync_status` ของตัวเอง ดูหัวข้อ 5) | สร้าง/กำหนด id ฝั่งเซิร์ฟเวอร์ | ใช้ `client_generated_id` เป็น idempotency key กันบันทึกซ้ำสำหรับทุก entity ที่ระบุ; ต้องทำหลังระเบียนต้นทางถูกสร้างในฟีเจอร์ 1/2/4/5/6 แล้ว |
-| 14.2 ตรวจสอบ/แก้ไขความขัดแย้งของข้อมูลที่ซิงค์ | [[db-spec#4.1 SurveyedBuilding\|SurveyedBuilding]] (เทียบ `data_version`/`last_modified_at` — **ระดับ aggregate เท่านั้น**), [[db-spec#8.1 SyncConflict\|SyncConflict]] (สร้างเมื่อ merge อัตโนมัติไม่ได้), [[db-spec#8.2 SyncConflictVersion\|SyncConflictVersion]] (สร้างต่อเวอร์ชันที่ขัดแย้ง) | เปรียบเทียบ + สร้าง | ทำงานเป็นส่วนหนึ่งของ 14.1 เมื่อพบความขัดแย้งเท่านั้น ไม่มีผู้ใช้เรียกตรง; เมื่อ merge ไม่ได้ ส่งต่อให้มนุษย์ตัดสินใจผ่าน [[manual-conflict-resolution]] เสมอ |
+| 14.1 ซิงค์ข้อมูลแบบสำรวจที่ค้างจากอุปกรณ์ | [[db-spec#4.1 SurveyedBuilding\|SurveyedBuilding]], [[db-spec#6.1 DamagePhoto\|DamagePhoto]], [[db-spec#6.3 Sketch\|Sketch]] (มี `client_generated_id`/`sync_status` ของตัวเอง) + [[db-spec#4.2 SurveyParticipant\|SurveyParticipant]], [[db-spec#5.1 SurroundingHazard\|SurroundingHazard]], [[db-spec#5.2 ExternalDamage\|ExternalDamage]], [[db-spec#5.3 StructuralDamage\|StructuralDamage]], [[db-spec#5.4 ComponentDamage\|ComponentDamage]], [[db-spec#5.5 ElectricalSystemDamage\|ElectricalSystemDamage]] (มี `client_generated_id` เพื่อ idempotent upsert เท่านั้น — ไม่มี `sync_status` ของตัวเอง ดูหัวข้อ 5), [[db-spec#7.2 AuditTrailEntry\|AuditTrailEntry]] (สร้างต่อ `SurveyedBuilding` ที่ซิงค์สำเร็จแต่ละอาคาร — `action_type = ซิงค์ข้อมูลสำเร็จ`, `performed_by_user_id` ไม่บังคับเพราะระบบเป็นผู้บันทึกเอง) | สร้าง/กำหนด id ฝั่งเซิร์ฟเวอร์ + สร้าง audit entry | ใช้ `client_generated_id` เป็น idempotency key กันบันทึกซ้ำสำหรับทุก entity ที่ระบุ; ต้องทำหลังระเบียนต้นทางถูกสร้างในฟีเจอร์ 1/2/4/5/6 แล้ว; audit entry ถูกสร้างหลังบันทึกข้อมูล/ไฟล์สำเร็จเสมอ (NFR-05) |
+| 14.2 ตรวจสอบ/แก้ไขความขัดแย้งของข้อมูลที่ซิงค์ | [[db-spec#4.1 SurveyedBuilding\|SurveyedBuilding]] (เทียบ `data_version`/`last_modified_at` — **ระดับ aggregate เท่านั้น**), [[db-spec#8.1 SyncConflict\|SyncConflict]] (สร้างเมื่อ merge อัตโนมัติไม่ได้), [[db-spec#8.2 SyncConflictVersion\|SyncConflictVersion]] (สร้างต่อเวอร์ชันที่ขัดแย้ง), [[db-spec#7.2 AuditTrailEntry\|AuditTrailEntry]] (สร้างเสมอทั้ง 2 กรณี — merge อัตโนมัติสำเร็จ: `action_type = ซิงค์ข้อมูลสำเร็จ`; merge ไม่ได้: `action_type = ตรวจพบความขัดแย้งของข้อมูล`; `performed_by_user_id` ไม่บังคับทั้งคู่เพราะระบบเป็นผู้บันทึกเอง) | เปรียบเทียบ + สร้าง | ทำงานเป็นส่วนหนึ่งของ 14.1 เมื่อพบความขัดแย้งเท่านั้น ไม่มีผู้ใช้เรียกตรง; เมื่อ merge ไม่ได้ ส่งต่อให้มนุษย์ตัดสินใจผ่าน [[manual-conflict-resolution]] เสมอ; audit entry ต้องถูกสร้างเสมอไม่ว่าผลจะเป็นแบบใด (NFR-05) |
 
 ## 3. State Diagram: sync_status
 
