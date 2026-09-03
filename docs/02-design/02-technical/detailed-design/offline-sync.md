@@ -21,7 +21,8 @@ sequenceDiagram
     Sync->>Sync: ตรวจสอบ client_generated_id เป็น idempotency key กันบันทึกซ้ำ
     alt ไม่พบความขัดแย้ง
         Sync->>DB: บันทึกข้อมูลเชิงโครงสร้าง + กำหนด id ฝั่งเซิร์ฟเวอร์ (client_generated_id ของทุก entity ที่ระบุใช้เป็น idempotency key)
-        Sync->>Media: บันทึกไฟล์ภาพ/ภาพวาด (รองรับทำต่อได้เมื่อสัญญาณขาดหาย)
+        Sync->>Media: บันทึกไฟล์ภาพ/ภาพวาด ต่อจาก uploaded_bytes ของ upload_session_id เดิม (resumable upload — db-spec หัวข้อ 10 ข้อ 8) แล้วรายงาน upload_session_id/uploaded_bytes ล่าสุดกลับให้อุปกรณ์
+        Note over Sync,Media: ถ้า upload_session_id ที่อุปกรณ์ส่งมาไม่ตรงกับที่บันทึกไว้ล่าสุด หรือรอบเดิม stale เกินเกณฑ์ (ตัวเลขยังไม่ตัดสินใจ) → ออก upload_session_id ใหม่ เริ่มนับ uploaded_bytes จาก 0 (db-spec หัวข้อ 10 ข้อ 8)
         Sync->>DB: สร้าง AuditTrailEntry ต่อ SurveyedBuilding ที่ซิงค์สำเร็จแต่ละอาคาร (related_entity_name=SurveyedBuilding, action_type=ซิงค์ข้อมูลสำเร็จ, performed_by_user_id ไม่บังคับ, note=device_id ต้นทาง) (NFR-05)
         Sync-->>Queue: sync_status=ซิงค์สำเร็จ
     else พบ SurveyedBuilding ชุดเดียวกันถูกแก้ไขจากหลายอุปกรณ์ (เทียบ data_version/last_modified_at ระดับอาคารแม่เท่านั้น)
@@ -44,7 +45,7 @@ sequenceDiagram
 
 | Operation ([[api-spec#14. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม\|api-spec 14.x]]) | Entity ที่กระทบ | การกระทำ | ลำดับ/เงื่อนไข |
 |---|---|---|---|
-| 14.1 ซิงค์ข้อมูลแบบสำรวจที่ค้างจากอุปกรณ์ | [[db-spec#4.1 SurveyedBuilding\|SurveyedBuilding]], [[db-spec#6.1 DamagePhoto\|DamagePhoto]], [[db-spec#6.3 Sketch\|Sketch]] (มี `client_generated_id`/`sync_status` ของตัวเอง) + [[db-spec#4.2 SurveyParticipant\|SurveyParticipant]], [[db-spec#5.1 SurroundingHazard\|SurroundingHazard]], [[db-spec#5.2 ExternalDamage\|ExternalDamage]], [[db-spec#5.3 StructuralDamage\|StructuralDamage]], [[db-spec#5.4 ComponentDamage\|ComponentDamage]], [[db-spec#5.5 ElectricalSystemDamage\|ElectricalSystemDamage]] (มี `client_generated_id` เพื่อ idempotent upsert เท่านั้น — ไม่มี `sync_status` ของตัวเอง ดูหัวข้อ 5), [[db-spec#7.2 AuditTrailEntry\|AuditTrailEntry]] (สร้างต่อ `SurveyedBuilding` ที่ซิงค์สำเร็จแต่ละอาคาร — `action_type = ซิงค์ข้อมูลสำเร็จ`, `performed_by_user_id` ไม่บังคับเพราะระบบเป็นผู้บันทึกเอง) | สร้าง/กำหนด id ฝั่งเซิร์ฟเวอร์ + สร้าง audit entry | ใช้ `client_generated_id` เป็น idempotency key กันบันทึกซ้ำสำหรับทุก entity ที่ระบุ; ต้องทำหลังระเบียนต้นทางถูกสร้างในฟีเจอร์ 1/2/4/5/6 แล้ว; audit entry ถูกสร้างหลังบันทึกข้อมูล/ไฟล์สำเร็จเสมอ (NFR-05) |
+| 14.1 ซิงค์ข้อมูลแบบสำรวจที่ค้างจากอุปกรณ์ | [[db-spec#4.1 SurveyedBuilding\|SurveyedBuilding]], [[db-spec#6.1 DamagePhoto\|DamagePhoto]], [[db-spec#6.3 Sketch\|Sketch]] (มี `client_generated_id`/`sync_status` ของตัวเอง + `upload_session_id`/`total_file_size_bytes`/`uploaded_bytes`/`last_chunk_received_at` สำหรับ resumable upload — ดู [[db-spec#10. กฎทางธุรกิจที่กระทบโครงสร้างข้อมูล\|db-spec หัวข้อ 10 ข้อ 8]]) + [[db-spec#4.2 SurveyParticipant\|SurveyParticipant]], [[db-spec#5.1 SurroundingHazard\|SurroundingHazard]], [[db-spec#5.2 ExternalDamage\|ExternalDamage]], [[db-spec#5.3 StructuralDamage\|StructuralDamage]], [[db-spec#5.4 ComponentDamage\|ComponentDamage]], [[db-spec#5.5 ElectricalSystemDamage\|ElectricalSystemDamage]] (มี `client_generated_id` เพื่อ idempotent upsert เท่านั้น — ไม่มี `sync_status` ของตัวเอง ดูหัวข้อ 5), [[db-spec#7.2 AuditTrailEntry\|AuditTrailEntry]] (สร้างต่อ `SurveyedBuilding` ที่ซิงค์สำเร็จแต่ละอาคาร — `action_type = ซิงค์ข้อมูลสำเร็จ`, `performed_by_user_id` ไม่บังคับเพราะระบบเป็นผู้บันทึกเอง) | สร้าง/กำหนด id ฝั่งเซิร์ฟเวอร์ + สร้าง audit entry | ใช้ `client_generated_id` เป็น idempotency key กันบันทึกซ้ำสำหรับทุก entity ที่ระบุ; ต้องทำหลังระเบียนต้นทางถูกสร้างในฟีเจอร์ 1/2/4/5/6 แล้ว; audit entry ถูกสร้างหลังบันทึกข้อมูล/ไฟล์สำเร็จเสมอ (NFR-05); สำหรับ `DamagePhoto`/`Sketch` ต้องส่งต่อจาก `uploaded_bytes` ของ `upload_session_id` เดิมก่อนเสมอ (resumable upload, NFR-02) เว้นแต่เข้าเงื่อนไขต้องเริ่มรอบใหม่ตาม [[db-spec#10. กฎทางธุรกิจที่กระทบโครงสร้างข้อมูล\|db-spec หัวข้อ 10 ข้อ 8]] |
 | 14.2 ตรวจสอบ/แก้ไขความขัดแย้งของข้อมูลที่ซิงค์ | [[db-spec#4.1 SurveyedBuilding\|SurveyedBuilding]] (เทียบ `data_version`/`last_modified_at` — **ระดับ aggregate เท่านั้น**), [[db-spec#8.1 SyncConflict\|SyncConflict]] (สร้างเมื่อ merge อัตโนมัติไม่ได้), [[db-spec#8.2 SyncConflictVersion\|SyncConflictVersion]] (สร้างต่อเวอร์ชันที่ขัดแย้ง), [[db-spec#7.2 AuditTrailEntry\|AuditTrailEntry]] (สร้างเสมอทั้ง 2 กรณี — merge อัตโนมัติสำเร็จ: `action_type = ซิงค์ข้อมูลสำเร็จ`; merge ไม่ได้: `action_type = ตรวจพบความขัดแย้งของข้อมูล`; `performed_by_user_id` ไม่บังคับทั้งคู่เพราะระบบเป็นผู้บันทึกเอง) | เปรียบเทียบ + สร้าง | ทำงานเป็นส่วนหนึ่งของ 14.1 เมื่อพบความขัดแย้งเท่านั้น ไม่มีผู้ใช้เรียกตรง; เมื่อ merge ไม่ได้ ส่งต่อให้มนุษย์ตัดสินใจผ่าน [[manual-conflict-resolution]] เสมอ; audit entry ต้องถูกสร้างเสมอไม่ว่าผลจะเป็นแบบใด (NFR-05) |
 
 ## 3. State Diagram: sync_status
@@ -53,9 +54,10 @@ sequenceDiagram
 stateDiagram-v2
     [*] --> ยังไม่ซิงค์ : สร้าง/แก้ไขระเบียนบนอุปกรณ์ขณะออฟไลน์
     ยังไม่ซิงค์ --> กำลังซิงค์ : 14.1 เริ่มส่งข้อมูล/ไฟล์เมื่อกลับมามีสัญญาณ
-    กำลังซิงค์ --> ซิงค์สำเร็จ : 14.1 บันทึกสำเร็จ (ไม่พบความขัดแย้ง หรือ merge อัตโนมัติสำเร็จ)
+    กำลังซิงค์ --> ซิงค์สำเร็จ : 14.1 บันทึกสำเร็จ (ไม่พบความขัดแย้ง หรือ merge อัตโนมัติสำเร็จ — สำหรับ DamagePhoto/Sketch ต้อง uploaded_bytes เท่ากับ total_file_size_bytes และบันทึกไฟล์สมบูรณ์แล้วเท่านั้น, db-spec หัวข้อ 10 ข้อ 8)
     กำลังซิงค์ --> มีความขัดแย้งรอแก้ไข : 14.2 ตรวจพบ SurveyedBuilding ชุดเดียวกันถูกแก้ไขจากหลายอุปกรณ์ และ merge อัตโนมัติไม่ได้
-    กำลังซิงค์ --> ยังไม่ซิงค์ : ไฟล์ภาพส่งไม่สำเร็จบางส่วน/สัญญาณขาดหาย (ทำต่อได้ภายหลัง ไม่ต้องเริ่มใหม่ทั้งหมด)
+    กำลังซิงค์ --> กำลังซิงค์ : ไฟล์ภาพ/ภาพวาดส่งไม่สำเร็จบางส่วน/สัญญาณขาดหาย และ upload_session_id ยังตรงกับที่บันทึกไว้ + ไม่ stale (ส่งต่อจาก uploaded_bytes เดิม — คงสถานะไว้ ไม่ถอยกลับ, db-spec หัวข้อ 10 ข้อ 8)
+    กำลังซิงค์ --> กำลังซิงค์ : upload_session_id ที่อุปกรณ์ถืออยู่ไม่ตรงกับที่บันทึกไว้ล่าสุด หรือรอบเดิม stale เกินเกณฑ์ (ออก upload_session_id ใหม่ + เริ่มนับ uploaded_bytes จาก 0 แล้วส่งไฟล์ใหม่ทั้งหมด แต่ยังคงสถานะกำลังซิงค์เดิม, db-spec หัวข้อ 10 ข้อ 8)
     มีความขัดแย้งรอแก้ไข --> ซิงค์สำเร็จ : 15.2 แก้ไขความขัดแย้งด้วยมือสำเร็จ (ดู [[manual-conflict-resolution]])
     ซิงค์สำเร็จ --> [*]
 ```
@@ -73,7 +75,8 @@ stateDiagram-v2
 
 | Edge Case | วิธีจัดการ | อ้างอิง |
 |---|---|---|
-| ไฟล์ภาพส่งไม่สำเร็จบางส่วน (สัญญาณขาดหาย) | ต้องส่งต่อได้โดยไม่ต้องเริ่มใหม่ทั้งหมด (NFR-02) | [[api-spec#14. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม\|api-spec 14.1]] |
+| ไฟล์ภาพ/ภาพวาดส่งไม่สำเร็จบางส่วน (สัญญาณขาดหายระหว่างอัปโหลด) และ `upload_session_id` ที่อุปกรณ์ถืออยู่ยังตรงกับที่เซิร์ฟเวอร์บันทึกไว้ล่าสุด + ยังไม่ stale | ส่งต่อจาก `uploaded_bytes` ของ `upload_session_id` เดิม ไม่ต้องเริ่มใหม่ทั้งไฟล์ (NFR-02); `sync_status` คงสถานะ "กำลังซิงค์" ไว้ ไม่ถอยกลับ "ยังไม่ซิงค์" เพราะตำแหน่งที่ส่งสำเร็จถูกเก็บไว้ในระเบียนแล้ว | [[db-spec#10. กฎทางธุรกิจที่กระทบโครงสร้างข้อมูล\|db-spec หัวข้อ 10 ข้อ 8]], [[api-spec#14. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม\|api-spec 14.1]] |
+| `upload_session_id` ที่อุปกรณ์ถืออยู่ไม่ตรงกับที่เซิร์ฟเวอร์บันทึกไว้ล่าสุด (เช่นแอป/ที่เก็บข้อมูลบนอุปกรณ์ถูกล้าง) หรือรอบเดิมค้างนานเกินเกณฑ์ stale (ตัวเลขเกณฑ์เป็นประเด็นรอตัดสินใจ) | เซิร์ฟเวอร์ต้องล้าง `upload_session_id`/`uploaded_bytes`/`last_chunk_received_at` เดิม แล้วออก `upload_session_id` ใหม่เริ่มนับ `uploaded_bytes` จาก 0 ก่อนรับไฟล์ต่อ — อุปกรณ์ต้องส่งไฟล์นี้ใหม่ทั้งหมดในรอบใหม่ แต่ `sync_status` ยังคงเป็น "กำลังซิงค์" เช่นเดิม ไม่ถือเป็นการเริ่มรอบซิงค์ทั้งชุดใหม่ | [[db-spec#10. กฎทางธุรกิจที่กระทบโครงสร้างข้อมูล\|db-spec หัวข้อ 10 ข้อ 8]], [[api-spec#14. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม\|api-spec 14.1]] |
 | พบข้อมูลชุดเดียวกันถูกแก้ไขจากหลายอุปกรณ์ | ส่งต่อไปยัง 14.2 เพื่อตรวจจับ/แก้ไขความขัดแย้ง | [[api-spec#14. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม\|api-spec 14.1, 14.2]] |
 | ไม่สามารถ merge อัตโนมัติได้ | สร้าง `SyncConflict`+`SyncConflictVersion` แล้วส่งต่อให้หัวหน้าผู้สำรวจ/ผู้ดูแลระบบแก้ไขด้วยมือผ่าน [[manual-conflict-resolution]] | [[api-spec#14. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม\|api-spec 14.2]] |
 | หลายทีมซิงค์พร้อมกันจำนวนมากหลังเกิดเหตุ | ต้องไม่บล็อกการทำงานอื่นของ Field Client (NFR-07) เข้าคิวผ่าน Server-side Sync Intake Queue ก่อนประมวลผล | [[api-spec#14. การทำงานออฟไลน์และซิงค์ข้อมูลภาคสนาม\|api-spec 14.1]] |
