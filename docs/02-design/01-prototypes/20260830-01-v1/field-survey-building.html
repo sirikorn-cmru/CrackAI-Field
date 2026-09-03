@@ -87,7 +87,7 @@
       <input class="input text-mono" id="b-lat" type="text" value="13.736717, 100.523186" readonly>
       <div class="field-hint">ความแม่นยำปัจจุบัน: ±4 เมตร (ผ่านเกณฑ์ NFR-06)</div>
     </div>
-    <button type="button" class="btn btn-secondary btn-field">📍 จับพิกัดปัจจุบันอีกครั้ง</button>
+    <button type="button" class="btn btn-secondary btn-field" onclick="alert('จับพิกัดปัจจุบันใหม่แล้ว (สาธิต) — ความแม่นยำ: ±4 เมตร ผ่านเกณฑ์ NFR-06 ระบบบันทึกพิกัดล่าสุดทับค่าเดิม')">📍 จับพิกัดปัจจุบันอีกครั้ง</button>
   </div>
 
   <div class="card">
@@ -149,7 +149,7 @@
         <input class="input text-mono error" id="b-lat-demo" type="text" value="ยังไม่สามารถระบุพิกัดได้" readonly>
         <div class="field-error"><span aria-hidden="true">&#9888;</span> สัญญาณ GPS อ่อนเกินไป (ความแม่นยำปัจจุบัน: ±35 เมตร) ยังไม่บันทึกพิกัดนี้จนกว่าความแม่นยำจะดีขึ้นตามเกณฑ์ (FR-02 AC-2 · NFR-06 · TC-01-03)</div>
       </div>
-      <button type="button" class="btn btn-secondary btn-field">📍 ลองจับพิกัดอีกครั้ง</button>
+      <button type="button" class="btn btn-secondary btn-field" onclick="showBuildingDemo('gps')">📍 ลองจับพิกัดอีกครั้ง</button>
       <p class="field-hint" style="margin-top:8px;">กรุณาเดินไปยังที่โล่งหรือรอสัญญาณเสถียรกว่านี้ก่อนลองใหม่</p>
     </div>
 

@@ -56,7 +56,7 @@
       <span style="font-size:32px;" aria-hidden="true">📷</span>
       <span>ภาพรอยร้าวที่ถ่ายไว้ (ตัวอย่าง placeholder)</span>
     </div>
-    <button type="button" class="btn btn-secondary btn-field" style="margin-top:12px;">📷 ถ่ายภาพ</button>
+    <button type="button" class="btn btn-secondary btn-field" style="margin-top:12px;" onclick="alert('ถ่ายภาพแล้ว (สาธิต) — ภาพถูกบันทึกลงเครื่องและผูกกับตำแหน่ง/บริเวณที่เลือกไว้ด้านบน (FR-12)')">📷 ถ่ายภาพ</button>
   </div>
 
   <div class="card">
@@ -205,7 +205,7 @@
       </div>
     </div>
     <div class="btn-row">
-      <button type="button" class="btn btn-secondary btn-field">📷 ถ่ายภาพใหม่</button>
+      <button type="button" class="btn btn-secondary btn-field" onclick="showPath('ai-pending')">📷 ถ่ายภาพใหม่</button>
       <button type="button" class="btn btn-secondary btn-field" onclick="showPath('manual')">กรอกเอง</button>
     </div>
     <p class="field-hint">สองปุ่มนี้มีน้ำหนักทางสายตาเท่ากันตามข้อกำหนด (FR-28)</p>
