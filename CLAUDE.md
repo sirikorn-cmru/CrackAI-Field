@@ -38,7 +38,7 @@ docs/
       db-spec.md                   โมเดลข้อมูลเชิง logical (entity/attribute/ความสัมพันธ์) ไม่ผูก database engine
       detailed-design/{feature-slug}.md   การออกแบบระดับ component ต่อฟีเจอร์ อ้างอิง api-spec.md/db-spec.md
       nfr-review.md                ตรวจสอบว่าการออกแบบ (architecture/api-spec/db-spec/detailed-design) รองรับทุก NFR ใน backlog หรือไม่
-      technology-stack.md          ยังไม่ตัดสินใจ — รอจนกว่าจะเริ่มพัฒนาจริง
+      technology-stack.md          บันทึกการตัดสินใจเรื่อง technical stack (เลือกอะไร เพราะอะไร ไม่เลือกอะไรเพราะอะไร อะไรยังไม่ตัดสิน) เจ้าของคือ agent `tech-stack-writer` (ผ่าน `/sync-technology-stack`) เท่านั้น — ตรวจสถานะจริงของไฟล์ก่อนอ้างอิงเสมอ ถ้ายังไม่มีไฟล์/ยังว่าง แปลว่าเอกสารทุกชั้นต้องเขียนแบบไม่ผูก stack ต่อไป
     feature-list.md
     user-journey.md
     DESIGN.md                     Design System หลัก (Brand Identity, สี, ตัวอักษร, ระยะห่าง, องค์ประกอบ UI, UX rules) — อ้างอิงก่อนทำ Prototype ใน 01-prototypes/ เจ้าของไฟล์คือ agent `design-system-writer` (ผ่าน `/sync-design-system`) เท่านั้น
@@ -75,6 +75,7 @@ docs/
 | `architecture-writer` | `02-technical/architecture.md` |
 | `api-db-writer` | `02-technical/api-spec.md` · `02-technical/db-spec.md` |
 | `detailed-design-writer` | `02-technical/detailed-design/*.md` |
+| `tech-stack-writer` | `02-technical/technology-stack.md` — **ต้องสัมภาษณ์ผู้ใช้ก่อนเสมอ ห้ามเลือกแทน** และเมื่อตัดสินใจแล้วต้องส่งสัญญาณให้เอกสารเชิงเทคนิคทุกชั้นกลับไปทบทวน |
 | `test-writer` | `03-testing/01-test-plan/**` |
 | `phase-planner` | `02-plan/release-plan.md` · `03-task/*.md` |
 | `nfr-reviewer` | `02-technical/nfr-review.md` — **ตรวจอย่างเดียว ห้ามแก้เอกสารที่ตรวจ** |
@@ -95,6 +96,7 @@ docs/
 - `/audit-backlog` — ตรวจความสอดคล้องตั้งแต่ requirement ถึง test plan ครบ 7 ชั้น (spec → backlog → feature-list → user-journey → acceptance-criteria → test-cases → test-plan) แก้ backlog ให้ตรงกับ spec แล้ว auto-chain ตามลำดับ `requirement-writer` → `sync-feature-journey` → `sync-test-plan` จนทุกชั้นกลับมาตรงกันในคำสั่งเดียว (ไม่รวม prototype และเอกสารเชิงเทคนิค — ใช้ `/audit-pipeline` แทน)
 - `/sync-feature-journey`, `/sync-technical-spec` (รวม architecture → api-spec/db-spec → detailed-design → nfr-review), `/sync-test-plan`, `/sync-phase-plan` — ตรวจสอบและ sync เอกสารแต่ละชั้นให้ตรงกับชั้นก่อนหน้า
 - `/sync-design-system` — สร้าง/ปรับปรุง `docs/02-design/DESIGN.md` โดยสัมภาษณ์ผู้ใช้เรื่องโทนสี สไตล์ และโลโก้/ภาพอ้างอิงก่อนเสมอ (เอกสารนี้ derive จาก FR/NFR แบบ mechanical ไม่ได้ จึงต้องถามผู้ใช้)
+- `/sync-technology-stack` — สร้าง/ปรับปรุง `docs/02-design/02-technical/technology-stack.md` โดยวิเคราะห์ก่อนว่า NFR ข้อใดบีบตัวเลือกไว้แค่ไหน แล้วสัมภาษณ์ผู้ใช้ให้เลือกทีละชั้น (derive จาก FR/NFR แบบ mechanical ไม่ได้เช่นเดียวกับ `DESIGN.md`) — **ไฟล์นี้เป็นไฟล์เดียวที่เมื่อถูกตัดสินใจแล้วจะเปลี่ยนกติกาของเอกสารทุกชั้น** เพราะทุกชั้นเขียนแบบไม่ผูก stack ไว้จนกว่าไฟล์นี้จะมีเนื้อหา skill จึงส่งต่อให้ `/sync-technical-spec` ทบทวนทุกชั้นให้อัตโนมัติ
 - `/audit-prototype` — ตรวจว่า Prototype สอดคล้องกับเอกสารทุกชั้นหรือไม่ **ทั้งสองทิศทาง** (เอกสารนำ prototype ตาม / prototype ถูกแก้แล้วเอกสารยังไม่ตาม) แล้ว auto-chain ไปอัปเดตเอกสารที่เกี่ยวข้องให้ครบ
 - `/build-prototype` — สร้าง/ปรับปรุง Prototype โดยระบุขอบเขตเจาะจงได้ (ทั้งระบบ/ตามบทบาท/ตาม journey/ตามฟีเจอร์/ตามรหัส FR) เสนอแผนให้ยืนยันก่อนเสมอ ถามทุกครั้งว่าจะสร้างเวอร์ชันใหม่หรือแก้โฟลเดอร์เดิม และ auto-chain ไป `sync-design-system` ถ้ายังไม่มี `DESIGN.md`
 - `/run-requirements-phase`, `/run-technical-phase`, `/run-prototype-phase` — รวมหลายขั้นตอนที่เกี่ยวข้องกันไว้ในคำสั่งเดียว
