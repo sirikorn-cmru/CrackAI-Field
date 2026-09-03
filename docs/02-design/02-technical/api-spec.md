@@ -2,7 +2,7 @@
 
 เอกสารนี้อธิบาย operation ทั้งหมดของระบบสำรวจความเสียหายขั้นต้นของโครงสร้างอาคารหลังอุทกภัยในรูปแบบ **operation contract เชิง logical** อิงจาก [[architecture]], [[feature-list]] และ [[backlog]]
 
-> **หมายเหตุสำคัญ**: [[technology-stack.md|technology-stack]] ยังไม่มีเนื้อหา เอกสารนี้จึงจงใจ**ไม่ระบุ** HTTP method/path, protocol (REST/GraphQL/gRPC) หรือรูปแบบการสื่อสารใดๆ ทั้งสิ้น แต่ละ operation อธิบายด้วย: ชื่อ operation, ผู้เรียกได้ (บทบาท), input, output, กฎทางธุรกิจ/validation, กรณี error หลัก และรหัส FR/NFR ที่รองรับ
+> **หมายเหตุสำคัญ**: [[technology-stack]] มีเนื้อหาแล้ว (อัปเดตล่าสุด 2026-09-03) — ตัดสินใจไปแล้ว 5 ชั้น: Field Client Framework = React Native, Local Persistent Store = SQLite (ผ่าน library ของ React Native), Server-side Runtime = Node.js/TypeScript, Primary Data Store = MySQL/MariaDB, Media/Object Storage = Local filesystem บนเซิร์ฟเวอร์ **แต่การเลือก Server-side Runtime เป็น Node.js/TypeScript ไม่ได้แปลว่าเลือก protocol หรือ web framework ใดๆ แล้ว** — ผู้ใช้**ไม่ได้เลือก** REST/GraphQL/gRPC และ**ไม่ได้เลือก** framework เว็บใดๆ (ดู [[technology-stack#4. สิ่งที่ยังไม่ตัดสินใจ|technology-stack หัวข้อ 4]] และหัวข้อ 16 ด้านล่าง) เอกสารนี้จึงยังคงจงใจ**ไม่ระบุ** HTTP method/path, protocol (REST/GraphQL/gRPC) หรือรูปแบบการสื่อสารใดๆ ทั้งสิ้น แต่ละ operation อธิบายด้วย: ชื่อ operation, ผู้เรียกได้ (บทบาท), input, output, กฎทางธุรกิจ/validation, กรณี error หลัก และรหัส FR/NFR ที่รองรับ
 
 คู่กับเอกสารนี้เสมอ: [[db-spec]] — ทุก field ที่ระบุในหัวข้อ input/output ของ operation ด้านล่างตรงกับชื่อ attribute (canonical name) ใน [[db-spec]] ทุกประการ
 
@@ -434,14 +434,14 @@
 
 ## 16. ประเด็นรอตัดสินใจ
 
-รอ [[technology-stack.md|technology-stack]] ก่อนตัดสินใจในรายการต่อไปนี้:
+[[technology-stack]] มีเนื้อหาแล้ว (ตัดสินใจ 5 ชั้น: Field Client Framework, Local Persistent Store, Server-side Runtime, Primary Data Store, Media/Object Storage — ดู [[technology-stack#3. การตัดสินใจรายชั้น|technology-stack หัวข้อ 3]]) แต่ **ยังไม่ได้ตัดสินใจเรื่อง protocol/รูปแบบการสื่อสารหรือ web framework ใดๆ** ([[technology-stack#4. สิ่งที่ยังไม่ตัดสินใจ|technology-stack หัวข้อ 4]] ไม่ครอบคลุมประเด็นนี้ — การเลือก Node.js/TypeScript เป็น runtime ไม่ใช่การเลือก REST/GraphQL/gRPC) รายการด้านล่างนี้จึงยังเปิดอยู่ทั้งหมด รอการตัดสินใจเพิ่มเติม:
 
-- รูปแบบการเรียก operation จริง (function call ภายใน monolith / message queue / API แบบใดก็ตาม) และ protocol การสื่อสาร
-- รูปแบบไฟล์ที่ใช้ส่งออกรายงาน (12.1)
-- กลยุทธ์ **auto-merge** ที่เป็นรูปธรรมก่อนตัดสินว่า "merge ไม่ได้" ใน 14.2 (last-write-wins บางส่วน / field-level merge / ส่งให้มนุษย์ตัดสินใจทั้งหมดทุกครั้ง) — เส้นทาง manual resolution เมื่อ merge ไม่ได้ถูกออกแบบไว้ครบแล้วในหัวข้อ 15
-- เกณฑ์ตัวเลขที่ยอมรับได้ของ `gps_accuracy_meters` และเกณฑ์ตรวจสอบคุณภาพภาพ (ความคมชัด/ความสว่างขั้นต่ำ) ใน NFR-06
-- วิธีจัดเก็บ/ส่งไฟล์ภาพขนาดใหญ่แบบแบ่งส่วน/ทำต่อได้ใน 14.1 และการจัดคิว/จำกัดอัตราจริงของ Server-side Sync Intake Queue (NFR-07)
-- รูปแบบ/format จริงของ `SyncConflictVersion.snapshot_content` ใน 15.2
+- รูปแบบการเรียก operation จริง (function call ภายใน monolith / message queue / API แบบใดก็ตาม) และ protocol การสื่อสาร — **ยังไม่ปิด**
+- รูปแบบไฟล์ที่ใช้ส่งออกรายงาน (12.1) — ยังไม่ปิด
+- กลยุทธ์ **auto-merge** ที่เป็นรูปธรรมก่อนตัดสินว่า "merge ไม่ได้" ใน 14.2 (last-write-wins บางส่วน / field-level merge / ส่งให้มนุษย์ตัดสินใจทั้งหมดทุกครั้ง) — เส้นทาง manual resolution เมื่อ merge ไม่ได้ถูกออกแบบไว้ครบแล้วในหัวข้อ 15 — ยังไม่ปิด
+- เกณฑ์ตัวเลขที่ยอมรับได้ของ `gps_accuracy_meters` และเกณฑ์ตรวจสอบคุณภาพภาพ (ความคมชัด/ความสว่างขั้นต่ำ) ใน NFR-06 — ยังไม่ปิด (เป็นเกณฑ์เชิงโดเมน ไม่ใช่ประเด็น tech stack)
+- วิธีจัดเก็บ/ส่งไฟล์ภาพขนาดใหญ่แบบแบ่งส่วน/ทำต่อได้ใน 14.1 และการจัดคิว/จำกัดอัตราจริงของ Server-side Sync Intake Queue (NFR-07) — **ตำแหน่งจัดเก็บปิดแล้ว** (Local filesystem บนเซิร์ฟเวอร์ ตาม [[technology-stack#3. การตัดสินใจรายชั้น|technology-stack หัวข้อ 3]]) แต่**กลไก resumable upload/chunking และการจัดคิวจริงยังไม่ปิด** — [[technology-stack]] ระบุไว้ชัดว่าการเลือก local filesystem แทน object storage ทำให้ resumable upload ตาม NFR-02 **ต้องเขียนเอง** ไม่ได้มาพร้อมใช้
+- รูปแบบ/format จริงของ `SyncConflictVersion.snapshot_content` ใน 15.2 — ยังไม่ปิด
 
 ## เอกสารที่เกี่ยวข้อง
 
