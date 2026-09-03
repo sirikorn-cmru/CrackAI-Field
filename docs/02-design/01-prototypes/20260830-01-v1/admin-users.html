@@ -14,6 +14,7 @@
   <select onchange="if(this.value) location.href=this.value">
     <option value="">ไปหน้าอื่น…</option>
     <option value="conflict-list.html">10) รายการข้อมูลขัดแย้ง</option>
+    <option value="audit-trail-search.html">17) ค้นหาประวัติการแก้ไขทั่วทั้งระบบ</option>
     <option value="login.html">เข้าสู่ระบบ</option>
   </select>
   <span class="proto-scope">ผู้ดูแลระบบ</span>
@@ -25,7 +26,10 @@
       <h1>จัดการผู้ใช้และสิทธิ์การเข้าถึง</h1>
       <p class="text-sm">สร้าง/แก้ไข/ปิดการใช้งานบัญชี และกำหนดบทบาทที่ตรงกับสิทธิ์การเข้าถึงข้อมูล (FR-21)</p>
     </div>
-    <button type="button" class="btn btn-primary btn-office" onclick="document.getElementById('add-dialog').style.display='flex'">+ เพิ่มผู้ใช้ใหม่</button>
+    <div class="btn-row">
+      <a class="btn btn-secondary btn-office" href="audit-trail-search.html">ค้นหาประวัติการแก้ไขทั่วทั้งระบบ (FR-33)</a>
+      <button type="button" class="btn btn-primary btn-office" onclick="document.getElementById('add-dialog').style.display='flex'">+ เพิ่มผู้ใช้ใหม่</button>
+    </div>
   </div>
 
   <div class="banner info">
@@ -46,28 +50,28 @@
         <td>somchai@dpt.go.th</td>
         <td><span class="badge role">ผู้สำรวจภาคสนาม</span></td>
         <td><span class="badge account-active">ใช้งานอยู่</span></td>
-        <td><a class="btn btn-ghost" href="#">แก้ไข</a> <button type="button" class="btn btn-destructive" style="height:32px; padding:0 12px;" onclick="document.getElementById('disable-dialog').style.display='flex'">ปิดการใช้งาน</button></td>
+        <td><a class="btn btn-ghost" href="#">แก้ไข</a> <a class="btn btn-ghost" href="audit-trail-search.html">ดูประวัติ</a> <button type="button" class="btn btn-destructive" style="height:32px; padding:0 12px;" onclick="document.getElementById('disable-dialog').style.display='flex'">ปิดการใช้งาน</button></td>
       </tr>
       <tr>
         <td>วิภา สายชล</td>
         <td>wipa@dpt.go.th</td>
         <td><span class="badge role">หัวหน้าผู้สำรวจ</span></td>
         <td><span class="badge account-active">ใช้งานอยู่</span></td>
-        <td><a class="btn btn-ghost" href="#">แก้ไข</a> <button type="button" class="btn btn-destructive" style="height:32px; padding:0 12px;" onclick="document.getElementById('disable-dialog-2').style.display='flex'">ปิดการใช้งาน</button></td>
+        <td><a class="btn btn-ghost" href="#">แก้ไข</a> <a class="btn btn-ghost" href="audit-trail-search.html">ดูประวัติ</a> <button type="button" class="btn btn-destructive" style="height:32px; padding:0 12px;" onclick="document.getElementById('disable-dialog-2').style.display='flex'">ปิดการใช้งาน</button></td>
       </tr>
       <tr>
         <td>ประดิษฐ์ คงยั่งยืน</td>
         <td>pradit@dpt.go.th</td>
         <td><span class="badge role">ผู้ดูแลระบบ</span></td>
         <td><span class="badge account-active">ใช้งานอยู่</span></td>
-        <td><a class="btn btn-ghost" href="#">แก้ไข</a> <button type="button" class="btn btn-destructive" style="height:32px; padding:0 12px;" onclick="document.getElementById('disable-dialog-3').style.display='flex'">ปิดการใช้งาน</button></td>
+        <td><a class="btn btn-ghost" href="#">แก้ไข</a> <a class="btn btn-ghost" href="audit-trail-search.html">ดูประวัติ</a> <button type="button" class="btn btn-destructive" style="height:32px; padding:0 12px;" onclick="document.getElementById('disable-dialog-3').style.display='flex'">ปิดการใช้งาน</button></td>
       </tr>
       <tr>
         <td>อรทัย ยุติธรรม</td>
         <td>orathai@dpt.go.th</td>
         <td><span class="badge role">หน่วยงานส่วนกลาง/ผู้บริหาร</span></td>
         <td><span class="badge account-inactive">ปิดใช้งานแล้ว</span></td>
-        <td><a class="btn btn-ghost" href="#">แก้ไข</a></td>
+        <td><a class="btn btn-ghost" href="#">แก้ไข</a> <a class="btn btn-ghost" href="audit-trail-search.html">ดูประวัติ</a></td>
       </tr>
     </tbody>
   </table>

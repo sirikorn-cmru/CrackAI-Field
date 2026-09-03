@@ -427,6 +427,19 @@ a { color: var(--accent-info); }
 .dialog { background: var(--surface-raised); border-radius: var(--radius-lg); box-shadow: var(--shadow-overlay); padding: var(--space-6); max-width: 420px; width: 100%; }
 .dialog .btn-row { justify-content: flex-end; margin-top: var(--space-6); }
 
+/* ============ Actor Identity (3.11) — FR-32/FR-33
+   ใช้เฉพาะ token ตัวอักษรที่มีอยู่แล้ว (--text-primary/--text-secondary/--text-tertiary)
+   ห้ามใช้ token กลุ่ม --state-* กับ pattern นี้เด็ดขาด (§3.11, UX-14) — "ผู้กระทำ" คือตัวตน ไม่ใช่สถานะ
+   ใช้ใน: audit-trail-building.html, audit-trail-search.html ============ */
+.actor { display: inline-flex; align-items: flex-start; gap: var(--space-2); }
+.actor-icon { width: 20px; height: 20px; flex: 0 0 20px; margin-top: 2px; }
+.actor-icon-system { color: var(--text-secondary); }
+.actor .actor-icon:not(.actor-icon-system) { color: var(--text-primary); }
+.actor-name { font-weight: var(--weight-medium); color: var(--text-primary); }
+.actor-text { display: flex; flex-direction: column; }
+.actor-name-system { font-weight: var(--weight-medium); color: var(--text-secondary); }
+.actor-device { font-size: var(--text-xs); color: var(--text-tertiary); margin-top: 2px; }
+
 /* ============ Cards / sections ============ */
 .card {
   background: var(--surface-raised);

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ค้นหา/กรองประวัติการแก้ไขทั่วทั้งระบบ — CrackAI-Field Prototype</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .role-panel { display: none; }
+  .role-panel.active { display: block; }
+  .result-panel { display: none; }
+  .result-panel.active { display: block; }
+</style>
+</head>
+<body>
+<div class="proto-bar">
+  <a class="proto-link" href="index.html">⌂ Prototype</a>
+  <strong>17) ค้นหา/กรองประวัติการแก้ไขทั่วทั้งระบบ (Audit Trail ระดับหน่วยงาน)</strong>
+  <span class="proto-fr">FR-33</span>
+  <select onchange="if(this.value) location.href=this.value">
+    <option value="">ไปหน้าอื่น…</option>
+    <option value="admin-users.html">ผู้ดูแล 8) จัดการผู้ใช้และสิทธิ์</option>
+    <option value="audit-trail-building.html">16) ประวัติรายอาคาร</option>
+    <option value="dashboard.html">ส่วนกลาง 9) Dashboard</option>
+  </select>
+  <span class="proto-scope">ผู้ดูแลระบบ · หน่วยงานส่วนกลาง เท่านั้น</span>
+</div>
+
+<div class="layout-office">
+  <h1>ค้นหา/กรองประวัติการแก้ไขทั่วทั้งระบบ</h1>
+  <p class="text-sm">
+    รองรับ FR-33 — ขอบเขต<strong>กว้างกว่า</strong>ประวัติรายอาคาร (FR-32) เพราะค้นข้าม <code>AuditTrailEntry</code> ทั้งระบบไม่จำกัดทีม/อาคาร —
+    จำกัดสิทธิ์เฉพาะ <strong>ผู้ดูแลระบบและหน่วยงานส่วนกลาง/ผู้บริหารเท่านั้น</strong> หัวหน้าผู้สำรวจไม่มีสิทธิ์แม้จะเคยใช้ประวัติรายอาคารได้ก็ตาม (ใช้ <a href="audit-trail-building.html">ประวัติรายอาคาร</a> แทนภายในขอบเขตทีมตน)
+  </p>
+
+  <div class="card">
+    <h2 class="section-title">มุมมองสาธิต (สำหรับรีวิว Prototype เท่านั้น)</h2>
+    <p class="section-desc">ระบบจริงกำหนดสิทธิ์จากบทบาทของบัญชีผู้ใช้ที่ล็อกอิน ไม่ใช่จากปุ่มด้านล่าง — ปุ่มมีไว้สาธิตความแตกต่างของสิทธิ์ตาม <code>test-cases/audit-trail-search.md</code> TC-17-01..04</p>
+    <div class="btn-row">
+      <button type="button" class="btn btn-secondary btn-field" onclick="showRole('allowed')">1) ผู้ดูแลระบบ/หน่วยงานส่วนกลาง (มีสิทธิ์)</button>
+      <button type="button" class="btn btn-secondary btn-field" onclick="showRole('lead')">2) หัวหน้าผู้สำรวจ — จำลอง: พยายามเข้าถึง</button>
+      <button type="button" class="btn btn-secondary btn-field" onclick="showRole('field')">3) ผู้สำรวจภาคสนาม — จำลอง: พยายามเข้าถึง</button>
+    </div>
+  </div>
+
+  <!-- 1) มีสิทธิ์: ผู้ดูแลระบบ/หน่วยงานส่วนกลาง -->
+  <div id="role-allowed" class="role-panel active">
+    <div class="card">
+      <h2 class="section-title">เงื่อนไขค้นหา/กรอง</h2>
+      <p class="section-desc">ตัวกรองทั้งหมดใช้ร่วมกันได้แบบ AND</p>
+      <div class="field-group">
+        <label class="field-label" for="f-from">ช่วงเวลาที่กระทำ</label>
+        <div class="btn-row">
+          <input class="input text-mono" id="f-from" type="text" placeholder="วว/ดด/ปปปป — เริ่ม">
+          <input class="input text-mono" id="f-to" type="text" placeholder="วว/ดด/ปปปป — สิ้นสุด">
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="f-actor">ผู้แก้ไข</label>
+        <input class="input" id="f-actor" type="text" placeholder="ค้นหาด้วยชื่อ — เว้นว่างเพื่อรวมเหตุการณ์ที่ระบบเป็นผู้กระทำด้วย">
+        <p class="field-hint">เว้นว่างไว้จะรวมทั้งเหตุการณ์ที่มนุษย์กระทำและเหตุการณ์ที่ระบบบันทึกเอง (เช่น ซิงค์ข้อมูลสำเร็จ)</p>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="f-action">ประเภทการกระทำ</label>
+        <select class="select" id="f-action">
+          <option>ทั้งหมด</option>
+          <option selected>แก้ไขผลประเมินความเสียหาย</option>
+          <option>รับรองผล</option>
+          <option>ส่งกลับแก้ไข</option>
+          <option>สร้างบัญชีผู้ใช้</option>
+          <option>แก้ไขบัญชีผู้ใช้</option>
+          <option>ปิดการใช้งานบัญชีผู้ใช้</option>
+          <option>เปิดใช้งานบัญชีผู้ใช้คืน</option>
+          <option>ซิงค์ข้อมูลสำเร็จ</option>
+          <option>ตรวจพบความขัดแย้งของข้อมูล</option>
+          <option>แก้ไขความขัดแย้งของข้อมูล</option>
+          <option>อื่นๆ</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="f-province">พื้นที่/จังหวัด</label>
+        <select class="select" id="f-province">
+          <option>ทั้งหมด</option>
+          <option selected>นครศรีธรรมราช</option>
+          <option>สุราษฎร์ธานี</option>
+          <option>ชุมพร</option>
+          <option>พังงา</option>
+        </select>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-primary btn-office" onclick="showResult('list')">ค้นหา</button>
+        <button type="button" class="btn btn-secondary btn-office" onclick="showResult('empty')">จำลอง: ค้นหาไม่พบผลลัพธ์</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">ผลการค้นหา</h2>
+
+      <div id="result-list" class="result-panel active">
+        <p class="section-desc">พบ 3 รายการที่ตรงเงื่อนไข (ช่วงเวลาที่กำหนด · ประเภทการกระทำ = แก้ไขผลประเมินความเสียหาย · พื้นที่ = นครศรีธรรมราช)</p>
+        <table class="data-table">
+          <thead>
+            <tr><th>เวลา</th><th>ผู้กระทำ</th><th>ประเภทการกระทำ</th><th>อาคาร/พื้นที่</th><th>ค่าเดิม → ค่าใหม่</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-mono">30/08/2569 10:05</td>
+              <td>
+                <span class="actor">
+                  <svg class="actor-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="7" r="3.2" stroke="currentColor" stroke-width="2"/><path d="M4.5 20c0-4.4 3.4-6.8 7.5-6.8s7.5 2.4 7.5 6.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                  <span class="actor-name">สมชาย ใจดี</span>
+                </span>
+              </td>
+              <td>แก้ไขผลประเมินความเสียหาย</td>
+              <td>บ้านเลขที่ 45/2 ต.ท่าศาลา<br><span class="text-xs">นครศรีธรรมราช</span></td>
+              <td class="text-mono text-sm">AI เสนอ: 2.4 มม./ปานกลาง → แก้ไขเป็น: 3.2 มม./รุนแรง</td>
+            </tr>
+            <tr>
+              <td class="text-mono">30/08/2569 14:12</td>
+              <td>
+                <span class="actor">
+                  <svg class="actor-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="7" r="3.2" stroke="currentColor" stroke-width="2"/><path d="M4.5 20c0-4.4 3.4-6.8 7.5-6.8s7.5 2.4 7.5 6.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                  <span class="actor-name">วิภา สายชล</span>
+                </span>
+              </td>
+              <td>แก้ไขผลประเมินความเสียหาย</td>
+              <td>โรงเรียนบ้านท่าศาลา<br><span class="text-xs">นครศรีธรรมราช</span></td>
+              <td class="text-mono text-sm">AI เสนอ: 1.1 มม./เล็กน้อย → แก้ไขเป็น: 1.1 มม./เล็กน้อย (ยืนยันตาม AI)</td>
+            </tr>
+            <tr>
+              <td class="text-mono">31/08/2569 08:40</td>
+              <td>
+                <span class="actor">
+                  <svg class="actor-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="7" r="3.2" stroke="currentColor" stroke-width="2"/><path d="M4.5 20c0-4.4 3.4-6.8 7.5-6.8s7.5 2.4 7.5 6.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                  <span class="actor-name">สมชาย ใจดี</span>
+                </span>
+              </td>
+              <td>แก้ไขผลประเมินความเสียหาย</td>
+              <td>อาคารพาณิชย์ 3 ชั้น เลขที่ 9 ถ.ราชดำเนิน<br><span class="text-xs">นครศรีธรรมราช</span></td>
+              <td class="text-mono text-sm">กรอกเอง: ไม่มีรอยร้าว → แก้ไขเป็น: รอยร้าว 0.8 มม./เล็กน้อย</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="text-xs" style="margin-top:8px;">
+          หมายเหตุ: รายการที่ <code>related_surveyedbuilding_id</code> ว่าง (เช่นเหตุการณ์เกี่ยวกับบัญชีผู้ใช้) จะไม่ปรากฏเมื่อกรองด้วยพื้นที่ — เป็นผลลัพธ์ปกติของการกรองแบบ AND ไม่ใช่ข้อผิดพลาด
+        </p>
+      </div>
+
+      <div id="result-empty" class="result-panel">
+        <div class="empty-state">
+          <div style="font-size:32px;" aria-hidden="true">&#128269;</div>
+          <div><strong>ไม่พบรายการที่ตรงเงื่อนไขที่เลือก</strong></div>
+          <div class="text-sm">
+            ยังไม่มีเหตุการณ์การแก้ไขใดตรงกับช่วงเวลา ผู้แก้ไข ประเภทการกระทำ และพื้นที่ที่ระบุพร้อมกันทั้งหมด —
+            ลองขยายช่วงเวลา ลบเงื่อนไขบางข้อออก หรือตรวจสอบว่าพิมพ์ชื่อผู้แก้ไขถูกต้องหรือไม่
+          </div>
+          <button type="button" class="btn btn-secondary btn-office" style="margin-top:12px;" onclick="showResult('list')">ล้างตัวกรอง</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2) ปฏิเสธสิทธิ์: หัวหน้าผู้สำรวจ (TC-17-02) -->
+  <div id="role-lead" class="role-panel">
+    <div class="card">
+      <h2 class="section-title">ไม่มีสิทธิ์เข้าถึงหน้านี้</h2>
+      <div class="banner danger">
+        <span aria-hidden="true">&#9679;</span>
+        <div>
+          <strong>บัญชีหัวหน้าผู้สำรวจไม่มีสิทธิ์ค้นหาประวัติทั่วทั้งระบบ</strong>
+          <div class="text-sm">
+            ความสามารถนี้ (FR-33) ขอบเขตกว้างกว่าทีม/อาคารที่ท่านรับผิดชอบ จึงจำกัดเฉพาะผู้ดูแลระบบและหน่วยงานส่วนกลาง/ผู้บริหาร —
+            ในส่วนต่อประสานจริงของบทบาทนี้จะไม่มีเมนูหรือปุ่มใดๆ นำมาสู่หน้านี้เลย ต้องการดูประวัติของอาคารในทีมตน ให้ใช้ <a href="audit-trail-building.html">ประวัติรายอาคาร (ฟีเจอร์ 16)</a> แทน (หน้านี้แสดงเพื่อสาธิตพฤติกรรมเมื่อพยายามเข้าถึง URL โดยตรงเท่านั้น)
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3) ปฏิเสธสิทธิ์: ผู้สำรวจภาคสนาม (TC-17-03) -->
+  <div id="role-field" class="role-panel">
+    <div class="card">
+      <h2 class="section-title">ไม่พบหน้านี้สำหรับบทบาทของท่าน</h2>
+      <div class="banner danger">
+        <span aria-hidden="true">&#9679;</span>
+        <div>
+          <strong>บัญชีผู้สำรวจภาคสนามไม่มีสิทธิ์เรียกดูประวัติการแก้ไข</strong>
+          <div class="text-sm">
+            ความสามารถนี้ (FR-33) ไม่เปิดให้บทบาทผู้สำรวจภาคสนามใช้งานเลย (เช่นเดียวกับ FR-32) —
+            ในส่วนต่อประสานจริงของบทบาทนี้จะไม่มีเมนูหรือปุ่มใดๆ ที่นำมาสู่หน้านี้เลย (หน้านี้แสดงเพื่อสาธิตพฤติกรรมเมื่อพยายามเข้าถึง URL โดยตรงเท่านั้น)
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <p class="text-xs">อ้างอิง: <a href="../../02-technical/detailed-design/audit-trail-search.md">detailed-design/audit-trail-search.md</a> · <a href="../../../03-testing/01-test-plan/test-cases/audit-trail-search.md">test-cases/audit-trail-search.md</a></p>
+</div>
+
+<script>
+function showRole(id) {
+  document.querySelectorAll('.role-panel').forEach(function (el) { el.classList.remove('active'); });
+  var target = document.getElementById('role-' + id);
+  if (target) { target.classList.add('active'); target.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+}
+function showResult(id) {
+  document.querySelectorAll('.result-panel').forEach(function (el) { el.classList.remove('active'); });
+  var target = document.getElementById('result-' + id);
+  if (target) { target.classList.add('active'); target.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+}
+</script>
+</body>
+</html>

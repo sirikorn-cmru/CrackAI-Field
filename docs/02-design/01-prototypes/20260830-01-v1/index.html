@@ -10,7 +10,7 @@
 <div class="proto-bar">
   <strong>CrackAI-Field Prototype</strong>
   <span class="proto-fr">20260830-01-v1</span>
-  <span class="proto-scope">ขอบเขต: ครบ 15 ฟีเจอร์ (Must have 11 + Should have 4)</span>
+  <span class="proto-scope">ขอบเขต: ครบ 17 ฟีเจอร์ (Must have 11 + Should have 6)</span>
 </div>
 
 <div class="layout-office">
@@ -21,10 +21,8 @@
   </p>
 
   <div class="scope-note">
-    <strong>ขอบเขต (อัปเดต 20260830):</strong> ครบทั้ง <strong>15 ฟีเจอร์</strong> — Must have 11 รายการ (รอบแรก) + <strong>Should have 4 รายการ (รอบนี้)</strong>:
-    ฟีเจอร์ 5 วาดภาพประกอบเพิ่มเติม (FR-15) · ฟีเจอร์ 8 มอบหมายงานสำรวจให้ทีม (FR-20) ·
-    ฟีเจอร์ 11 ส่งออกรายงานผลการสำรวจ (FR-23) · ฟีเจอร์ 12 ค้นหา/กรองรายการอาคาร (FR-24)<br>
-    การเพิ่มฟีเจอร์ 8 ทำให้ขั้นตอน "รับมอบหมายงานสำรวจจากหัวหน้าผู้สำรวจ" กลับเข้าสู่ journey ภาคสนามอีกครั้ง (ตรงกับ <code>user-journey.md</code>) — ดูรายละเอียดเต็มใน <a href="prototype.md">prototype.md</a>
+    <strong>ขอบเขต (อัปเดต 20260902):</strong> ครบทั้ง <strong>17 ฟีเจอร์</strong> — Must have 11 รายการ (รอบ 20260828) + Should have 4 รายการ (รอบ 20260830) + <strong>Should have 2 รายการใหม่ (รอบนี้)</strong>:
+    ฟีเจอร์ 16 เรียกดูประวัติการแก้ไขผลประเมินรายอาคาร (FR-32) · ฟีเจอร์ 17 ค้นหา/กรองประวัติการแก้ไขทั่วทั้งระบบ (FR-33) — ทั้งสองหน้าใช้ pattern "ตัวตนผู้กระทำ" ใหม่ตาม <code>DESIGN.md §3.11</code>/UX-15 ดูรายละเอียดเต็มใน <a href="prototype.md">prototype.md</a>
   </div>
 
   <div class="journey-group">
@@ -96,6 +94,11 @@
         <p class="text-sm">ติดตามความคืบหน้าของทีม (ไม่มีสิทธิ์ส่งออกรายงาน — ดูมุมมองบทบาทนี้ในหน้าจอ)</p>
         <div class="fr-list">FR-24</div>
       </a>
+      <a class="screen-card" href="audit-trail-building.html">
+        <h3>16) ประวัติการแก้ไขผลประเมินรายอาคาร</h3>
+        <p class="text-sm">เฉพาะทีม/อาคารของตน — ดูจากจุดเข้าที่มีอยู่แล้ว เช่น หน้าตรวจทาน/ผลค้นหา</p>
+        <div class="fr-list">FR-32</div>
+      </a>
     </div>
   </div>
 
@@ -106,6 +109,16 @@
         <h3>8) จัดการผู้ใช้และสิทธิ์การเข้าถึง</h3>
         <p class="text-sm">สร้าง/แก้ไข/ปิดการใช้งานบัญชี กำหนดบทบาท</p>
         <div class="fr-list">FR-21 · NFR-08</div>
+      </a>
+      <a class="screen-card" href="audit-trail-building.html">
+        <h3>16) ประวัติการแก้ไขผลประเมินรายอาคาร</h3>
+        <p class="text-sm">ผู้ดูแลระบบ/หน่วยงานส่วนกลางไม่จำกัดขอบเขตทีม — เปิดดูอาคารใดก็ได้</p>
+        <div class="fr-list">FR-32</div>
+      </a>
+      <a class="screen-card" href="audit-trail-search.html">
+        <h3>17) ค้นหา/กรองประวัติการแก้ไขทั่วทั้งระบบ</h3>
+        <p class="text-sm">กรองด้วยช่วงเวลา/ผู้แก้ไข/ประเภทการกระทำ/พื้นที่ — เฉพาะผู้ดูแลระบบ/หน่วยงานส่วนกลาง</p>
+        <div class="fr-list">FR-33</div>
       </a>
     </div>
   </div>
@@ -122,6 +135,11 @@
         <h3>ค้นหา/กรองรายการอาคาร + ส่งออกรายงาน</h3>
         <p class="text-sm">กรองตามพื้นที่/ระดับสี/วันที่/ผู้สำรวจ แล้วส่งออกรายงาน (รูปแบบไฟล์ยังไม่กำหนด)</p>
         <div class="fr-list">FR-23 · FR-24 · NFR-10</div>
+      </a>
+      <a class="screen-card" href="audit-trail-search.html">
+        <h3>17) ค้นหา/กรองประวัติการแก้ไขทั่วทั้งระบบ</h3>
+        <p class="text-sm">กรองด้วยช่วงเวลา/ผู้แก้ไข/ประเภทการกระทำ/พื้นที่</p>
+        <div class="fr-list">FR-33</div>
       </a>
     </div>
   </div>
