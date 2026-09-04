@@ -64,3 +64,58 @@ export interface Session {
   last_verified_online_at: Date | null;
   status: SessionStatus;
 }
+
+/** สถานะการซิงค์ของแบบสำรวจ — db-spec §4.1 SurveyedBuilding.sync_status */
+export const SYNC_STATUSES = [
+  'ยังไม่ซิงค์',
+  'กำลังซิงค์',
+  'ซิงค์สำเร็จ',
+  'มีความขัดแย้งรอแก้ไข',
+] as const;
+export type SyncStatus = (typeof SYNC_STATUSES)[number];
+
+/** สถานะการตรวจทาน — db-spec §4.1 SurveyedBuilding.review_status */
+export const REVIEW_STATUSES = ['ฉบับร่าง', 'รอตรวจทาน', 'ส่งกลับแก้ไข', 'รับรองแล้ว'] as const;
+export type ReviewStatus = (typeof REVIEW_STATUSES)[number];
+
+/** สถานะความขัดแย้ง — db-spec §8.1 SyncConflict.status */
+export const SYNC_CONFLICT_STATUSES = ['รอแก้ไขด้วยมือ', 'แก้ไขแล้ว'] as const;
+export type SyncConflictStatus = (typeof SYNC_CONFLICT_STATUSES)[number];
+
+/** ประเภทการกระทำใน audit trail — db-spec §7.2 AuditTrailEntry.action_type */
+export const AUDIT_ACTION_TYPES = [
+  'แก้ไขผลประเมินความเสียหาย',
+  'รับรองผล',
+  'ส่งกลับแก้ไข',
+  'สร้างบัญชีผู้ใช้',
+  'แก้ไขบัญชีผู้ใช้',
+  'ปิดการใช้งานบัญชีผู้ใช้',
+  'เปิดใช้งานบัญชีผู้ใช้คืน',
+  'ซิงค์ข้อมูลสำเร็จ',
+  'ตรวจพบความขัดแย้งของข้อมูล',
+  'แก้ไขความขัดแย้งของข้อมูล',
+  'อื่นๆ',
+] as const;
+export type AuditActionType = (typeof AUDIT_ACTION_TYPES)[number];
+
+/**
+ * ส่วนของ `SurveyedBuilding` ที่ควบคุมการซิงค์และการตรวจจับความขัดแย้ง (db-spec §4.1)
+ *
+ * **เป็นส่วนย่อยของ entity ไม่ใช่ทั้ง entity โดยเจตนา** — ฟิลด์เนื้อหาแบบสำรวจ (ที่อยู่,
+ * ประเภทอาคาร, ระดับความเสียหาย ฯลฯ) อยู่ใน Phase 2 ส่วนฟิลด์ด้านล่างนี้คือสิ่งที่ NFR-01/
+ * NFR-02/NFR-03 ใน Phase 1 ต้องใช้ และเป็นชุดเดียวที่กลไกซิงค์อ่าน/เขียนจริง
+ * (db-spec §10 ข้อ 3: การตรวจจับความขัดแย้งอยู่ที่ระดับ aggregate เท่านั้น)
+ */
+export interface SurveyedBuildingSyncState {
+  /** รหัสฝั่งเซิร์ฟเวอร์ — ยังไม่มีค่าก่อนซิงค์สำเร็จครั้งแรก */
+  id: string | null;
+  /** natural key ที่สร้างบนอุปกรณ์ ใช้เป็น idempotency key (db-spec §10 ข้อ 2) */
+  client_generated_id: string;
+  device_id: string;
+  data_version: number;
+  last_modified_at: Date;
+  last_modified_by_device_id: string;
+  sync_status: SyncStatus;
+  synced_at: Date | null;
+  created_on_device_at: Date;
+}

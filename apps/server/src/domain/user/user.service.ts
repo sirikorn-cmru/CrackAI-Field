@@ -1,4 +1,4 @@
-import { isUserRole, type AccountStatus, type User } from '@crackai/shared';
+import { isUserRole, type AccountStatus, type AuditActionType, type User } from '@crackai/shared';
 import {
   AccountStatusUnchangedError,
   InvalidRoleError,
@@ -93,11 +93,14 @@ export class UserService {
     await this.audit.record({
       related_entity_name: 'User',
       related_entity_id: userId,
+      // db-spec §10 ข้อ 9: เหตุการณ์เกี่ยวกับบัญชีผู้ใช้ไม่ผูกกับอาคารใด
+      related_surveyedbuilding_id: null,
       action_type: 'แก้ไขบัญชีผู้ใช้',
       performed_by_user_id: caller.user_id,
       value_before: summarise(before, Object.keys(changes) as (keyof UpdateUserInput)[]),
       value_after: summarise(after, Object.keys(changes) as (keyof UpdateUserInput)[]),
       performed_at: this.clock.now(),
+      note: null,
     });
 
     // api-spec 2.2: การเปลี่ยน role มีผลกับ session ที่ยังใช้งานอยู่ทันที
@@ -125,7 +128,9 @@ export class UserService {
     authorize(caller, disabling ? '2.3' : '2.4');
     // `action_type` เขียนตรงตัวตาม Output ของ api-spec 2.3/2.4 ไม่ดึงจากชื่อ operation
     // เพราะสองอย่างนี้บังเอิญตรงกันเฉยๆ (2.2 ใช้ชื่อ operation กับ action_type ต่างกัน)
-    const actionLabel = disabling ? 'ปิดการใช้งานบัญชีผู้ใช้' : 'เปิดใช้งานบัญชีผู้ใช้คืน';
+    const actionLabel: AuditActionType = disabling
+      ? 'ปิดการใช้งานบัญชีผู้ใช้'
+      : 'เปิดใช้งานบัญชีผู้ใช้คืน';
 
     const before = await this.users.findById(userId);
     if (!before) throw new UserNotFoundError(userId);
@@ -146,11 +151,13 @@ export class UserService {
     await this.audit.record({
       related_entity_name: 'User',
       related_entity_id: userId,
+      related_surveyedbuilding_id: null,
       action_type: actionLabel,
       performed_by_user_id: caller.user_id,
       value_before: before.account_status,
       value_after: after.account_status,
       performed_at: this.clock.now(),
+      note: null,
     });
 
     return toUser(after);

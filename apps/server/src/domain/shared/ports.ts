@@ -1,3 +1,5 @@
+import type { AuditActionType } from '@crackai/shared';
+
 /**
  * Port ที่ชั้น domain ต้องการจากภายนอก
  *
@@ -46,10 +48,18 @@ export interface AuditTrailRecorder {
 export interface AuditTrailDraft {
   related_entity_name: string;
   related_entity_id: string;
-  action_type: string;
+  /**
+   * อาคารต้นทางของเหตุการณ์ — db-spec §10 ข้อ 9 บังคับให้ resolve ค่านี้ตั้งแต่ตอนสร้างระเบียน
+   * ไม่ใช่ไป join ทีหลัง จึงประกาศเป็นฟิลด์บังคับ (ค่า null ได้ แต่ต้องระบุเสมอ) เพื่อให้ทุกจุด
+   * ที่สร้างประวัติต้องตัดสินใจตามกฎข้อนั้นอย่างชัดแจ้ง — `null` ใช้เมื่อเหตุการณ์ไม่ผูกกับ
+   * อาคารใด (เช่น `related_entity_name = User`)
+   */
+  related_surveyedbuilding_id: string | null;
+  action_type: AuditActionType;
   /** db-spec §7.2: ไม่บังคับเมื่อผู้กระทำคือระบบเอง แต่การกระทำของมนุษย์ต้องระบุเสมอ */
   performed_by_user_id: string | null;
   value_before: string | null;
   value_after: string | null;
   performed_at: Date;
+  note: string | null;
 }
