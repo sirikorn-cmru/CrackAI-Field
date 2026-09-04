@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it, beforeEach } from 'node:test';
+import { MAX_FAILED_PIN_ATTEMPTS } from '@crackai/shared';
 import { AuthService } from '../src/domain/auth/auth.service.ts';
 import { UserService, type Caller } from '../src/domain/user/user.service.ts';
 import {
@@ -15,8 +16,10 @@ import type { Clock, IdGenerator } from '../src/domain/shared/ports.ts';
  * อ้างอิง test case ใน `docs/03-testing/01-test-plan/test-cases/authentication-login.md`
  * และ `user-management.md`
  *
- * จำนวนครั้งสูงสุดที่ใช้ทดสอบ (3) เป็น **ค่าที่ตั้งขึ้นเฉพาะการทดสอบ** ไม่ใช่ค่าที่ระบบจะใช้จริง
- * ตาม spec ข้อสมมติ 11 ที่ยังไม่ยืนยันตัวเลข — test data ในเอกสารก็ระบุให้ใช้ค่าที่ตั้งไว้จริง
+ * จำนวนครั้งสูงสุดที่ใช้ทดสอบ (3) ตั้งขึ้นเฉพาะการทดสอบ **โดยเจตนาให้ต่างจากค่าจริง (5 ครั้ง)**
+ * เพื่อพิสูจน์ว่า `AuthService` อ่านค่าจากพารามิเตอร์จริง ไม่ได้ฝังเลข 5 ไว้ในตัวเอง —
+ * architecture §7 ข้อสมมติ 7 กำหนดว่าค่านี้ต้องตั้งค่าได้ แม้ตัวเลขจะถูกยืนยันแล้วก็ตาม
+ * ส่วนค่าจริงที่ระบบใช้ถูกตรวจแยกไว้ในเทสต์ของ MAX_FAILED_PIN_ATTEMPTS
  */
 const MAX_PIN_ATTEMPTS_FOR_TEST = 3;
 
@@ -301,5 +304,33 @@ describe('NFR-11 การตั้งค่าจำนวนครั้งส
         /จำนวนเต็มบวก/,
       );
     }
+  });
+
+  it('ค่าจริงที่ระบบใช้คือ 5 ครั้ง ตรงกับที่ผู้ใช้ยืนยันใน spec (NFR-11)', () => {
+    // ปิดข้อสมมติหมวด 6 ข้อ 11 เมื่อ 2026-09-04 — ถ้ามีใครเปลี่ยนค่านี้โดยไม่แก้ spec ก่อน
+    // เทสต์ข้อนี้จะพัง ซึ่งเป็นผลที่ต้องการ เพราะเอกสารคือแหล่งความจริง ไม่ใช่โค้ด
+    assert.equal(MAX_FAILED_PIN_ATTEMPTS, 5);
+  });
+
+  it('AuthService ใช้ค่าที่ส่งเข้ามาจริง ไม่ได้ฝังเลข 5 ไว้ในตัวเอง (architecture §7 ข้อ 7)', async () => {
+    const ctx = buildContext();
+    const service = new AuthService(
+      ctx.users,
+      ctx.sessions,
+      new ScryptSecretHasher(),
+      new SequentialIds(),
+      ctx.clock,
+      // ค่านี้ต่างจากทั้ง 5 (ค่าจริง) และ 3 (ค่าที่เทสต์อื่นใช้) เพื่อพิสูจน์ว่าอ่านจากพารามิเตอร์
+      1,
+    );
+    await createSurveyor(ctx);
+    const { session } = await service.login({
+      username: 'surveyor01',
+      credential_secret: 'รหัสผ่านที่ถูกต้อง',
+      device_id: 'tablet-01',
+      cached_pin_secret: '246810',
+    });
+    // ตั้งไว้ 1 ครั้ง แปลว่ากรอกผิดครั้งแรกต้องล็อกทันที
+    await assert.rejects(() => service.unlockOffline(session.id, 'ผิด'), /ล้างข้อมูลเข้าสู่ระบบ/);
   });
 });

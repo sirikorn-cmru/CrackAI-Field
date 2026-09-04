@@ -35,6 +35,17 @@ export const OFFLINE_CAPABLE_ROLE: UserRole = 'ผู้สำรวจภาค
 /** อายุ session ที่แคชไว้ใช้ขณะออฟไลน์ — NFR-09 กำหนดไว้ 7 วัน */
 export const OFFLINE_SESSION_TTL_DAYS = 7;
 
+/**
+ * จำนวนครั้งสูงสุดที่ยอมให้กรอก PIN ผิดติดต่อกันก่อนล้าง credential/PIN — NFR-11
+ *
+ * ผู้ใช้ยืนยันค่านี้เมื่อ 2026-09-04 ปิดข้อสมมติหมวด 6 ข้อ 11 ของ spec (เดิมเสนอเป็นช่วง 5-10 ครั้ง)
+ *
+ * **นี่คือค่าตั้งต้นที่จุดประกอบระบบส่งให้ `AuthService` ไม่ใช่ค่าที่ฝังอยู่ในตัว service**
+ * เพราะ architecture §7 ข้อสมมติ 7 ยังคงข้อกำหนดไว้ว่าค่านี้ต้องตั้งค่าได้ (configurable)
+ * การปิดตัวเลขไม่ได้ปิดข้อกำหนดนั้นไปด้วย
+ */
+export const MAX_FAILED_PIN_ATTEMPTS = 5;
+
 /** User ตาม db-spec §2.1 — `credential_secret` ไม่อยู่ในชนิดนี้โดยเจตนา ดู UserCredential */
 export interface User {
   id: string;
