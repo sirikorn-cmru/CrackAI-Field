@@ -274,6 +274,9 @@ a { color: var(--accent-info); }
   outline-offset: 2px;
 }
 .input.error, .textarea.error { border-color: var(--severity-danger-fg); }
+/* PIN input (ฟีเจอร์ 14, FR-25/FR-27) — ไม่มี component เฉพาะใน DESIGN.md จึงประกอบจาก token ตัวอักษรที่มีอยู่แล้วเท่านั้น
+   (--font-mono ตาม §2.5 ใช้กับตัวเลขที่ต้องอ่านเป็นชุดชัดเจน เหมือนที่ใช้กับค่า GPS/data_version ใน .text-mono/.cf-value เดิม) ไม่ใช่ token ใหม่ */
+.input-pin { font-family: var(--font-mono); letter-spacing: var(--space-3); text-align: center; font-size: var(--text-xl); }
 
 /* ============ Checkbox / Radio (3.3) ============ */
 .option-row {

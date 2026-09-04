@@ -8,13 +8,15 @@
 <style>
   .path-panel { display: none; }
   .path-panel.active { display: block; }
+  .mode-panel { display: none; }
+  .mode-panel.active { display: block; }
 </style>
 </head>
 <body>
 <div class="proto-bar">
   <a class="proto-link" href="index.html">⌂ Prototype</a>
   <strong>เข้าสู่ระบบ</strong>
-  <span class="proto-fr">FR-25 · FR-26 · FR-27 · NFR-09</span>
+  <span class="proto-fr">FR-25 · FR-26 · FR-27 · NFR-09 · NFR-11</span>
   <select onchange="if(this.value) location.href=this.value">
     <option value="">ไปหน้าอื่น…</option>
     <option value="field-my-tasks.html">ภาคสนาม 0) งานที่ได้รับมอบหมาย</option>
@@ -33,7 +35,7 @@
     <option value="conflict-list.html">10) รายการข้อมูลขัดแย้ง</option>
     <option value="conflict-detail.html">11) แก้ไขข้อมูลขัดแย้ง</option>
   </select>
-  <span class="proto-scope">ครบ 15 ฟีเจอร์ (Must+Should) · v1</span>
+  <span class="proto-scope">ครบ 17 ฟีเจอร์ (Must+Should) · v1</span>
 </div>
 
 <div class="layout-field" style="max-width:400px; padding-top:64px;">
@@ -42,48 +44,112 @@
     <p class="text-sm">เครื่องมือสำรวจความเสียหายอาคารหลังอุทกภัย</p>
   </div>
 
-  <div class="banner offline" role="status">
-    <span aria-hidden="true">&#9679;</span>
-    <div>
-      <strong>โหมดออฟไลน์พร้อมใช้งาน</strong>
-      <div class="text-sm">ผู้สำรวจภาคสนามเข้าสู่ระบบได้แม้ไม่มีสัญญาณ โดยใช้บัญชีที่เคยเชื่อมต่อสำเร็จครั้งล่าสุด (FR-27)</div>
+  <div class="card">
+    <h2 class="section-title">โหมดการเข้าสู่ระบบ (สำหรับสาธิต Prototype เท่านั้น)</h2>
+    <p class="section-desc">ระบบจริงตรวจจับสัญญาณอินเทอร์เน็ตของอุปกรณ์เองแล้วสลับโหมดให้อัตโนมัติ ปุ่มสองปุ่มนี้มีไว้ให้สลับดูทั้งสองโหมดในต้นแบบนี้เท่านั้น ไม่ใช่ตัวเลือกในระบบจริง</p>
+    <div class="btn-row" style="flex-wrap:wrap;">
+      <button type="button" class="btn btn-primary btn-field" id="mode-btn-online" onclick="showMode('online')">มีสัญญาณ — เข้าสู่ระบบด้วยรหัสผ่าน</button>
+      <button type="button" class="btn btn-secondary btn-field" id="mode-btn-offline" onclick="showMode('offline')">ไม่มีสัญญาณ — ปลดล็อกด้วย PIN (ผู้สำรวจภาคสนาม)</button>
     </div>
   </div>
 
-  <form>
-    <div class="field-group">
-      <label class="field-label" for="username">ชื่อผู้ใช้</label>
-      <input class="input" id="username" type="text" placeholder="" autocomplete="username">
-    </div>
-    <div class="field-group">
-      <label class="field-label" for="password">รหัสผ่าน</label>
-      <input class="input" id="password" type="password" autocomplete="current-password">
-      <div class="field-hint">ระบบยืนยันตัวตนกับเซิร์ฟเวอร์เมื่อมีสัญญาณ หรือใช้ session ที่แคชไว้เมื่อออฟไลน์ (NFR-09) — session ที่แคชไว้มีอายุจำกัดและต้องยืนยันใหม่เมื่อครบกำหนด</div>
-    </div>
-
-    <div class="field-group">
-      <label class="field-label" for="demo-role">บทบาทตัวอย่าง (สำหรับสาธิต Prototype เท่านั้น — ระบบจริงกำหนดจากบัญชีผู้ใช้)</label>
-      <select class="select" id="demo-role" onchange="document.getElementById('go-btn').dataset.target = this.value">
-        <option value="field-my-tasks.html">ผู้สำรวจภาคสนาม</option>
-        <option value="lead-assign.html">หัวหน้าผู้สำรวจ</option>
-        <option value="admin-users.html">ผู้ดูแลระบบ</option>
-        <option value="dashboard.html">หน่วยงานส่วนกลาง/ผู้บริหาร</option>
-      </select>
+  <!-- โหมดออนไลน์: เข้าสู่ระบบด้วยชื่อผู้ใช้/รหัสผ่าน (FR-25) -->
+  <div class="mode-panel active" id="mode-online">
+    <div class="banner info" role="status">
+      <span aria-hidden="true">ⓘ</span>
+      <div>
+        <strong>เข้าสู่ระบบด้วยชื่อผู้ใช้และรหัสผ่าน</strong>
+        <div class="text-sm">ผู้สำรวจภาคสนามที่เข้าสู่ระบบสำเร็จในโหมดนี้จะได้ตั้งรหัส PIN ไว้ปลดล็อกแบบออฟไลน์ในครั้งถัดไปโดยไม่ต้องพิมพ์รหัสผ่านซ้ำ (FR-25, FR-27) บทบาทอื่นเข้าสู่ระบบด้วยรหัสผ่านทุกครั้งโดยไม่มีเส้นทางออฟไลน์</div>
+      </div>
     </div>
 
-    <button type="button" id="go-btn" class="btn btn-primary btn-field" data-target="field-my-tasks.html"
-      onclick="location.href=this.dataset.target">เข้าสู่ระบบ</button>
-  </form>
+    <form>
+      <div class="field-group">
+        <label class="field-label" for="username">ชื่อผู้ใช้</label>
+        <input class="input" id="username" type="text" placeholder="" autocomplete="username">
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="password">รหัสผ่าน</label>
+        <input class="input" id="password" type="password" autocomplete="current-password">
+        <div class="field-hint">หลังเข้าสู่ระบบด้วยรหัสผ่านสำเร็จ ผู้สำรวจภาคสนามจะได้ตั้ง/ยืนยันรหัส PIN สำหรับปลดล็อกออฟไลน์ครั้งถัดไป (FR-25) — PIN นี้มีอายุการใช้งาน 7 วันนับจากวันที่เข้าสู่ระบบด้วยรหัสผ่านล่าสุด (NFR-09) และจะถูกล้างทันทีหากกรอกผิดติดต่อกันครบ 5 ครั้งขณะปลดล็อกออฟไลน์ (NFR-11)</div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="demo-role">บทบาทตัวอย่าง (สำหรับสาธิต Prototype เท่านั้น — ระบบจริงกำหนดจากบัญชีผู้ใช้)</label>
+        <select class="select" id="demo-role">
+          <option value="field-my-tasks.html">ผู้สำรวจภาคสนาม</option>
+          <option value="lead-assign.html">หัวหน้าผู้สำรวจ</option>
+          <option value="admin-users.html">ผู้ดูแลระบบ</option>
+          <option value="dashboard.html">หน่วยงานส่วนกลาง/ผู้บริหาร</option>
+        </select>
+        <div class="field-hint">เฉพาะบทบาท "ผู้สำรวจภาคสนาม" เท่านั้นที่จะเห็นขั้นตอนตั้ง PIN ต่อจากนี้ (บทบาทอื่นไม่มีเส้นทางออฟไลน์)</div>
+      </div>
+
+      <button type="button" id="go-btn" class="btn btn-primary btn-field" onclick="handleLogin()">เข้าสู่ระบบ</button>
+    </form>
+
+    <!-- ขั้นตอนตั้ง PIN หลังเข้าสู่ระบบสำเร็จครั้งแรกขณะมีสัญญาณ (เฉพาะผู้สำรวจภาคสนาม, FR-25 AC-4/AC-5) -->
+    <div class="path-panel" id="panel-set-pin">
+      <div class="card">
+        <h2 class="section-title">ตั้งรหัส PIN สำหรับปลดล็อกออฟไลน์</h2>
+        <p class="section-desc">เข้าสู่ระบบด้วยรหัสผ่านสำเร็จแล้ว — ตั้ง PIN 6 หลักไว้ใช้ปลดล็อกแอปเมื่อไม่มีสัญญาณอินเทอร์เน็ตที่หน้างานครั้งถัดไป โดยไม่ต้องพิมพ์รหัสผ่านซ้ำ (FR-25 AC-4 · TC-14-04) ต้องตั้งให้สำเร็จก่อนจึงจะเข้าใช้งานฟังก์ชันหลักได้ ห้ามข้ามขั้นตอนนี้</p>
+        <div class="field-group">
+          <label class="field-label" for="pin-new">รหัส PIN (6 หลัก)</label>
+          <input class="input input-pin" id="pin-new" type="password" inputmode="numeric" maxlength="6" autocomplete="off">
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="pin-confirm">ยืนยันรหัส PIN อีกครั้ง</label>
+          <input class="input input-pin" id="pin-confirm" type="password" inputmode="numeric" maxlength="6" autocomplete="off">
+          <div class="field-error" id="pin-set-error" style="display:none;"><span aria-hidden="true">&#9888;</span> รหัส PIN ไม่ครบ 6 หลัก หรือทั้งสองช่องไม่ตรงกัน กรุณากรอกใหม่ทั้งสองช่อง (FR-25 AC-5 · TC-14-05)</div>
+        </div>
+        <button type="button" class="btn btn-primary btn-field" onclick="submitSetPin()">ยืนยันรหัส PIN และเข้าใช้งาน</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- โหมดออฟไลน์: ปลดล็อกด้วย PIN แยกจากชื่อผู้ใช้/รหัสผ่าน (เฉพาะผู้สำรวจภาคสนาม, FR-27) -->
+  <div class="mode-panel" id="mode-offline">
+    <div class="banner offline" role="status">
+      <span aria-hidden="true">&#9679;</span>
+      <div>
+        <strong>โหมดออฟไลน์ — ปลดล็อกด้วย PIN</strong>
+        <div class="text-sm">เฉพาะบทบาทผู้สำรวจภาคสนามเท่านั้นที่ปลดล็อกออฟไลน์ด้วย PIN ได้ (FR-27) ใช้ได้ตราบเท่าที่ยังไม่ครบ 7 วันนับจากเข้าสู่ระบบด้วยรหัสผ่านครั้งล่าสุด (NFR-09) บทบาทอื่นไม่มีเส้นทางนี้ ต้องมีสัญญาณอินเทอร์เน็ตจึงเข้าสู่ระบบได้เสมอ</div>
+      </div>
+    </div>
+
+    <div id="pin-unlock-form">
+      <div class="field-group">
+        <label class="field-label" for="pin-unlock">รหัส PIN</label>
+        <input class="input input-pin" id="pin-unlock" type="password" inputmode="numeric" maxlength="6" autocomplete="off">
+        <div class="field-error" id="pin-unlock-error" style="display:none;"></div>
+      </div>
+      <button type="button" class="btn btn-primary btn-field" onclick="attemptPinUnlock()">ปลดล็อก</button>
+      <p class="text-xs" style="margin-top:8px; text-align:center;">รหัส PIN ตัวอย่างสำหรับสาธิตต้นแบบนี้: <span class="text-mono">123456</span> (ลองกรอกค่าอื่นเพื่อดูสถานการณ์กรอกผิด)</p>
+    </div>
+
+    <!-- ล็อกหลังกรอก PIN ผิดติดต่อกันครบ 5 ครั้ง (NFR-11 AC-1/AC-2 · TC-14-13/14-14) -->
+    <div class="banner danger" role="alert" id="pin-locked-banner" style="display:none;">
+      <span aria-hidden="true">&#9940;</span>
+      <div>
+        <strong>PIN ถูกล้างแล้ว — ต้องเข้าสู่ระบบใหม่ด้วยรหัสผ่าน</strong>
+        <div class="text-sm">กรอก PIN ผิดติดต่อกันครบ 5 ครั้ง ระบบล้างรหัส PIN และข้อมูลเข้าสู่ระบบที่แคชไว้บนอุปกรณ์นี้ทันที (NFR-11 AC-1 · TC-14-13) กรุณาเชื่อมต่อสัญญาณอินเทอร์เน็ตเพื่อเข้าสู่ระบบใหม่ด้วยรหัสผ่านก่อนจึงจะใช้งานต่อได้ ไม่มีวิธีปลดล็อกอื่นบนอุปกรณ์นี้อีก</div>
+        <div class="text-sm" style="margin-top:8px;"><strong>ข้อมูลแบบสำรวจที่บันทึกไว้ในเครื่องแล้วแต่ยังไม่ได้ซิงค์ (ชื่ออาคาร ภาพถ่าย ผลประเมิน ฯลฯ) จะไม่ถูกลบหรือสูญหายไปด้วยไม่ว่ากรณีใดทั้งสิ้น</strong> และจะซิงค์ขึ้นเซิร์ฟเวอร์ให้อัตโนมัติทันทีที่เข้าสู่ระบบใหม่สำเร็จ (NFR-11 AC-2 · TC-14-14)</div>
+        <button type="button" class="btn btn-primary btn-field" style="margin-top:12px;" onclick="reconnectAfterLock()">จำลอง: สัญญาณกลับมาแล้ว — เข้าสู่ระบบใหม่ด้วยรหัสผ่าน</button>
+      </div>
+    </div>
+  </div>
 
   <hr class="divider">
 
   <div class="card">
     <h2 class="section-title">สาธิตสถานการณ์ปฏิเสธการเข้าสู่ระบบ (สำหรับรีวิว Prototype เท่านั้น)</h2>
-    <p class="section-desc">ปุ่มด้านล่างมีไว้เพื่อสาธิตสถานะที่ test case กำหนดไว้เท่านั้น — ระบบจริงตัดสินผลจากเซิร์ฟเวอร์/credential ที่แคชไว้จริง ไม่ใช่จากการกดปุ่ม</p>
-    <div class="btn-row">
+    <p class="section-desc">ปุ่มด้านล่างมีไว้เพื่อสาธิตสถานะที่ test case กำหนดไว้เท่านั้น — ระบบจริงตัดสินผลจากเซิร์ฟเวอร์/PIN ที่แคชไว้จริง ไม่ใช่จากการกดปุ่ม</p>
+    <div class="btn-row" style="flex-wrap:wrap;">
       <button type="button" class="btn btn-secondary btn-field" onclick="showLoginDemo('invalid')">จำลอง: ข้อมูลเข้าสู่ระบบไม่ถูกต้อง</button>
       <button type="button" class="btn btn-secondary btn-field" onclick="showLoginDemo('forbidden')">จำลอง: ไม่มีสิทธิ์เข้าถึงหน้าจอ</button>
-      <button type="button" class="btn btn-secondary btn-field" onclick="showLoginDemo('expired')">จำลอง: credential ออฟไลน์หมดอายุ</button>
+      <button type="button" class="btn btn-secondary btn-field" onclick="showLoginDemo('expired')">จำลอง: PIN หมดอายุครบ 7 วันขณะยังไม่มีสัญญาณ</button>
+      <button type="button" class="btn btn-secondary btn-field" onclick="jumpPinAttempts(4)">จำลอง: กรอก PIN ผิดครั้งที่ 4 (เหลือ 1 ครั้ง — NFR-11 boundary)</button>
+      <button type="button" class="btn btn-secondary btn-field" onclick="jumpPinAttempts(5)">จำลอง: กรอก PIN ผิดครบ 5 ครั้ง (ถูกล็อก — NFR-11)</button>
     </div>
   </div>
 
@@ -114,13 +180,14 @@
     </div>
   </div>
 
-  <!-- เส้นทาง: credential ที่แคชไว้ออฟไลน์หมดอายุ (NFR-09 AC-1 · TC-14-07/08) -->
+  <!-- เส้นทาง: PIN หมดอายุครบ 7 วันขณะยังไม่มีสัญญาณ (FR-27 AC-4 · NFR-09 AC-1 · TC-14-10) -->
   <div class="path-panel" id="panel-expired">
     <div class="banner danger" role="alert">
       <span aria-hidden="true">&#9940;</span>
       <div>
-        <strong>ไม่สามารถเข้าสู่ระบบด้วยข้อมูลที่บันทึกไว้ในเครื่องได้</strong>
-        <div class="text-sm">ข้อมูลเข้าสู่ระบบที่แคชไว้บนอุปกรณ์นี้หมดอายุการใช้งานออฟไลน์แล้ว กรุณาเชื่อมต่อสัญญาณอินเทอร์เน็ตเพื่อยืนยันตัวตนใหม่ก่อนใช้งานต่อ (NFR-09 AC-1 · TC-14-07/08)</div>
+        <strong>ต้องเชื่อมต่อสัญญาณเพื่อเข้าสู่ระบบใหม่ด้วยรหัสผ่าน</strong>
+        <div class="text-sm">PIN ที่ตั้งไว้ครบกำหนดอายุการใช้งานออฟไลน์ 7 วันแล้ว (นับจากเข้าสู่ระบบด้วยรหัสผ่านครั้งล่าสุด) แต่อุปกรณ์นี้ยังไม่มีสัญญาณอินเทอร์เน็ตเลย ต้องเชื่อมต่อสัญญาณก่อนจึงจะเข้าสู่ระบบใหม่ด้วยรหัสผ่านได้ (FR-27 AC-4 · NFR-09 AC-1)</div>
+        <div class="text-sm" style="margin-top:8px;"><strong>ข้อมูลแบบสำรวจที่บันทึกไว้ในเครื่องแล้วแต่ยังไม่ได้ซิงค์จะไม่สูญหายระหว่างที่รอสัญญาณ</strong> และจะซิงค์ขึ้นเซิร์ฟเวอร์ให้อัตโนมัติทันทีที่เข้าสู่ระบบใหม่สำเร็จ (TC-14-10)</div>
       </div>
     </div>
   </div>
@@ -131,12 +198,119 @@
 </div>
 
 <script>
-function showLoginDemo(id) {
+var PIN_MAX_ATTEMPTS = 5;
+var pinAttemptCount = 0;
+var CORRECT_PIN = '123456';
+
+function hideAllPathPanels() {
   document.querySelectorAll('.path-panel').forEach(function (el) {
     el.classList.remove('active');
   });
+}
+
+function showLoginDemo(id) {
+  hideAllPathPanels();
   var target = document.getElementById('panel-' + id);
   if (target) { target.classList.add('active'); target.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+}
+
+function showMode(id) {
+  document.querySelectorAll('.mode-panel').forEach(function (el) {
+    el.classList.remove('active');
+  });
+  document.getElementById('mode-' + id).classList.add('active');
+  var onlineBtn = document.getElementById('mode-btn-online');
+  var offlineBtn = document.getElementById('mode-btn-offline');
+  onlineBtn.classList.toggle('btn-primary', id === 'online');
+  onlineBtn.classList.toggle('btn-secondary', id !== 'online');
+  offlineBtn.classList.toggle('btn-primary', id === 'offline');
+  offlineBtn.classList.toggle('btn-secondary', id !== 'offline');
+}
+
+function handleLogin() {
+  var role = document.getElementById('demo-role').value;
+  if (role === 'field-my-tasks.html') {
+    hideAllPathPanels();
+    var panel = document.getElementById('panel-set-pin');
+    panel.classList.add('active');
+    panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+  } else {
+    location.href = role;
+  }
+}
+
+function submitSetPin() {
+  var pin1 = document.getElementById('pin-new');
+  var pin2 = document.getElementById('pin-confirm');
+  var errorEl = document.getElementById('pin-set-error');
+  var valid = /^[0-9]{6}$/.test(pin1.value) && pin1.value === pin2.value;
+  if (!valid) {
+    errorEl.style.display = 'flex';
+    pin1.classList.add('error');
+    pin2.classList.add('error');
+    pin1.value = '';
+    pin2.value = '';
+    pin1.focus();
+    return;
+  }
+  location.href = 'field-my-tasks.html';
+}
+
+function attemptPinUnlock() {
+  var input = document.getElementById('pin-unlock');
+  var errorEl = document.getElementById('pin-unlock-error');
+  if (input.value === CORRECT_PIN) {
+    pinAttemptCount = 0;
+    location.href = 'field-my-tasks.html';
+    return;
+  }
+  pinAttemptCount++;
+  input.classList.add('error');
+  input.value = '';
+  if (pinAttemptCount >= PIN_MAX_ATTEMPTS) {
+    lockPin();
+    return;
+  }
+  var remaining = PIN_MAX_ATTEMPTS - pinAttemptCount;
+  errorEl.style.display = 'flex';
+  errorEl.innerHTML = '<span aria-hidden="true">&#9888;</span> PIN ไม่ถูกต้อง เหลือโอกาสอีก ' + remaining + ' ครั้ง ก่อนระบบจะล้าง PIN ที่แคชไว้ (NFR-11)';
+}
+
+function lockPin() {
+  document.getElementById('pin-unlock-form').style.display = 'none';
+  document.getElementById('pin-locked-banner').style.display = 'flex';
+}
+
+function jumpPinAttempts(n) {
+  showMode('offline');
+  document.getElementById('pin-unlock-form').style.display = '';
+  document.getElementById('pin-locked-banner').style.display = 'none';
+  var input = document.getElementById('pin-unlock');
+  var errorEl = document.getElementById('pin-unlock-error');
+  input.classList.remove('error');
+  input.value = '';
+  if (n >= PIN_MAX_ATTEMPTS) {
+    pinAttemptCount = PIN_MAX_ATTEMPTS;
+    lockPin();
+    return;
+  }
+  pinAttemptCount = n;
+  var remaining = PIN_MAX_ATTEMPTS - n;
+  input.classList.add('error');
+  errorEl.style.display = 'flex';
+  errorEl.innerHTML = '<span aria-hidden="true">&#9888;</span> PIN ไม่ถูกต้อง เหลือโอกาสอีก ' + remaining + ' ครั้ง ก่อนระบบจะล้าง PIN ที่แคชไว้ (NFR-11 AC-3 · TC-14-15)';
+}
+
+function reconnectAfterLock() {
+  pinAttemptCount = 0;
+  document.getElementById('pin-locked-banner').style.display = 'none';
+  document.getElementById('pin-unlock-form').style.display = '';
+  var errorEl = document.getElementById('pin-unlock-error');
+  errorEl.style.display = 'none';
+  var input = document.getElementById('pin-unlock');
+  input.classList.remove('error');
+  input.value = '';
+  showMode('online');
 }
 </script>
 </body>
