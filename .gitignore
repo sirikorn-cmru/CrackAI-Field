@@ -10,3 +10,16 @@ docs/.obsidian/cache
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# Node / TypeScript
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+coverage/
+.freebuff/
+
+# ตัวแปรสภาพแวดล้อม (ห้าม commit ค่าเชื่อมต่อฐานข้อมูล/ความลับใดๆ)
+.env
+.env.*
+!.env.example

@@ -1,0 +1,18 @@
+{
+  "name": "crackai-field",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ระบบสำรวจความเสียหายขั้นต้นของโครงสร้างอาคารหลังเหตุการณ์อุทกภัย",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @crackai/shared",
+    "typecheck": "npm run build && npm run typecheck --workspaces --if-present",
+    "test": "npm run build && npm run test --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
