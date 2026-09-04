@@ -1,20 +1,16 @@
-import { isUserRole, type AccountStatus, type User, type UserRole } from '@crackai/shared';
+import { isUserRole, type AccountStatus, type User } from '@crackai/shared';
 import {
   AccountStatusUnchangedError,
-  ForbiddenError,
   InvalidRoleError,
   UsernameAlreadyExistsError,
   UserNotFoundError,
 } from '../shared/errors.ts';
+import { authorize, type Caller } from '../authorization/authorization.service.ts';
 import type { AuditTrailRecorder, Clock, IdGenerator, SecretHasher } from '../shared/ports.ts';
 import type { SessionRepository } from '../auth/session.repository.ts';
 import type { UpdateUserInput, UserRecord, UserRepository } from './user.repository.ts';
 
-/** ผู้เรียก operation — ชั้นขนส่งเป็นผู้ประกอบค่านี้จาก session ที่ยืนยันแล้ว */
-export interface Caller {
-  user_id: string;
-  role: UserRole;
-}
+export type { Caller };
 
 export interface CreateUserCommand {
   username: string;
@@ -25,9 +21,6 @@ export interface CreateUserCommand {
   position?: string | null;
   role: string;
 }
-
-/** บทบาทเดียวที่จัดการบัญชีผู้ใช้ได้ — api-spec 2.1–2.4 ระบุ "ผู้เรียกได้: ผู้ดูแลระบบ" */
-const ACCOUNT_ADMIN_ROLE: UserRole = 'ผู้ดูแลระบบ';
 
 /**
  * จัดการผู้ใช้และสิทธิ์การเข้าถึง — T-1-01 (FR-21, NFR-08)
@@ -59,7 +52,7 @@ export class UserService {
 
   /** api-spec 2.1 สร้างบัญชีผู้ใช้ใหม่ */
   async createUser(caller: Caller, command: CreateUserCommand): Promise<User> {
-    this.assertAccountAdmin(caller, 'สร้างบัญชีผู้ใช้');
+    authorize(caller, '2.1');
 
     if (!isUserRole(command.role)) throw new InvalidRoleError(command.role);
     if (await this.users.findByUsername(command.username)) {
@@ -87,7 +80,7 @@ export class UserService {
 
   /** api-spec 2.2 แก้ไขข้อมูล/บทบาทผู้ใช้ */
   async updateUser(caller: Caller, userId: string, changes: UpdateUserInput): Promise<User> {
-    this.assertAccountAdmin(caller, 'แก้ไขบัญชีผู้ใช้');
+    authorize(caller, '2.2');
 
     const before = await this.users.findById(userId);
     if (!before) throw new UserNotFoundError(userId);
@@ -128,8 +121,11 @@ export class UserService {
     userId: string,
     target: AccountStatus,
   ): Promise<User> {
-    const actionLabel = target === 'ปิดใช้งาน' ? 'ปิดการใช้งานบัญชีผู้ใช้' : 'เปิดใช้งานบัญชีผู้ใช้คืน';
-    this.assertAccountAdmin(caller, actionLabel);
+    const disabling = target === 'ปิดใช้งาน';
+    authorize(caller, disabling ? '2.3' : '2.4');
+    // `action_type` เขียนตรงตัวตาม Output ของ api-spec 2.3/2.4 ไม่ดึงจากชื่อ operation
+    // เพราะสองอย่างนี้บังเอิญตรงกันเฉยๆ (2.2 ใช้ชื่อ operation กับ action_type ต่างกัน)
+    const actionLabel = disabling ? 'ปิดการใช้งานบัญชีผู้ใช้' : 'เปิดใช้งานบัญชีผู้ใช้คืน';
 
     const before = await this.users.findById(userId);
     if (!before) throw new UserNotFoundError(userId);
@@ -143,7 +139,7 @@ export class UserService {
 
     // api-spec 2.3: ต้องเพิกถอน Session ที่ยัง "ใช้งานอยู่" ของผู้ใช้นี้ทั้งหมดทันที
     // api-spec 2.4 ระบุชัดว่าการเปิดใช้งานคืน "ไม่กระทบ Session" จึงทำเฉพาะขาปิด
-    if (target === 'ปิดใช้งาน') {
+    if (disabling) {
       await this.sessions.revokeAllActiveByUser(userId);
     }
 
@@ -160,9 +156,6 @@ export class UserService {
     return toUser(after);
   }
 
-  private assertAccountAdmin(caller: Caller, action: string): void {
-    if (caller.role !== ACCOUNT_ADMIN_ROLE) throw new ForbiddenError(action);
-  }
 }
 
 /** ตัด `credential_secret` ออกก่อนส่งออกนอกชั้น domain เสมอ (NFR-08) */
