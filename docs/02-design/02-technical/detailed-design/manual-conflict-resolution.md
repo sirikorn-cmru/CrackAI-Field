@@ -63,7 +63,7 @@ stateDiagram-v2
 
 ## 5. ข้อจำกัดที่ทราบอยู่แล้ว
 
-กลยุทธ์ **auto-merge** ที่เป็นรูปธรรมก่อนตัดสินว่า "merge ไม่ได้" ใน [[offline-sync#2. Operation ↔ Entity ที่กระทบ|14.2]] (last-write-wins บางส่วน / field-level merge) ยังไม่ตัดสินใจ รอ `technology-stack.md` — เส้นทาง manual resolution ในไฟล์นี้ออกแบบครบแล้วโดยไม่ขึ้นกับการตัดสินใจนั้น รูปแบบ/format จริงของ `SyncConflictVersion.snapshot_content` ก็เป็นประเด็นรอตัดสินใจเช่นกัน (ดู [[api-spec#16. ประเด็นรอตัดสินใจ|api-spec หัวข้อ 16]], [[db-spec#11. ประเด็นรอตัดสินใจ|db-spec หัวข้อ 11]])
+กลยุทธ์ **auto-merge** ที่เป็นรูปธรรมก่อนตัดสินว่า "merge ไม่ได้" ใน [[offline-sync#2. Operation ↔ Entity ที่กระทบ|14.2]] (last-write-wins บางส่วน / field-level merge) **ปิดแล้วเมื่อ 2026-09-04**: ไม่ทำ auto-merge ระดับฟิลด์ใดๆ ใน Phase นี้ — ทุกความขัดแย้งจริงถูกส่งให้มนุษย์ตัดสินใจผ่านเส้นทางในไฟล์นี้เสมอ (ดู [[api-spec#16. ประเด็นรอตัดสินใจ|api-spec หัวข้อ 16]], [[architecture#6.9 กลยุทธ์การจัดการความขัดแย้งของข้อมูล เมื่อ merge อัตโนมัติไม่ได้ (NFR-03)|architecture §6.9]]) — เส้นทาง manual resolution ในไฟล์นี้ออกแบบครบแล้วและเป็นเส้นทางเดียวที่ใช้จริงตามการตัดสินใจนี้ (ไม่ใช่ทางเลือกสำรองอีกต่อไป) รูปแบบ/format จริงของ `SyncConflictVersion.snapshot_content` ยังเป็นประเด็นรอตัดสินใจ (ดู [[db-spec#11. ประเด็นรอตัดสินใจ|db-spec หัวข้อ 11]])
 
 ## เอกสารที่เกี่ยวข้อง
 
