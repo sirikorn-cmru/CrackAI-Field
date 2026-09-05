@@ -116,3 +116,11 @@ export class ForbiddenError extends DomainError {
     super(`บทบาทของผู้ใช้ไม่มีสิทธิ์${action}`);
   }
 }
+
+/** api-spec 14.1 — ชิ้นข้อมูลที่อุปกรณ์ส่งมาไม่ถูกต้องตามสถานะรอบอัปโหลดปัจจุบัน (NFR-02) */
+export class UploadChunkRejectedError extends DomainError {
+  readonly code = 'UPLOAD_CHUNK_REJECTED';
+  constructor(message: string) {
+    super(message);
+  }
+}

@@ -16,6 +16,11 @@ import type {
 } from '../../domain/auth/session.repository.ts';
 import type { AuditTrailDraft, AuditTrailRecorder } from '../../domain/shared/ports.ts';
 import type {
+  MediaBlobStore,
+  MediaUploadRepository,
+  MediaUploadState,
+} from '../../domain/sync/upload.repository.ts';
+import type {
   ApplyBuildingInput,
   CreateBuildingInput,
   CreateConflictInput,
@@ -190,5 +195,45 @@ export class InMemorySyncConflictRepository implements SyncConflictRepository {
     return this.versions
       .filter((version) => version.syncconflict_id === syncConflictId)
       .map((version) => ({ ...version }));
+  }
+}
+
+export class InMemoryMediaUploadRepository implements MediaUploadRepository {
+  private readonly rows = new Map<string, MediaUploadState>();
+
+  async findByClientGeneratedId(clientGeneratedId: string): Promise<MediaUploadState | null> {
+    const row = this.rows.get(clientGeneratedId);
+    return row ? { ...row } : null;
+  }
+
+  async upsert(state: MediaUploadState): Promise<MediaUploadState> {
+    this.rows.set(state.client_generated_id, { ...state });
+    return { ...state };
+  }
+}
+
+/** จำลองที่เก็บไฟล์บนดิสก์ — ตรวจตำแหน่งเขียนเข้มเหมือนของจริงเพื่อให้เทสต์จับ bug ได้ */
+export class InMemoryMediaBlobStore implements MediaBlobStore {
+  private readonly files = new Map<string, Uint8Array>();
+
+  async appendAt(uploadSessionId: string, offset: number, chunk: Uint8Array): Promise<void> {
+    const current = this.files.get(uploadSessionId) ?? new Uint8Array(0);
+    if (current.byteLength !== offset) {
+      throw new Error(
+        `เขียนไฟล์ผิดตำแหน่ง: ไฟล์มี ${current.byteLength} ไบต์ แต่สั่งเขียนที่ ${offset}`,
+      );
+    }
+    const next = new Uint8Array(current.byteLength + chunk.byteLength);
+    next.set(current, 0);
+    next.set(chunk, current.byteLength);
+    this.files.set(uploadSessionId, next);
+  }
+
+  async discard(uploadSessionId: string): Promise<void> {
+    this.files.delete(uploadSessionId);
+  }
+
+  async sizeOf(uploadSessionId: string): Promise<number> {
+    return this.files.get(uploadSessionId)?.byteLength ?? 0;
   }
 }
