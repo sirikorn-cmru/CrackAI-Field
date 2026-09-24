@@ -40,9 +40,9 @@ const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 export class AuthService {
   /**
    * @param maxFailedPinAttempts จำนวนครั้งสูงสุดที่ยอมให้กรอก PIN ผิดติดต่อกัน (NFR-11)
-   *   **ไม่มีค่าเริ่มต้นโดยเจตนา** — spec ข้อสมมติ 11 ระบุว่ายังไม่ยืนยันตัวเลข และ api-spec 1.3
-   *   สั่งไว้ตรงตัวว่า "ห้ามเดาตัวเลข" การบังคับให้ผู้เรียกส่งค่ามาเองทำให้ระบบไม่มีทาง
-   *   ทำงานด้วยตัวเลขที่เดาขึ้นเองได้เลย
+   *   **ไม่มีค่าเริ่มต้นโดยเจตนา** แม้ตัวเลขจะถูกยืนยันแล้วเมื่อ 2026-09-04 เป็น 5 ครั้ง
+   *   (ดู `MAX_FAILED_PIN_ATTEMPTS` ใน `@crackai/shared`) เพราะ architecture §7 ข้อสมมติ 7
+   *   ยังคงข้อกำหนดว่าค่านี้ต้องตั้งค่าได้ — การปิดตัวเลขไม่ได้ปิดข้อกำหนดนั้นไปด้วย
    */
   private readonly users: UserRepository;
   private readonly sessions: SessionRepository;
