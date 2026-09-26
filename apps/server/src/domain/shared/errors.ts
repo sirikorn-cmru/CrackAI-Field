@@ -124,3 +124,19 @@ export class UploadChunkRejectedError extends DomainError {
     super(message);
   }
 }
+
+/** api-spec §9/§10 — ไม่พบแบบสำรวจที่ระบุ */
+export class SurveyNotFoundError extends DomainError {
+  readonly code = 'SURVEY_NOT_FOUND';
+  constructor(reference: string) {
+    super(`ไม่พบแบบสำรวจ ${reference}`);
+  }
+}
+
+/** api-spec §9/§10 — คำขอขัดกับกฎทางธุรกิจของแบบสำรวจ (ลำดับสถานะ ทีมสำรวจ เวลา ฯลฯ) */
+export class SurveyRuleViolationError extends DomainError {
+  readonly code = 'SURVEY_RULE_VIOLATION';
+  constructor(message: string) {
+    super(message);
+  }
+}

@@ -1,6 +1,9 @@
 import type {
   AccountStatus,
+  CertificationRecord,
+  ReviewStatus,
   Session,
+  SurveyParticipant,
   SurveyedBuildingSyncState,
   SyncStatus,
 } from '@crackai/shared';
@@ -15,6 +18,18 @@ import type {
   SessionRepository,
 } from '../../domain/auth/session.repository.ts';
 import type { AuditTrailDraft, AuditTrailRecorder } from '../../domain/shared/ports.ts';
+import type {
+  CertificationRepository,
+  CreateCertificationInput,
+  CreateParticipantInput,
+  DashboardFilter,
+  DashboardRepository,
+  SeverityTally,
+  SurveyParticipantRepository,
+  SurveyedBuildingRepository,
+  SurveyedBuildingReviewState,
+  UpdateTimingInput,
+} from '../../domain/survey/survey.repository.ts';
 import type {
   MediaBlobStore,
   MediaUploadRepository,
@@ -235,5 +250,111 @@ export class InMemoryMediaBlobStore implements MediaBlobStore {
 
   async sizeOf(uploadSessionId: string): Promise<number> {
     return this.files.get(uploadSessionId)?.byteLength ?? 0;
+  }
+}
+
+export class InMemorySurveyedBuildingRepository implements SurveyedBuildingRepository {
+  readonly rows = new Map<string, SurveyedBuildingReviewState>();
+
+  seed(row: SurveyedBuildingReviewState): void {
+    this.rows.set(row.id, { ...row });
+  }
+
+  async findById(id: string): Promise<SurveyedBuildingReviewState | null> {
+    const row = this.rows.get(id);
+    return row ? { ...row } : null;
+  }
+
+  async findByClientGeneratedId(
+    clientGeneratedId: string,
+  ): Promise<SurveyedBuildingReviewState | null> {
+    for (const row of this.rows.values()) {
+      if (row.client_generated_id === clientGeneratedId) return { ...row };
+    }
+    return null;
+  }
+
+  async updateTiming(id: string, input: UpdateTimingInput): Promise<SurveyedBuildingReviewState> {
+    const row = this.rows.get(id);
+    if (!row) throw new Error(`ไม่พบอาคาร ${id}`);
+    const next = { ...row, ...input };
+    this.rows.set(id, next);
+    return { ...next };
+  }
+
+  async setReviewStatus(id: string, status: ReviewStatus): Promise<SurveyedBuildingReviewState> {
+    const row = this.rows.get(id);
+    if (!row) throw new Error(`ไม่พบอาคาร ${id}`);
+    const next = { ...row, review_status: status };
+    this.rows.set(id, next);
+    return { ...next };
+  }
+}
+
+export class InMemorySurveyParticipantRepository implements SurveyParticipantRepository {
+  private rows: SurveyParticipant[] = [];
+
+  async listByBuilding(surveyedBuildingId: string): Promise<readonly SurveyParticipant[]> {
+    return this.rows
+      .filter((row) => row.surveyedbuilding_id === surveyedBuildingId)
+      .map((row) => ({ ...row }));
+  }
+
+  async replaceForBuilding(
+    surveyedBuildingId: string,
+    participants: readonly CreateParticipantInput[],
+  ): Promise<readonly SurveyParticipant[]> {
+    this.rows = this.rows.filter((row) => row.surveyedbuilding_id !== surveyedBuildingId);
+    for (const input of participants) this.rows.push({ ...input });
+    return this.listByBuilding(surveyedBuildingId);
+  }
+}
+
+export class InMemoryCertificationRepository implements CertificationRepository {
+  readonly rows: CertificationRecord[] = [];
+
+  async insert(input: CreateCertificationInput): Promise<CertificationRecord> {
+    const row: CertificationRecord = { ...input };
+    this.rows.push(row);
+    return { ...row };
+  }
+
+  async listByBuilding(surveyedBuildingId: string): Promise<readonly CertificationRecord[]> {
+    return this.rows
+      .filter((row) => row.surveyedbuilding_id === surveyedBuildingId)
+      .map((row) => ({ ...row }));
+  }
+}
+
+/**
+ * นับจากตาราง `SurveyedBuildingReviewState` ที่ฉีดเข้ามา — **กรอง `sync_status` ให้เหลือ
+ * เฉพาะ "ซิงค์สำเร็จ" ที่นี่** ตาม db-spec §10 ข้อ 4 (NFR-10) เพื่อให้เทสต์จับได้จริงถ้ามี
+ * ระเบียนที่ยังขัดแย้งหลุดเข้าภาพรวม
+ */
+export class InMemoryDashboardRepository implements DashboardRepository {
+  private readonly source: InMemorySurveyedBuildingRepository;
+
+  constructor(source: InMemorySurveyedBuildingRepository) {
+    this.source = source;
+  }
+
+  async tallyBySeverity(filter: DashboardFilter): Promise<readonly SeverityTally[]> {
+    const byArea = new Map<string, SeverityTally>();
+    for (const row of this.source.rows.values()) {
+      if (row.sync_status !== 'ซิงค์สำเร็จ') continue;
+      if (filter.province !== undefined && row.province !== filter.province) continue;
+      const done = row.survey_completed_at;
+      if (filter.completed_from !== undefined && (!done || done < filter.completed_from)) continue;
+      if (filter.completed_to !== undefined && (!done || done > filter.completed_to)) continue;
+
+      const key = `${row.province}|${row.district}`;
+      const tally =
+        byArea.get(key) ??
+        { province: row.province, district: row.district, เขียว: 0, เหลือง: 0, แดง: 0, ยังไม่สรุป: 0 };
+      if (row.overall_severity_level === null) tally['ยังไม่สรุป'] += 1;
+      else tally[row.overall_severity_level] += 1;
+      byArea.set(key, tally);
+    }
+    return [...byArea.values()];
   }
 }

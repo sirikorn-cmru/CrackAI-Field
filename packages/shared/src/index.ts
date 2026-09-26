@@ -148,3 +148,43 @@ export const UPLOAD_CHUNK_SIZE_BYTES = 256 * 1024;
  * ที่เป็นเจ้าของมัน
  */
 export const UPLOAD_STALE_THRESHOLD_HOURS = 72;
+
+/** ระดับความเสียหายรวมของอาคาร — db-spec §4.1 SurveyedBuilding.overall_severity_level (FR-10) */
+export const SEVERITY_LEVELS = ['เขียว', 'เหลือง', 'แดง'] as const;
+export type SeverityLevel = (typeof SEVERITY_LEVELS)[number];
+
+/** บทบาทในทีมสำรวจของอาคารหนึ่งหลัง — db-spec §4.2 SurveyParticipant.role_in_team */
+export const TEAM_ROLES = ['หัวหน้าผู้สำรวจ', 'ผู้สำรวจร่วม'] as const;
+export type TeamRole = (typeof TEAM_ROLES)[number];
+
+/** ผลการตรวจทาน — db-spec §7.1 CertificationRecord.review_result */
+export const REVIEW_RESULTS = ['รับรอง', 'ส่งกลับแก้ไข'] as const;
+export type ReviewResult = (typeof REVIEW_RESULTS)[number];
+
+/**
+ * จำนวนผู้สำรวจสูงสุดต่ออาคารหนึ่งหลัง — FR-16 (db-spec §4.2, api-spec 9.1)
+ * มาจากข้อจำกัดของแบบฟอร์มต้นฉบับที่มีช่องกรอกผู้สำรวจ 3 ช่อง
+ */
+export const MAX_SURVEY_PARTICIPANTS = 3;
+
+/** SurveyParticipant ตาม db-spec §4.2 */
+export interface SurveyParticipant {
+  id: string;
+  client_generated_id: string;
+  surveyedbuilding_id: string;
+  user_id: string;
+  role_in_team: TeamRole;
+  sequence_order: number;
+}
+
+/** CertificationRecord ตาม db-spec §7.1 */
+export interface CertificationRecord {
+  id: string;
+  surveyedbuilding_id: string;
+  reviewed_by_user_id: string;
+  review_result: ReviewResult;
+  review_comment: string | null;
+  /** จำเป็นเมื่อ review_result = รับรอง (db-spec §10 ข้อ 5) */
+  digital_signature_file: string | null;
+  reviewed_at: Date;
+}

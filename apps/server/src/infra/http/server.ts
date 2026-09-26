@@ -5,6 +5,9 @@ import { allowedOperationsFor } from '../../domain/authorization/authorization.s
 import type { UserService } from '../../domain/user/user.service.ts';
 import type { ResumableUploadService } from '../../domain/sync/upload.service.ts';
 import type { SyncIntakeService } from '../../domain/sync/sync-intake.service.ts';
+import type { SurveyTeamService } from '../../domain/survey/survey-team.service.ts';
+import type { ReviewService } from '../../domain/survey/review.service.ts';
+import type { DashboardService } from '../../domain/survey/dashboard.service.ts';
 import {
   issueSessionToken,
   hashSessionToken,
@@ -22,14 +25,18 @@ import { toHttpError } from './error-mapping.ts';
  * แปลง error ของ domain เป็นสถานะ HTTP, และตรวจ token ก่อนส่งต่อ — ตรรกะทั้งหมดอยู่ในชั้น
  * domain ที่ไม่รู้จัก HTTP เลย ทำให้เปลี่ยน protocol ภายหลังได้โดยไม่แตะกฎธุรกิจ
  *
- * เส้นทางที่เปิดไว้ตอนนี้ครอบคลุมเฉพาะ operation ของ Phase 1 ที่ implement แล้ว
- * (api-spec 1.1–1.4, 2.1–2.4, 14.1) operation ที่เหลืออยู่ใน Phase 2–4
+ * เส้นทางที่เปิดไว้ตอนนี้ครอบคลุม operation ที่ implement แล้ว: Phase 1 (api-spec 1.1–1.4,
+ * 2.1–2.4, 14.1) และส่วนของ Phase 2 ที่ไม่ติดค่าที่ยังไม่ตรงกับแบบฟอร์มต้นฉบับ
+ * (9.1, 9.2, 10.1–10.3, 11.1) — หมวดบันทึกความเสียหาย (§4–§8) ยังไม่เปิด
  */
 export interface ServerDependencies extends AuthDependencies {
   authService: AuthService;
   userService: UserService;
   syncService: SyncIntakeService;
   uploadService: ResumableUploadService;
+  surveyTeamService: SurveyTeamService;
+  reviewService: ReviewService;
+  dashboardService: DashboardService;
   /** ผูก token กับ session หลังเข้าสู่ระบบสำเร็จ — ชั้น infra เป็นผู้ดูแลตารางแมป */
   bindSessionToken(tokenHash: string, sessionId: string): Promise<void>;
   /** รายชื่อ origin ของ web client ที่อนุญาต — อ่านจาก environment variable */
@@ -160,6 +167,67 @@ export function buildServer(deps: ServerDependencies): FastifyInstance {
       chunk: new Uint8Array(request.body as Buffer),
     });
     return reply.send(ticket);
+  });
+
+  /** api-spec 9.1 บันทึกรายชื่อผู้สำรวจและหัวหน้าผู้สำรวจ */
+  app.put('/surveys/:clientGeneratedId/team', { preHandler: authenticate }, async (request, reply) => {
+    const { caller } = request as AuthenticatedRequest;
+    const { clientGeneratedId } = request.params as { clientGeneratedId: string };
+    const { members } = request.body as { members: never[] };
+    return reply.send(await deps.surveyTeamService.setTeam(caller!, clientGeneratedId, members));
+  });
+
+  /** api-spec 9.2 บันทึกเวลาเริ่ม/เสร็จสิ้นการสำรวจ */
+  app.put('/surveys/:clientGeneratedId/timing', { preHandler: authenticate }, async (request, reply) => {
+    const { caller } = request as AuthenticatedRequest;
+    const { clientGeneratedId } = request.params as { clientGeneratedId: string };
+    const body = request.body as { survey_start_at: string | null; survey_completed_at: string | null };
+    return reply.send(
+      await deps.surveyTeamService.setTiming(
+        caller!,
+        clientGeneratedId,
+        body.survey_start_at === null ? null : new Date(body.survey_start_at),
+        body.survey_completed_at === null ? null : new Date(body.survey_completed_at),
+      ),
+    );
+  });
+
+  /** api-spec 10.1 ส่งแบบสำรวจเข้าสู่คิวตรวจทาน */
+  app.post('/surveys/:id/submit', { preHandler: authenticate }, async (request, reply) => {
+    const { caller } = request as AuthenticatedRequest;
+    const { id } = request.params as { id: string };
+    return reply.send(await deps.reviewService.submitForReview(caller!, id));
+  });
+
+  /** api-spec 10.2 ตรวจทานผลสำรวจ (ส่งกลับแก้ไข) */
+  app.post('/surveys/:id/send-back', { preHandler: authenticate }, async (request, reply) => {
+    const { caller } = request as AuthenticatedRequest;
+    const { id } = request.params as { id: string };
+    const { review_comment } = request.body as { review_comment: string };
+    return reply.code(201).send(await deps.reviewService.sendBack(caller!, id, review_comment));
+  });
+
+  /** api-spec 10.3 ลงลายมือชื่อดิจิทัลรับรองผล */
+  app.post('/surveys/:id/certify', { preHandler: authenticate }, async (request, reply) => {
+    const { caller } = request as AuthenticatedRequest;
+    const { id } = request.params as { id: string };
+    const { digital_signature_file } = request.body as { digital_signature_file: string };
+    return reply
+      .code(201)
+      .send(await deps.reviewService.certify(caller!, id, digital_signature_file));
+  });
+
+  /** api-spec 11.1 ดู Dashboard ภาพรวมผลสำรวจ */
+  app.get('/dashboard/overview', { preHandler: authenticate }, async (request, reply) => {
+    const { caller } = request as AuthenticatedRequest;
+    const q = request.query as { province?: string; from?: string; to?: string };
+    return reply.send(
+      await deps.dashboardService.overview(caller!, {
+        ...(q.province === undefined ? {} : { province: q.province }),
+        ...(q.from === undefined ? {} : { completed_from: new Date(q.from) }),
+        ...(q.to === undefined ? {} : { completed_to: new Date(q.to) }),
+      }),
+    );
   });
 
   return app;

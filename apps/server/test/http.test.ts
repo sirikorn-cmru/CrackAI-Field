@@ -6,6 +6,9 @@ import { UserService } from '../src/domain/user/user.service.ts';
 import { SyncIntakeService } from '../src/domain/sync/sync-intake.service.ts';
 import { ResumableUploadService } from '../src/domain/sync/upload.service.ts';
 import { manualOnlyMergeStrategy } from '../src/domain/sync/merge-strategy.ts';
+import { SurveyTeamService } from '../src/domain/survey/survey-team.service.ts';
+import { ReviewService } from '../src/domain/survey/review.service.ts';
+import { DashboardService } from '../src/domain/survey/dashboard.service.ts';
 import {
   InMemoryAuditTrailRecorder,
   InMemoryMediaBlobStore,
@@ -14,6 +17,10 @@ import {
   InMemorySurveyedBuildingSyncRepository,
   InMemorySyncConflictRepository,
   InMemoryUserRepository,
+  InMemoryCertificationRepository,
+  InMemoryDashboardRepository,
+  InMemorySurveyParticipantRepository,
+  InMemorySurveyedBuildingRepository,
 } from '../src/infra/memory/in-memory.repositories.ts';
 import { ScryptSecretHasher, UuidGenerator } from '../src/infra/crypto/scrypt-hasher.ts';
 import { buildServer, readAllowedOrigins } from '../src/infra/http/server.ts';
@@ -30,6 +37,9 @@ function buildContext() {
   const hasher = new ScryptSecretHasher();
   const ids = new UuidGenerator();
   const tokens = new Map<string, string>();
+  const surveyBuildings = new InMemorySurveyedBuildingRepository();
+  const surveyParticipants = new InMemorySurveyParticipantRepository();
+  const certifications = new InMemoryCertificationRepository();
 
   const app = buildServer({
     users,
@@ -53,6 +63,16 @@ function buildContext() {
       ids,
       systemClock,
     ),
+    surveyTeamService: new SurveyTeamService(surveyBuildings, surveyParticipants, ids),
+    reviewService: new ReviewService(
+      surveyBuildings,
+      surveyParticipants,
+      certifications,
+      ids,
+      systemClock,
+      audit,
+    ),
+    dashboardService: new DashboardService(new InMemoryDashboardRepository(surveyBuildings)),
     allowedOrigins: ['https://crackai.example.go.th'],
   });
   return { app, users, sessions, hasher, ids, tokens };

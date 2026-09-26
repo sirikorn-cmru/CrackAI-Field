@@ -25,7 +25,10 @@ const STATUS_BY_CODE: Record<string, number> = {
 
   // 404 / 409 — ทรัพยากรและสถานะ
   USER_NOT_FOUND: 404,
+  SURVEY_NOT_FOUND: 404,
   USERNAME_ALREADY_EXISTS: 409,
+  // ขัดกับสถานะปัจจุบันของแบบสำรวจ (ลำดับการตรวจทาน ทีมสำรวจ เวลา) ไม่ใช่คำขอผิดรูปแบบ
+  SURVEY_RULE_VIOLATION: 409,
   ACCOUNT_STATUS_UNCHANGED: 409,
 };
 
